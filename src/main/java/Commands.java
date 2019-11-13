@@ -1,87 +1,86 @@
-import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
-import java.awt.*;
-import java.lang.management.ManagementFactory;
-import java.lang.management.RuntimeMXBean;
+import java.util.HashMap;
+import java.util.Map;
 
-public class Commands extends ListenerAdapter {
+public class NewSticky extends ListenerAdapter {
+
+    Map<String, String> mapChannel = new HashMap<>();
+    Map<String, String> mapMessage = new HashMap<>();
+    Map<String, String> mapDeleteId = new HashMap<>();
+
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         String[] args = event.getMessage().getContentRaw().split("\\s+");
-        Member pog = event.getGuild().getMemberById("182729649703485440");
-        //Uptime time stuff
-        RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
-        long uptime = runtimeMXBean.getUptime();
-        long uptimeInSeconds = uptime / 1000;
-        long numberOfHours = uptimeInSeconds / (60 * 60);
-        long numberOfMinutes = (uptimeInSeconds / 60) - (numberOfHours * 60);
-        long numberOfSeconds = uptimeInSeconds % 60;
+        Member stickyBot = event.getGuild().getMemberById(Main.botId);
 
-        //PING
-        if (args[0].equalsIgnoreCase(Main.prefix + "ping")) {
-            event.getChannel().sendMessage("Pong!" + "\n> WebSocket Latency: " + Long.toString(Main.jda.getPing()) + "ms").queue();
-        }
+        if (args[0].equalsIgnoreCase(Main.prefix + "stick")) {
+            if (permCheck(event.getMember())) {
+                //Sends message if bot does not have add reaction perm
+                if (!stickyBot.hasPermission(Permission.MESSAGE_ADD_REACTION)) {
+                    event.getChannel().sendMessage("**ERROR:** I __need__ the ``React to Messages`` permission to work correctly.").queue();
+                }
 
-        //HELP or COMMANDS
-        if (args[0].equalsIgnoreCase(Main.prefix + "help") || args[0].equalsIgnoreCase(Main.prefix + "commands")) {
-            EmbedBuilder embed = new EmbedBuilder();
-            embed.setTitle("**Commands**");
-            embed.setColor(Color.YELLOW);
-            embed.addField("Sticky Commands:", "``?stick <message>`` - Sticks message to the channel.\n" +
-                                                "``?stickstop`` - Cancels stickied message.\n (*Member must have Manage Messages permissions to use sticky commands. You can only have one stickied message on your server at a time*).", false);
-            embed.addField("Other Commands:", "``?about`` - Support Server and other useful info.\n``?invite`` - Invite link for StickyBot.", false);
-            event.getChannel().sendMessage(embed.build()).queue();
-        }
+                try {
+                    //Puts channel ID and message into maps
+                    mapChannel.put(event.getGuild().getId(), event.getChannel().getId());
+                    mapMessage.put(event.getGuild().getId(), "__**Pinned Message:**__\n\n" + event.getMessage().getContentRaw().substring(7));
+                    //Adds check mark if the have perms to use command
+                    event.getMessage().addReaction("\u2705").queue();
+                } catch (Exception e) {
+                }
 
-        //ABOUT
-        if (args[0].equalsIgnoreCase(Main.prefix + "about")) {
-            EmbedBuilder eb = new EmbedBuilder();
-            eb.setColor(Color.yellow);
-            eb.setTitle("__**StickyBot Information:**__");
-            eb.addField("Developed By:", "P_O_G#2222", false);
-            eb.addField("Ping:", Long.toString(Main.jda.getPing()) + "ms", false);
-            eb.addField("Uptime:", "``" + numberOfHours + " Hours, " + numberOfMinutes + " Min, " + numberOfSeconds + " Seconds``", true);
-            eb.addField("Guilds:", "StickyBot is in **" + String.valueOf(event.getJDA().getGuilds().size()) + "** Guilds", false);
-            eb.addField("Support Server:", "[discord/stickySupport](https://discord.gg/SvNQTtf)", false);
-            eb.addField("Donate:", "[paypal.me/sircam19](https://www.paypal.me/sircam19)", false);
-            eb.addField("**Commands:** ", "Do ``?commands`` or ``?help``", false);
-            event.getChannel().sendMessage(eb.build()).queue();
-        }
-
-        //DONATE
-        if (args[0].equalsIgnoreCase(Main.prefix + "donate") || args[0].equalsIgnoreCase(Main.prefix + "dono")) {
-            EmbedBuilder embed = new EmbedBuilder();
-            embed.setColor(Color.ORANGE);
-            embed.addField("Buy me a beer!", "[``paypal.me/sircam19``](https://www.paypal.me/sircam19)", false);
-            event.getChannel().sendMessage(embed.build()).queue();
-
-        }
-
-        //SHUTDOWN
-        if (args[0].equalsIgnoreCase(Main.prefix + "shutdown")) {
-            if (event.getMember() == pog) {
-                event.getChannel().sendMessage("```Shutting Down Bot```").queue();
-                Main.jda.shutdown();
-            } else {
-                event.getChannel().sendMessage("Only ``P_O_G#2222`` can use this command.").queue();
+                } else {
+                    //Adds X emote if they do not have perms to use sticky command
+                    event.getMessage().addReaction("\u274C").queue();
+                }
             }
+
+        //Stickstop command, makes message and channel maps to null
+        if (args[0].equalsIgnoreCase(Main.prefix + "stickstop")) {
+           if(permCheck(event.getMember())) {
+               //adds X emote if user does not have perms to use command
+               if (!permCheck(event.getMember()) || mapMessage.get(event.getGuild().getId()) == null) {
+                   event.getMessage().addReaction("\u274C").queue();
+               } else {
+                   event.getMessage().addReaction("\u2705").queue();
+               }
+               if(mapMessage.get(event.getGuild().getId()) != null) {
+                   event.getChannel().deleteMessageById(mapDeleteId.get(event.getGuild().getId())).queue();
+               }
+
+               mapMessage.put(event.getGuild().getId(), null);
+               mapChannel.put(event.getGuild().getId(), null);
+               mapDeleteId.put(event.getGuild().getId(), null);
+           } else {
+               event.getMessage().addReaction("\u274C").queue();
+           }
         }
 
-        //UPTIME
-        if (args[0].equalsIgnoreCase(Main.prefix + "uptime")) {
-            event.getChannel().sendMessage("Uptime: ``" + numberOfHours + " Hours, " + numberOfMinutes + " Min, " + numberOfSeconds + " Seconds``").queue();
+        //Posts sticky message if mapMessage for the guild is not null and message is not from the sticky bot and channel is the same as the one used to start sticky command
+        if (mapMessage.get(event.getGuild().getId()) != null && !event.getAuthor().getId().equals(Main.botId) && event.getChannel().getId().equals(mapChannel.get(event.getGuild().getId()))) {
+            TextChannel textChannel = event.getGuild().getTextChannelById(mapChannel.get(event.getGuild().getId()));
+            textChannel.sendMessage(mapMessage.get(event.getGuild().getId())).queue(m -> mapDeleteId.put(event.getGuild().getId(), m.getId()));
         }
 
-        //INVITE
-        if (args[0].equalsIgnoreCase(Main.prefix + "invite")) {
-            EmbedBuilder embed = new EmbedBuilder();
-            embed.setColor(Color.ORANGE);
-            embed.addField("Invite StickyBot to your server:", "[top.gg/StickyBot](https://discordapp.com/oauth2/authorize?client_id=628400349979344919&scope=bot&permissions=68672)", false);
-            event.getChannel().sendMessage(embed.build()).queue();
+        //Deletes old sticky message by message ID
+        if(mapMessage.get(event.getGuild().getId()) != null) {
+           try {
+               event.getChannel().deleteMessageById(mapDeleteId.get(event.getGuild().getId())).queue();
+           } catch (Exception e) {
+               System.out.println("delete message error does not really matter");
+           }
         }
+    }
 
-    }}
-
-
+    public boolean permCheck(Member member) {
+        if(member.hasPermission(Permission.MESSAGE_MANAGE)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+}
