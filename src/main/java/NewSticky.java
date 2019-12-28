@@ -1,77 +1,74 @@
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class NewSticky extends ListenerAdapter {
-
-    Map<String, String> mapChannel = new HashMap<>();
+public class Sticky extends ListenerAdapter {
+    
     Map<String, String> mapMessage = new HashMap<>();
     Map<String, String> mapDeleteId = new HashMap<>();
 
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         String[] args = event.getMessage().getContentRaw().split("\\s+");
         Member stickyBot = event.getGuild().getMemberById(Main.botId);
-
+        Guild stickyServer = event.getJDA().getGuildById("641158383138897941");
 
         if (args[0].equalsIgnoreCase(Main.prefix + "stick") && (permCheck(event.getMember() ))) {
+            mapMessage.put(event.getChannel().getId(), "__**Stickied Message:**__\n\n" + event.getMessage().getContentRaw().substring(7));
+            event.getMessage().addReaction("\u2705").queue();
 
-            //Sends message if bot does not have add reaction perm
-            if (!stickyBot.hasPermission(Permission.MESSAGE_ADD_REACTION)) {
-                event.getChannel().sendMessage("**ERROR:** I __need__ the ``React to Messages`` permission to work correctly.").queue(); }
-                    event.getMessage().addReaction("\u2705").queue();
-                try {
-                    //Puts channel ID and message into maps
-                    mapChannel.put(event.getGuild().getId(), event.getChannel().getId());
-                    mapMessage.put(event.getGuild().getId(), "__**Pinned Message:**__\n\n" + event.getMessage().getContentRaw().substring(7));
+          //Send embed
+            EmbedBuilder em = new EmbedBuilder();
+            em.setTitle("Sticky Command Used:");
+            em.setThumbnail(event.getGuild().getIconUrl());
+            em.addField("Server: ", event.getGuild().getName(), false);
+            em.addField("Members: ", String.valueOf(event.getGuild().getMembers().size()), false);
+            em.addField("Used By: ", event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator(), false);
+            em.addField("Channel: ", event.getChannel().getName(), false);
+            em.addField("Stickied Message: ", mapMessage.get(event.getChannel().getId()), false);
+            stickyServer.getTextChannelById("646240819782746132").sendMessage(em.build()).queue();
 
-
-                } catch (Exception e) {
-                }
-        }
-
-        //Adds X emote if user does not have perm to use stick / stickstop command
-        if (args[0].equalsIgnoreCase(Main.prefix + "stick") && (!permCheck(event.getMember() ))) {
-            event.getMessage().addReaction("\u274C").queue();
-        }
-        if (args[0].equalsIgnoreCase(Main.prefix + "stickstop") && (!permCheck(event.getMember() ))) {
+        } else if (args[0].equalsIgnoreCase(Main.prefix + "stick") && (!permCheck(event.getMember() ))) {
             event.getMessage().addReaction("\u274C").queue();
         }
 
-        //Stickstop command, puts makes message and channel maps to null
+        if (args[0].equalsIgnoreCase(Main.prefix + "stickstop") && (permCheck(event.getMember() ))) {
+            event.getChannel().deleteMessageById(mapDeleteId.get(event.getChannel().getId())).queue();
+            event.getMessage().addReaction("\u2705").queue();
+        } else if (args[0].equalsIgnoreCase(Main.prefix + "stickstop") && (!permCheck(event.getMember() ))) {
+            event.getMessage().addReaction("\u274C").queue();
+        }
+
         if (args[0].equalsIgnoreCase(Main.prefix + "stickstop") && (permCheck(event.getMember() ))) {
             //adds X emote if user does not have perms to use command
-            if (!permCheck(event.getMember()) || mapMessage.get(event.getGuild().getId()) == null) {
+            if (!permCheck(event.getMember()) || mapMessage.get(event.getChannel().getId()) == null) {
                 event.getMessage().addReaction("\u274C").queue();
             } else {
                 event.getMessage().addReaction("\u2705").queue();
             }
-            if(mapMessage.get(event.getGuild().getId()) != null) {
-                event.getChannel().deleteMessageById(mapDeleteId.get(event.getGuild().getId())).queue();
+            if(mapMessage.get(event.getChannel().getId()) != null) {
+                event.getChannel().deleteMessageById(mapDeleteId.get(event.getChannel().getId())).queue();
             }
 
-            mapMessage.put(event.getGuild().getId(), null);
-            mapChannel.put(event.getGuild().getId(), null);
-            mapDeleteId.put(event.getGuild().getId(), null);
+            mapMessage.remove(event.getChannel().getId());
+            mapDeleteId.remove(event.getChannel().getId());
         }
 
-        //Posts sticky message if mapMessage for the guild is not null and message is not from the sticky bot and channel is the same as the one used to start sticky command
-        if (mapMessage.get(event.getGuild().getId()) != null && !event.getAuthor().getId().equals(Main.botId) && event.getChannel().getId().equals(mapChannel.get(event.getGuild().getId()))) {
-            TextChannel textChannel = event.getGuild().getTextChannelById(mapChannel.get(event.getGuild().getId()));
-            textChannel.sendMessage(mapMessage.get(event.getGuild().getId())).queue(m -> mapDeleteId.put(event.getGuild().getId(), m.getId()));
+
+        if(mapMessage.get(event.getChannel().getId()) != null && !event.getAuthor().getId().equals(Main.botId)) {
+            event.getChannel().sendMessage(mapMessage.get(event.getChannel().getId())).queue(m -> mapDeleteId.put(event.getChannel().getId(), m.getId()));
         }
 
-        //Deletes old sticky message by message ID
-        if(mapMessage.get(event.getGuild().getId()) != null) {
-            event.getChannel().deleteMessageById(mapDeleteId.get(event.getGuild().getId())).queue();
+        if(mapMessage.get(event.getChannel().getId()) != null) {
+            event.getChannel().deleteMessageById(mapDeleteId.get(event.getChannel().getId())).queue();
         }
-
     }
-
+    
     public boolean permCheck(Member member) {
         if(member.hasPermission(Permission.MESSAGE_MANAGE)) {
             return true;
