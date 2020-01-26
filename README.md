@@ -21,7 +21,7 @@ To get a list of commands use the ?help command.
 
 
 ## Contributing
-For major changes, please open an issue first to discuss what you would like to change, or contact me on Discord: P_O_G#2222 or join the [StickBot Support Server](https://www.makeareadme.com/#mind-reading).
+For major changes, please open an issue first to discuss what you would like to change, or contact me on Discord: P_O_G#2222 or join the [StickBot Support Server](https://discord.gg/SvNQTtf).
 
 
 ## License
