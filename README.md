@@ -6,7 +6,7 @@ Add StickyBot to your server [here](https://top.gg/bot/628400349979344919).
 
 ## Installation
 
-This bot is not made to be self-hosted, it is on GitHub for transparency purposes. If you would like to self-host you will need to change these values:
+This bot is not made to be self-hosted, it is on GitHub for transparency purposes. If you would like to self-host you will need to change these values in Main.java:
 
 ```java
 public static String botId = "Your Bot ID";
