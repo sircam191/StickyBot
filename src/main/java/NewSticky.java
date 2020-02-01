@@ -1,15 +1,14 @@
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class Sticky extends ListenerAdapter {
-    
+
     Map<String, String> mapMessage = new HashMap<>();
     Map<String, String> mapDeleteId = new HashMap<>();
 
@@ -37,14 +36,14 @@ public class Sticky extends ListenerAdapter {
             event.getMessage().addReaction("\u274C").queue();
         }
 
-        if (args[0].equalsIgnoreCase(Main.prefix + "stickstop") && (permCheck(event.getMember() ))) {
+        if ( (args[0].equalsIgnoreCase(Main.prefix + "stickstop") || args[0].equalsIgnoreCase(Main.prefix + "unstick")) && (permCheck(event.getMember() ))) {
             event.getChannel().deleteMessageById(mapDeleteId.get(event.getChannel().getId())).queue();
             event.getMessage().addReaction("\u2705").queue();
-        } else if (args[0].equalsIgnoreCase(Main.prefix + "stickstop") && (!permCheck(event.getMember() ))) {
+        } else  if ( (args[0].equalsIgnoreCase(Main.prefix + "stickstop") || args[0].equalsIgnoreCase(Main.prefix + "unstick")) && (!permCheck(event.getMember() ))) {
             event.getMessage().addReaction("\u274C").queue();
         }
 
-        if (args[0].equalsIgnoreCase(Main.prefix + "stickstop") && (permCheck(event.getMember() ))) {
+        if ( (args[0].equalsIgnoreCase(Main.prefix + "stickstop") || args[0].equalsIgnoreCase(Main.prefix + "unstick")) && (permCheck(event.getMember() ))) {
             //adds X emote if user does not have perms to use command
             if (!permCheck(event.getMember()) || mapMessage.get(event.getChannel().getId()) == null) {
                 event.getMessage().addReaction("\u274C").queue();
@@ -54,11 +53,9 @@ public class Sticky extends ListenerAdapter {
             if(mapMessage.get(event.getChannel().getId()) != null) {
                 event.getChannel().deleteMessageById(mapDeleteId.get(event.getChannel().getId())).queue();
             }
-
             mapMessage.remove(event.getChannel().getId());
             mapDeleteId.remove(event.getChannel().getId());
         }
-
 
         if(mapMessage.get(event.getChannel().getId()) != null && !event.getAuthor().getId().equals(Main.botId)) {
             event.getChannel().sendMessage(mapMessage.get(event.getChannel().getId())).queue(m -> mapDeleteId.put(event.getChannel().getId(), m.getId()));
@@ -67,8 +64,11 @@ public class Sticky extends ListenerAdapter {
         if(mapMessage.get(event.getChannel().getId()) != null) {
             event.getChannel().deleteMessageById(mapDeleteId.get(event.getChannel().getId())).queue();
         }
+
+
+
     }
-    
+
     public boolean permCheck(Member member) {
         if(member.hasPermission(Permission.MESSAGE_MANAGE)) {
             return true;
@@ -76,4 +76,6 @@ public class Sticky extends ListenerAdapter {
             return false;
         }
     }
+
+
 }
