@@ -9,6 +9,7 @@ import java.awt.*;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.time.OffsetDateTime;
+import java.util.Comparator;
 
 
 import static java.time.temporal.ChronoUnit.DAYS;
@@ -74,6 +75,7 @@ public class Commands extends ListenerAdapter {
             EmbedBuilder embed = new EmbedBuilder();
             embed.setColor(Color.ORANGE);
             embed.addField("Buy me a beer!", "[``paypal.me/sircam19``](https://www.paypal.me/sircam19)", false);
+            event.getMessage().addReaction("\u2764").queue();
             event.getChannel().sendMessage(embed.build()).queue();
 
         } else
@@ -142,40 +144,33 @@ public class Commands extends ListenerAdapter {
                         int dice2 = (int) (Math.random() * 6 + 1);
                         EmbedBuilder emb = new EmbedBuilder();
 
-                        emb.addField("-Rolling Dice-", "Dice 1: **" + Integer.toString(dice1) + "**", false);
-                        emb.addField("", "Dice 2: **" + Integer.toString(dice2) + "**", false);
-                        emb.addField("", "**TOTAL: **   **" + Integer.toString(dice1 + dice2) + "**", false);
+                        emb.addField("-Rolling Dice-", "Dice 1: **" + (dice1) + "**", false);
+                        emb.addField("", "Dice 2: **" + (dice2) + "**", false);
+                        emb.addField("", "**TOTAL: **   **" + (dice1 + dice2) + "**", false);
                         emb.setColor(Color.WHITE);
                         emb.setThumbnail("https://media.giphy.com/media/5nxHFn5888nrq/giphy.gif");
                         event.getChannel().sendMessage(emb.build()).queue();
                     } else if (args[0].equalsIgnoreCase(Main.prefix + "userinfo")) {
                        //USERINFO
                         try {
-
+                            long joinSpot;
                             User tagUser;
                             Member taggedMember;
 
                             if(event.getMessage().toString().contains("@")) {
                                 tagUser = event.getMessage().getMentionedUsers().get(0);
                                 taggedMember = event.getMessage().getMentionedMembers().get(0);
+                                joinSpot = event.getGuild().getMembers().stream().sorted(Comparator.comparing(Member::getTimeJoined)).takeWhile(it -> !it.equals(taggedMember)).count();
                             } else {
+                                joinSpot = event.getGuild().getMembers().stream().sorted(Comparator.comparing(Member::getTimeJoined)).takeWhile(it -> !it.equals(event.getMember())).count();
                                     tagUser = event.getAuthor();
                                     taggedMember = event.getMember();
                             }
 
+
                             EmbedBuilder emb = new EmbedBuilder();
                             String joinDateClean = String.valueOf(taggedMember.getTimeJoined().getMonth() + " " + String.valueOf(taggedMember.getTimeJoined().getDayOfMonth()) + ", " + String.valueOf(taggedMember.getTimeJoined().getYear()));
                             String creationDateClean = String.valueOf(taggedMember.getTimeCreated().getMonth() + " " + String.valueOf(taggedMember.getTimeCreated().getDayOfMonth()) + ", " + String.valueOf(taggedMember.getTimeCreated().getYear()));
-
-                            //Adds user roles as mentions into String
-                            int i = taggedMember.getRoles().size();
-                            String rolesTagged = "";
-                            while( i > 0) {
-                                rolesTagged += taggedMember.getRoles().get(i -1).getAsMention();
-                                rolesTagged += " ";
-                                i--;
-                            }
-                            //////
 
                             emb.setThumbnail(tagUser.getAvatarUrl());
                             emb.setTitle("**-User Info-**");
@@ -183,22 +178,23 @@ public class Commands extends ListenerAdapter {
                                     "**User ID:** ``" + tagUser.getId() + "``\n" +
                                             "**Nickname:** " + taggedMember.getEffectiveName() + "\n" +
                                             "**Join Date:** " + joinDateClean + " *(" + numberOfDaysJoined(taggedMember) + " days ago)*" + "\n" +
+                                            "**Join Position:** " + joinSpot + "\n" +
                                             "**Creation Date:** " + creationDateClean + " *(" + numberOfDaysCreated(taggedMember) + " days ago)*" + "\n" +
                                             "**Status:** " + taggedMember.getOnlineStatus().toString() + "\n" +
                                             "**Tag: ** " + taggedMember.getAsMention() + "\n" +
                                             "**Nitro Boosting: ** " + boostCheck(taggedMember) + "\n" +
                                             "**Number of Roles:** " + taggedMember.getRoles().size() + "\n" +
-                                            "**Roles:** " + rolesTagged
+                                            "**Roles:** " + getRoles(taggedMember)
                                     , false);
 
 
                             emb.setColor(taggedMember.getColor());
 
                             if(taggedMember.hasPermission(Permission.ADMINISTRATOR)) {
-                                emb.setFooter(tagUser.getName() + " is a Admin", tagUser.getAvatarUrl());
+                                emb.setFooter(tagUser.getName() + " is a admin", tagUser.getAvatarUrl());
                             }
                             else {
-                                emb.setFooter(tagUser.getName() + " is not a Admin", tagUser.getAvatarUrl());
+                                emb.setFooter(tagUser.getName() + " is not a admin", tagUser.getAvatarUrl());
                             }
                             event.getChannel().sendMessage(emb.build()).queue();
 
@@ -214,7 +210,7 @@ public class Commands extends ListenerAdapter {
         if(member.getTimeBoosted() == null){
             return "Member is not boosting.";
         } else {
-            return String.valueOf("Boosting since: " + member.getTimeBoosted().getMonth() + " " + String.valueOf(member.getTimeBoosted().getDayOfMonth()) + ", " + String.valueOf(member.getTimeBoosted().getYear())) + " *(" + numberOfDaysBoosted(member) + " days ago)*";
+            return ("Boosting since: " + member.getTimeBoosted().getMonth() + " " + String.valueOf(member.getTimeBoosted().getDayOfMonth()) + ", " + String.valueOf(member.getTimeBoosted().getYear())) + " *(" + numberOfDaysBoosted(member) + " days ago)*";
         }
     }
 
@@ -232,4 +228,22 @@ public class Commands extends ListenerAdapter {
         long daysBetween = DAYS.between(member.getTimeBoosted(), OffsetDateTime.now());
         return String.valueOf(daysBetween);
     }
+
+    public static String getRoles(Member taggedMember) {
+        int i = taggedMember.getRoles().size();
+        String rolesTagged = "";
+        while( i > 0) {
+            rolesTagged += taggedMember.getRoles().get(i -1).getAsMention();
+            rolesTagged += " ";
+            i--;
+        }
+        if (!rolesTagged.isEmpty()) {
+            return rolesTagged;
+        } else {
+            return "None";
+        }
+
+    }
 }
+
+
