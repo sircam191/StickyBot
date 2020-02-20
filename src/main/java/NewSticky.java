@@ -61,11 +61,9 @@ public class Sticky extends ListenerAdapter {
             event.getChannel().sendMessage(mapMessage.get(event.getChannel().getId())).queue(m -> mapDeleteId.put(event.getChannel().getId(), m.getId()));
         }
 
-        if(mapMessage.get(event.getChannel().getId()) != null) {
+        if(mapDeleteId.get(event.getChannel().getId()) != null) {
             event.getChannel().deleteMessageById(mapDeleteId.get(event.getChannel().getId())).queue();
         }
-
-
 
     }
 
