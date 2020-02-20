@@ -1,5 +1,6 @@
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -41,6 +42,7 @@ public class Commands extends ListenerAdapter {
             embed.addField("Other Commands:", "``?about`` - Support Server and other useful info.\n" +
                                                              "``?poll <question>`` - Create a poll for people to vote.\n"+
                                                             "``?userinfo <@user>`` - Get info on a member.\n" +
+                                                            "``?serverinfo`` - Get info on the server.\n" +
                                                             "``?roll`` - Role two dice.\n" +
                                                             "``?faq`` - Get the FAQ for StickyBot.\n" +
                                                             "``?invite`` - Invite link for StickyBot.\n"
@@ -90,6 +92,37 @@ public class Commands extends ListenerAdapter {
                 event.getChannel().sendMessage("Only ``P_O_G#2222`` can use this command.").queue();
             }
         } else
+
+            //SERVER INFO
+            if (args[0].equalsIgnoreCase(Main.prefix + "serverinfo")) {
+
+
+                String creationDateClean = String.valueOf(event.getGuild().getTimeCreated().getMonth() + " " + String.valueOf(event.getGuild().getTimeCreated().getDayOfMonth()) + ", " + String.valueOf(event.getGuild().getTimeCreated().getYear()));
+
+
+                EmbedBuilder emb = new EmbedBuilder();
+
+                emb.setThumbnail(event.getGuild().getIconUrl());
+                emb.setTitle("**-Server Info-**");
+                emb.addField("Info for " + event.getGuild().getName(),
+                        "**Server ID:** ``" + event.getGuild().getId() + "``\n" +
+                                "**Creation Date:** " + creationDateClean + " *(" + numberOfDaysCreatedGuild(event.getGuild()) + " days ago)*" + "\n" +
+                                "**Members:** " + event.getGuild().getMemberCount() + "\n" +
+                                "**Owner:** " + event.getGuild().getOwner().getAsMention() + "\n" +
+                                "**Region: ** " + event.getGuild().getRegion().getName() + " " + event.getGuild().getRegion().getEmoji() + "\n" +
+                                "**Nitro Boosting: ** " + GuildBoost(event.getGuild()) + "\n" +
+                                "**Number of Roles:** " + event.getGuild().getRoles().size() + "\n" +
+                                "**Text Channels:** " + event.getGuild().getTextChannels().size() + "\n" +
+                                "**Voice Channels:** " + event.getGuild().getVoiceChannels().size() + "\n" +
+                                "**Custom Emotes:** " + event.getGuild().getEmotes().size()
+                        , false);
+
+
+                emb.setColor(event.getGuild().getOwner().getColor());
+                emb.setFooter(event.getGuild().getName(), event.getGuild().getIconUrl());
+
+                event.getChannel().sendMessage(emb.build()).queue();
+            } else
 
         //UPTIME
         if (args[0].equalsIgnoreCase(Main.prefix + "uptime")) {
@@ -201,8 +234,8 @@ public class Commands extends ListenerAdapter {
                         } catch (Exception e) {
                             event.getChannel().sendMessage("Please tag a member in the server.").queue();
                         }
-
                     }
+
     }
 
     public static String boostCheck(Member member) {
@@ -219,6 +252,12 @@ public class Commands extends ListenerAdapter {
         return String.valueOf(daysBetween);
     }
 
+    public static String numberOfDaysCreatedGuild(Guild guild) {
+        long daysBetween = DAYS.between(guild.getTimeCreated(), OffsetDateTime.now());
+        return String.valueOf(daysBetween);
+    }
+
+
     public static String numberOfDaysCreated(Member member) {
         long daysBetween = DAYS.between(member.getTimeCreated(), OffsetDateTime.now());
         return String.valueOf(daysBetween);
@@ -232,8 +271,8 @@ public class Commands extends ListenerAdapter {
     public static String getRoles(Member taggedMember) {
         int i = taggedMember.getRoles().size();
         String rolesTagged = "";
-        while( i > 0) {
-            rolesTagged += taggedMember.getRoles().get(i -1).getAsMention();
+        while (i > 0) {
+            rolesTagged += taggedMember.getRoles().get(i - 1).getAsMention();
             rolesTagged += " ";
             i--;
         }
@@ -241,6 +280,15 @@ public class Commands extends ListenerAdapter {
             return rolesTagged;
         } else {
             return "None";
+        }
+    }
+        public static String GuildBoost(Guild guild) {
+            if (guild.getBoostCount() > 0) {
+            String tier = guild.getBoostTier().toString();
+            String boosters = String.valueOf(guild.getBoostCount());
+            return tier + ". # of Boosts: " + boosters;
+            } else {
+                return "Tier 0";
         }
 
     }
