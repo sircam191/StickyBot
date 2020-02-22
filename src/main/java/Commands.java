@@ -108,6 +108,7 @@ public class Commands extends ListenerAdapter {
                         "**Server ID:** ``" + event.getGuild().getId() + "``\n" +
                                 "**Creation Date:** " + creationDateClean + " *(" + numberOfDaysCreatedGuild(event.getGuild()) + " days ago)*" + "\n" +
                                 "**Members:** " + event.getGuild().getMemberCount() + "\n" +
+                                "**Bots:** " + BotCount(event.getGuild()) + "\n" +
                                 "**Owner:** " + event.getGuild().getOwner().getAsMention() + "\n" +
                                 "**Region: ** " + event.getGuild().getRegion().getName() + " " + event.getGuild().getRegion().getEmoji() + "\n" +
                                 "**Nitro Boosting: ** " + GuildBoost(event.getGuild()) + "\n" +
@@ -282,16 +283,27 @@ public class Commands extends ListenerAdapter {
             return "None";
         }
     }
-        public static String GuildBoost(Guild guild) {
-            if (guild.getBoostCount() > 0) {
+    public static String GuildBoost(Guild guild) {
+        if (guild.getBoostCount() > 0) {
             String tier = guild.getBoostTier().toString();
             String boosters = String.valueOf(guild.getBoostCount());
-            return tier + ". # of Boosts: " + boosters;
-            } else {
-                return "Tier 0";
+            return tier + ", " + boosters +  "Boosts.";
+        } else {
+            return "Tier 0";
         }
-
     }
+
+    public static String BotCount(Guild guild) {
+        int counter = 0;
+        for(Member member : guild.getMembers()) {
+            if(member.getUser().isBot()){
+                counter++;
+            }
+        }
+       return String.valueOf(counter);
+    }
+
+
 }
 
 
