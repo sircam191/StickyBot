@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Sticky extends ListenerAdapter {
@@ -50,30 +51,37 @@ public class Sticky extends ListenerAdapter {
             } else {
                 event.getMessage().addReaction("\u2705").queue();
             }
-            if(mapMessage.get(event.getChannel().getId()) != null) {
-                event.getChannel().deleteMessageById(mapDeleteId.get(event.getChannel().getId())).queue();
-            }
+//            if(mapMessage.get(event.getChannel().getId()) != null) {
+//                event.getChannel().deleteMessageById(mapDeleteId.get(event.getChannel().getId())).queue();
+//            }
             mapMessage.remove(event.getChannel().getId());
             mapDeleteId.remove(event.getChannel().getId());
         }
 
-        if(mapMessage.get(event.getChannel().getId()) != null && !event.getAuthor().getId().equals(Main.botId)) {
+        if (mapMessage.get(event.getChannel().getId()) != null && !event.getAuthor().getId().equals(Main.botId)) {
             event.getChannel().sendMessage(mapMessage.get(event.getChannel().getId())).queue(m -> mapDeleteId.put(event.getChannel().getId(), m.getId()));
         }
 
-        if(mapDeleteId.get(event.getChannel().getId()) != null) {
-            event.getChannel().deleteMessageById(mapDeleteId.get(event.getChannel().getId())).queue();
-        }
+        if (mapDeleteId.get(event.getChannel().getId()) != null && (event.getChannel().getLatestMessageId() != mapDeleteId.get(event.getChannel().getId()))) {
 
+           if (!event.getChannel().retrieveMessageById(event.getChannel().getLatestMessageId()).complete().getContentRaw().contains(mapMessage.get(event.getChannel().getId()))  ) {
+               event.getChannel().deleteMessageById(mapDeleteId.get(event.getChannel().getId())).queue();
+           } else {
+               List<Message> messageList = event.getChannel().getHistory().retrievePast(10).complete();
+               for (Message m : messageList.subList(1, 10)) {
+                   if (m.getContentRaw().contains(mapMessage.get(event.getChannel().getId()))) {
+                       m.delete().queue();
+                   }
+               }
+           }
+        }
     }
 
     public boolean permCheck(Member member) {
-        if(member.hasPermission(Permission.MESSAGE_MANAGE)) {
+        if (member.hasPermission(Permission.MESSAGE_MANAGE)) {
             return true;
         } else {
             return false;
         }
     }
-
-
 }
