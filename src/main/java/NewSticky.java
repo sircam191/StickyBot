@@ -59,16 +59,24 @@ public class Sticky extends ListenerAdapter {
         }
 
         if (mapMessage.get(event.getChannel().getId()) != null && !event.getAuthor().getId().equals(Main.botId)) {
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             event.getChannel().sendMessage(mapMessage.get(event.getChannel().getId())).queue(m -> mapDeleteId.put(event.getChannel().getId(), m.getId()));
         }
 
+
         if (mapDeleteId.get(event.getChannel().getId()) != null && (event.getChannel().getLatestMessageId() != mapDeleteId.get(event.getChannel().getId()))) {
 
-           if (!event.getChannel().retrieveMessageById(event.getChannel().getLatestMessageId()).complete().getContentRaw().contains(mapMessage.get(event.getChannel().getId()))  ) {
+            List<Message> messageCheck = event.getChannel().getHistory().retrievePast(1).complete();
+
+           if (!messageCheck.get(0).getContentRaw().contains(mapMessage.get(event.getChannel().getId()))) {
                event.getChannel().deleteMessageById(mapDeleteId.get(event.getChannel().getId())).queue();
            } else {
-               List<Message> messageList = event.getChannel().getHistory().retrievePast(10).complete();
-               for (Message m : messageList.subList(1, 10)) {
+               List<Message> messageListDelete = event.getChannel().getHistory().retrievePast(10).complete();
+               for (Message m : messageListDelete.subList(1, 10)) {
                    if (m.getContentRaw().contains(mapMessage.get(event.getChannel().getId()))) {
                        m.delete().queue();
                    }
