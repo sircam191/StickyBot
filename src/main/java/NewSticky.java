@@ -22,17 +22,6 @@ public class Sticky extends ListenerAdapter {
             mapMessage.put(event.getChannel().getId(), "__**Stickied Message:**__\n\n" + event.getMessage().getContentRaw().substring(7));
             event.getMessage().addReaction("\u2705").queue();
 
-          //Send embed
-            EmbedBuilder em = new EmbedBuilder();
-            em.setTitle("Sticky Command Used:");
-            em.setThumbnail(event.getGuild().getIconUrl());
-            em.addField("Server: ", event.getGuild().getName(), false);
-            em.addField("Members: ", String.valueOf(event.getGuild().getMembers().size()), false);
-            em.addField("Used By: ", event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator(), false);
-            em.addField("Channel: ", event.getChannel().getName(), false);
-            em.addField("Stickied Message: ", mapMessage.get(event.getChannel().getId()), false);
-            stickyServer.getTextChannelById("646240819782746132").sendMessage(em.build()).queue();
-
         } else if (args[0].equalsIgnoreCase(Main.prefix + "stick") && (!permCheck(event.getMember() ))) {
             event.getMessage().addReaction("\u274C").queue();
         }
