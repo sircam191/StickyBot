@@ -27,5 +27,7 @@ public class Main {
         jda.addEventListener(new JoinNewGuild());
 
         jda.addEventListener(new NewSticky());
+        
+        jda.addEventListener(new VirusCommand());
     }
 }
