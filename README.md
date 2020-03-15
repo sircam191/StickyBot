@@ -17,7 +17,7 @@ No other support will be available for self-hosting of this bot.
 
 ## Usage
 
-To get a list of commands use the ?help command. 
+To get a list of commands use the `?help` command. 
 
 
 ## Contributing
