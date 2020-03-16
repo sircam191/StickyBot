@@ -1,23 +1,27 @@
 plugins {
     id'java'
     id'application'
-    id'com.github.johnrengelman.shadow' version '4.0.4'
+    id'com.github.johnrengelman.shadow' version '5.2.0'
 }
 
 mainClassName = 'Main'
 
 version '1.0'
 
-sourceCompatibility = 1.8
+sourceCompatibility = 11
 
 repositories {
-    mavenCentral()
     jcenter()
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
-    compile 'net.dv8tion:JDA:3.8.1_457'
-    compile 'com.sedmelluq:lavaplayer:1.3.19'
+    compile 'net.dv8tion:JDA:4.1.1_108'
+    compile 'com.jagrosh:jda-utilities:3.0.2'
+    implementation 'com.github.mew:coronavirus:0.1.0'
+    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.19'
+
 }
+
 
 compileJava.options.encoding = 'UTF-8'
