@@ -34,8 +34,8 @@ public class JoinNewGuild extends ListenerAdapter {
             eb.setColor(Color.yellow);
             eb.setTitle("__Thank you for adding StickyBot to your server!__");
             eb.setDescription("Here are the basics to get you started:");
-            eb.addField("Support Server:", "[discord/stickySupport](https://discord.gg/SvNQTtf)", false);
-            eb.addField("Vote for StickyBot:", "[discord.gg/stickybot](https://top.gg/bot/628400349979344919)", false);
+            eb.addField("Support Server:", "[discord/StickyBotSupport](https://discord.gg/SvNQTtf)", false);
+            eb.addField("Vote for StickyBot:", "[discord.gg/StickyBot](https://top.gg/bot/628400349979344919)", false);
             eb.addField("**Commands:** ", "Do ``?commands`` or ``?help``", false);
             eb.addField("Issues?", "Make sure the bot has perms to send and delete messages and is immune to Slow Mode in that channel.\nJoin the support server with any other issues you may encounter.", false);
             eb.setFooter("StickyBot", "https://images.discordapp.net/avatars/628400349979344919/4bbedd5c6db13abb4cb5384878e7f01b.png?size=512");
