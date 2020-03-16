@@ -58,6 +58,14 @@ public class Main {
         jda.addEventListener(new JoinNewGuild());
         jda.addEventListener(new Sticky());
         jda.addEventListener(new VirusCommand());
+        
+         DiscordBotListAPI api = new DiscordBotListAPI.Builder()
+                .token(token)
+                .botId(botId)
+                .build();
+
+        int serverCount = jda.getGuilds().size();
+        api.setStats(serverCount);
     }
 
 }
