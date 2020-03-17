@@ -11,6 +11,9 @@ This bot is not made to be self-hosted, it is on GitHub for transparency purpose
 ```java
 public static String botId = "Your Bot ID";
 public static String token = "Your Bot Token";
+public static String dbUrl = "Your MySQL DB Address";
+public static String dbUser = "Your MySQL DB Username";
+public static String dbPassword = "Your MySQL DB Password";
 ```
 
 No other support will be available for self-hosting of this bot.
