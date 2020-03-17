@@ -17,7 +17,7 @@ public class Main {
     public static String botId = "******************";
     public static String token = "*******************************************";
 
-    public static String dbUrl = "jdbc:mysql://***********/stickybot";
+    public static String dbUrl = "jdbc:mysql://localhost:3306/STICKYBOT?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
     public static String dbUser = "root";
     public static String dbPassword = "";
 
