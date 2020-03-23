@@ -65,11 +65,7 @@ public class Sticky extends ListenerAdapter {
     }
 
     public boolean permCheck(Member member) {
-        if (member.hasPermission(Permission.MESSAGE_MANAGE)) {
-            return true;
-        } else {
-            return false;
-        }
+        return member.hasPermission(Permission.MESSAGE_MANAGE);
     }
 
     public void addDB(String channelId, String message) {
