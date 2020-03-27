@@ -1,4 +1,4 @@
-# StickyBot Discord Bot
+# StickyBot Discord Bot ![StickyBot Logo](https://images.discordapp.net/avatars/628400349979344919/b2aed74a6631ee9755a8ae56d8e582a8.png?size=512=250x)
 
 ![StickyBot Logo](https://images.discordapp.net/avatars/628400349979344919/b2aed74a6631ee9755a8ae56d8e582a8.png?size=512=250x)
 
