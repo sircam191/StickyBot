@@ -1,10 +1,8 @@
-
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import org.discordbots.api.client.DiscordBotListAPI;
 
 import javax.security.auth.login.LoginException;
-
 
 import java.sql.*;
 import java.util.HashMap;
@@ -27,7 +25,6 @@ public class Main {
 
     public static Map<String, String> mapMessage = new HashMap<>();
     public static Map<String, String> mapDeleteId = new HashMap<>();
-
 
     public static void main (String[] args) throws LoginException{
 
@@ -61,7 +58,6 @@ public class Main {
         jda.addEventListener(new VirusCommand());
         jda.addEventListener(new DeleteChannelDBClear());
 
-
         DiscordBotListAPI api = new DiscordBotListAPI.Builder()
                 .token(topggAPIToken)
                .botId(botId)
@@ -69,8 +65,6 @@ public class Main {
 
         int serverCount = jda.getGuilds().size();
         api.setStats(serverCount);
-
     }
-
 }
 
