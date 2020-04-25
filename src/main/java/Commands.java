@@ -16,7 +16,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 import static java.time.temporal.ChronoUnit.DAYS;
 
 public class Commands extends ListenerAdapter {
@@ -74,9 +73,7 @@ public class Commands extends ListenerAdapter {
             eb.addField("Donate:", "[paypal.me/sircam19](https://www.paypal.me/sircam19)", false);
             eb.addField("**Commands:** ", "Do ``?commands`` or ``?help``", false);
             eb.setFooter("Made with \uD83D\uDC96 using JDA", Main.jda.getSelfUser().getAvatarUrl());
-
             event.getChannel().sendMessage(eb.build()).queue();
-
         } else
 
         //DONATE
@@ -86,7 +83,6 @@ public class Commands extends ListenerAdapter {
             embed.addField("Buy me a beer!", "[``paypal.me/sircam19``](https://www.paypal.me/sircam19)", false);
             event.getMessage().addReaction("\u2764").queue();
             event.getChannel().sendMessage(embed.build()).queue();
-
         } else
 
         //SHUTDOWN
@@ -97,34 +93,28 @@ public class Commands extends ListenerAdapter {
             } else {
                 event.getChannel().sendMessage("Only ``P_O_G#2222`` can use this command.").queue();
             }
-
         } else
+         //SERVER INFO
+         if (args[0].equalsIgnoreCase(Main.prefix + "serverinfo")) {
 
-            //SERVER INFO
-            if (args[0].equalsIgnoreCase(Main.prefix + "serverinfo")) {
+         String creationDateClean = String.valueOf(event.getGuild().getTimeCreated().getMonth() + " " + String.valueOf(event.getGuild().getTimeCreated().getDayOfMonth()) + ", " + String.valueOf(event.getGuild().getTimeCreated().getYear()));
 
-
-                String creationDateClean = String.valueOf(event.getGuild().getTimeCreated().getMonth() + " " + String.valueOf(event.getGuild().getTimeCreated().getDayOfMonth()) + ", " + String.valueOf(event.getGuild().getTimeCreated().getYear()));
-
-
-                EmbedBuilder emb = new EmbedBuilder();
-
-                emb.setThumbnail(event.getGuild().getIconUrl());
-                emb.setTitle("**-Server Info-**");
-                emb.addField("Info for " + event.getGuild().getName(),
-                        "**Server ID:** ``" + event.getGuild().getId() + "``\n" +
-                                "**Creation Date:** " + creationDateClean + " *(" + numberOfDaysCreatedGuild(event.getGuild()) + " days ago)*" + "\n" +
-                                "**Members:** " + event.getGuild().getMemberCount() + "\n" +
-                                "**Bots:** " + BotCount(event.getGuild()) + "\n" +
-                                "**Owner:** " + event.getGuild().getOwner().getAsMention() + "\n" +
-                                "**Region: ** " + event.getGuild().getRegion().getName() + " " + event.getGuild().getRegion().getEmoji() + "\n" +
-                                "**Nitro Boosting: ** " + GuildBoost(event.getGuild()) + "\n" +
-                                "**Number of Roles:** " + event.getGuild().getRoles().size() + "\n" +
-                                "**Text Channels:** " + event.getGuild().getTextChannels().size() + "\n" +
-                                "**Voice Channels:** " + event.getGuild().getVoiceChannels().size() + "\n" +
-                                "**Custom Emotes:** " + event.getGuild().getEmotes().size()
-                        , false);
-
+         EmbedBuilder emb = new EmbedBuilder();
+         emb.setThumbnail(event.getGuild().getIconUrl());
+         emb.setTitle("**-Server Info-**");
+         emb.addField("Info for " + event.getGuild().getName(),
+              "**Server ID:** ``" + event.getGuild().getId() + "``\n" +
+              "**Creation Date:** " + creationDateClean + " *(" + numberOfDaysCreatedGuild(event.getGuild()) + " days ago)*" + "\n" +
+              "**Members:** " + event.getGuild().getMemberCount() + "\n" +
+              "**Bots:** " + BotCount(event.getGuild()) + "\n" +
+              "**Owner:** " + event.getGuild().getOwner().getAsMention() + "\n" +
+              "**Region: ** " + event.getGuild().getRegion().getName() + " " + event.getGuild().getRegion().getEmoji() + "\n" +
+              "**Nitro Boosting: ** " + GuildBoost(event.getGuild()) + "\n" +
+              "**Number of Roles:** " + event.getGuild().getRoles().size() + "\n" +
+              "**Text Channels:** " + event.getGuild().getTextChannels().size() + "\n" +
+              "**Voice Channels:** " + event.getGuild().getVoiceChannels().size() + "\n" +
+              "**Custom Emotes:** " + event.getGuild().getEmotes().size()
+              , false);
 
                 emb.setColor(event.getGuild().getOwner().getColor());
                 emb.setFooter(event.getGuild().getName(), event.getGuild().getIconUrl());
@@ -218,7 +208,6 @@ public class Commands extends ListenerAdapter {
                                             "**Roles:** " + getRoles(taggedMember)
                                     , false);
 
-
                             emb.setColor(taggedMember.getColor());
 
                             if(taggedMember.hasPermission(Permission.ADMINISTRATOR)) {
@@ -266,7 +255,6 @@ public class Commands extends ListenerAdapter {
                         event.getChannel().sendMessage(emb.build()).queue();
                     }
 
-
         if (args[0].equalsIgnoreCase(Main.prefix + "coinflip") || args[0].equalsIgnoreCase(Main.prefix + "flip") || args[0].equalsIgnoreCase(Main.prefix + "coin") || args[0].equalsIgnoreCase(Main.prefix + "flipcoin")) {
 
             int random = (int) Math.round(Math.random());
@@ -281,7 +269,6 @@ public class Commands extends ListenerAdapter {
             }
             emb.setFooter("Flipped by: " + event.getMember().getEffectiveName(), event.getMember().getUser().getAvatarUrl());
             event.getChannel().sendMessage(emb.build()).queue();
-
         }
     }
 
@@ -329,6 +316,7 @@ public class Commands extends ListenerAdapter {
             return "None";
         }
     }
+    
     public static String GuildBoost(Guild guild) {
         if (guild.getBoostCount() > 0) {
             String tier = guild.getBoostTier().name();
