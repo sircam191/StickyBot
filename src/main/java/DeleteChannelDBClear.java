@@ -12,19 +12,14 @@ public class DeleteChannelDBClear extends ListenerAdapter {
     }
 
     public void removeDB(String channelId) {
-
         try {
             Connection dbConn = DriverManager.getConnection(Main.dbUrl,Main.dbUser,Main.dbPassword);
             Statement myStmt = dbConn.createStatement();
             String sql = "DELETE FROM messages WHERE channelId='" + channelId + "';";
-
             myStmt.execute(sql);
             myStmt.close();
-
-
         } catch ( SQLException e) {
             e.printStackTrace();
         }
     }
-
 }
