@@ -6,7 +6,6 @@ import org.discordbots.api.client.DiscordBotListAPI;
 
 import javax.security.auth.login.LoginException;
 
-
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,7 +53,6 @@ public class Main {
             e.printStackTrace();
         }
 
-
         jda.getPresence().setActivity(playing("?help"));
 
         jda.addEventListener(new Commands());
@@ -71,8 +69,6 @@ public class Main {
 
         int serverCount = jda.getGuilds().size();
         api.setStats(serverCount);
-
     }
-
 }
 
