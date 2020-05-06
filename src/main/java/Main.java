@@ -28,7 +28,6 @@ public class Main {
     public static Map<String, String> mapMessage = new HashMap<>();
     public static Map<String, String> mapDeleteId = new HashMap<>();
 
-
     public static void main (String[] args) throws LoginException{
 
         try {
