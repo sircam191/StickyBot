@@ -11,9 +11,6 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.text.NumberFormat;
 import java.time.OffsetDateTime;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
@@ -45,11 +42,11 @@ public class Commands extends ListenerAdapter {
                                                              "``?poll <question>`` - Create a poll for people to vote.\n"+
                                                             "``?userinfo <@user>`` - Get info on a member.\n" +
                                                             "``?serverinfo`` - Get info on the server.\n" +
-                                                            "``?joinlist <count>`` - Get the first X amount of members who have joined the guild.\n" +
                                                             "``?roll`` - Role two dice.\n" +
                                                             "``?coinflip`` - Flips a coin.\n" +
                                                             "``?invite`` - Invite link for StickyBot.\n" +
                                                             "``?support`` - Invite to the StickyBot Support Server.\n" +
+                                                              "``?donate`` - Help keep StickyBot running smoothly.\n" +
                                                             "``?virus`` - Get latest stats from COVID-19.\n"
                                                              , false);
             embed.setFooter("For support please join the Support Server. Use ?support for the invite.", Main.jda.getSelfUser().getAvatarUrl());
@@ -98,34 +95,32 @@ public class Commands extends ListenerAdapter {
             }
 
         } else
-            //SERVER INFO
-            if (args[0].equalsIgnoreCase(Main.prefix + "serverinfo")) {
-                String creationDateClean = String.valueOf(event.getGuild().getTimeCreated().getMonth() + " " + String.valueOf(event.getGuild().getTimeCreated().getDayOfMonth()) + ", " + String.valueOf(event.getGuild().getTimeCreated().getYear()));
+        //SERVER INFO
+        if (args[0].equalsIgnoreCase(Main.prefix + "serverinfo")) {
+            String creationDateClean = String.valueOf(event.getGuild().getTimeCreated().getMonth() + " " + String.valueOf(event.getGuild().getTimeCreated().getDayOfMonth()) + ", " + String.valueOf(event.getGuild().getTimeCreated().getYear()));
 
-                EmbedBuilder emb = new EmbedBuilder();
+            EmbedBuilder emb = new EmbedBuilder();
 
-                emb.setThumbnail(event.getGuild().getIconUrl());
-                emb.setTitle("**-Server Info-**");
-                emb.addField("Info for " + event.getGuild().getName(),
+            emb.setThumbnail(event.getGuild().getIconUrl());
+            emb.setTitle("**-Server Info-**");
+            emb.addField("Info for " + event.getGuild().getName(),
                         "**Server ID:** ``" + event.getGuild().getId() + "``\n" +
-                                "**Creation Date:** " + creationDateClean + " *(" + numberOfDaysCreatedGuild(event.getGuild()) + " days ago)*" + "\n" +
-                                "**Members:** " + event.getGuild().getMemberCount() + "\n" +
-                                "**Bots:** " + BotCount(event.getGuild()) + "\n" +
-                                "**Owner:** " + event.getGuild().getOwner().getAsMention() + "\n" +
-                                "**Region: ** " + event.getGuild().getRegion().getName() + " " + event.getGuild().getRegion().getEmoji() + "\n" +
-                                "**Nitro Boosting: ** " + GuildBoost(event.getGuild()) + "\n" +
-                                "**Number of Roles:** " + event.getGuild().getRoles().size() + "\n" +
-                                "**Text Channels:** " + event.getGuild().getTextChannels().size() + "\n" +
-                                "**Voice Channels:** " + event.getGuild().getVoiceChannels().size() + "\n" +
-                                "**Custom Emotes:** " + event.getGuild().getEmotes().size()
+                        "**Creation Date:** " + creationDateClean + " *(" + numberOfDaysCreatedGuild(event.getGuild()) + " days ago)*" + "\n" +
+                        "**Members:** " + NumberFormat.getInstance().format(event.getGuild().retrieveMetaData().complete().getApproximateMembers()) + "\n" +
+                        "**Owner:** " + event.getGuild().retrieveOwner().complete().getAsMention() + "\n" +
+                        "**Region: ** " + event.getGuild().getRegion().getName() + " " + event.getGuild().getRegion().getEmoji() + "\n" +
+                        "**Nitro Boosting: ** " + GuildBoost(event.getGuild()) + "\n" +
+                        "**Number of Roles:** " + event.getGuild().getRoles().size() + "\n" +
+                        "**Text Channels:** " + event.getGuild().getTextChannels().size() + "\n" +
+                        "**Voice Channels:** " + event.getGuild().getVoiceChannels().size() + "\n" +
+                        "**Custom Emotes:** " + event.getGuild().getEmotes().size()
                         , false);
-
 
                 emb.setColor(event.getGuild().getOwner().getColor());
                 emb.setFooter(event.getGuild().getName(), event.getGuild().getIconUrl());
 
                 event.getChannel().sendMessage(emb.build()).queue();
-            } else
+        } else
 
         //UPTIME
         if (args[0].equalsIgnoreCase(Main.prefix + "uptime")) {
@@ -139,68 +134,66 @@ public class Commands extends ListenerAdapter {
             embed.addField("Invite StickyBot to your server:", "[top.gg/StickyBot](https://top.gg/bot/628400349979344919)", false);
             event.getChannel().sendMessage(embed.build()).queue();
 
-            }
+         } else
+
         
-        else
-              //POLL
-                if (args[0].equalsIgnoreCase(Main.prefix + "poll")) {
-                    String pollQ;
-                    try {
-                        if (!args[1].isEmpty()) {
-                            pollQ = String.join(" ", args).substring(5);
+        //POLL
+        if (args[0].equalsIgnoreCase(Main.prefix + "poll")) {
+            String pollQ;
+            try {
+              if (!args[1].isEmpty()) {
+                pollQ = String.join(" ", args).substring(5);
 
-                            EmbedBuilder emb = new EmbedBuilder();
-                            emb.setColor(event.getGuild().getMemberById(Main.botId).getColor());
-                            emb.setFooter("Poll by: " + event.getAuthor().getAsTag(), event.getAuthor().getAvatarUrl());
+                EmbedBuilder emb = new EmbedBuilder();
+                emb.setColor(event.getGuild().getMemberById(Main.botId).getColor());
+                emb.setFooter("Poll by: " + event.getAuthor().getAsTag(), event.getAuthor().getAvatarUrl());
 
-                            emb.setTitle("**" + pollQ.trim() + "**");
+                emb.setTitle("**" + pollQ.trim() + "**");
 
-                            //adds reactions to poll message
-                            event.getChannel().sendMessage(emb.build()).queue(m -> {
-                                m.addReaction("\ud83d\udc4d").queue();
-                                m.addReaction("\uD83D\uDC4E").queue();
-                                m.addReaction("\uD83E\uDD37").queue();
-                            });
-                        }
-                    } catch (Exception e) {
-                        event.getChannel().sendMessage("Please use this format ``?poll <your question>``.\nExample: ``?poll Is this a cool command?``").queue();
-                    }
-                    event.getMessage().delete().queue();
+                //adds reactions to poll message
+                event.getChannel().sendMessage(emb.build()).queue(m -> {
+                   m.addReaction("\ud83d\udc4d").queue();
+                   m.addReaction("\uD83D\uDC4E").queue();
+                   m.addReaction("\uD83E\uDD37").queue();
+                   });
                 }
+             } catch (Exception e) {
+                  event.getChannel().sendMessage("Please use this format ``?poll <your question>``.\nExample: ``?poll Is this a cool command?``").queue();
+             }
+                  event.getMessage().delete().queue();
+          } else
+               
+             //DICE ROLL
+            if (args[0].equalsIgnoreCase(Main.prefix + "dice") || args[0].equalsIgnoreCase(Main.prefix + "roll")) {
+                 int dice1 = (int) (Math.random() * 6 + 1);
+                 int dice2 = (int) (Math.random() * 6 + 1);
+                 EmbedBuilder emb = new EmbedBuilder();
 
-                else
-                 //DICE ROLL
-                    if (args[0].equalsIgnoreCase(Main.prefix + "dice") || args[0].equalsIgnoreCase(Main.prefix + "roll")) {
-                        int dice1 = (int) (Math.random() * 6 + 1);
-                        int dice2 = (int) (Math.random() * 6 + 1);
-                        EmbedBuilder emb = new EmbedBuilder();
-
-                        emb.setTitle("-Rolling Dice-");
-                        emb.setDescription("Dice 1: **" + (dice1) + "**" + "\nDice 2: **" + dice2 + "**" +
+                 emb.setTitle("-Rolling Dice-");
+                 emb.setDescription("Dice 1: **" + (dice1) + "**" + "\nDice 2: **" + dice2 + "**" +
                                 "\n\n**TOTAL: " + (dice1 + dice2) + "**");
 
-                        emb.setColor(Color.WHITE);
-                        emb.setThumbnail("https://studio.code.org/v3/assets/GBhvGLEcbJGFHdJfHkChqw/8TEb9oxGc.gif");
-                        emb.setFooter("Rolled by: " + event.getMember().getEffectiveName(), event.getMember().getUser().getAvatarUrl());
-                        event.getChannel().sendMessage(emb.build()).queue();
-                    }
+                 emb.setColor(Color.WHITE);
+                 emb.setThumbnail("https://studio.code.org/v3/assets/GBhvGLEcbJGFHdJfHkChqw/8TEb9oxGc.gif");
+                 emb.setFooter("Rolled by: " + event.getMember().getEffectiveName(), event.getMember().getUser().getAvatarUrl());
+                 event.getChannel().sendMessage(emb.build()).queue();
+              }
 
-                    //USERINFO
-                    else if (args[0].equalsIgnoreCase(Main.prefix + "userinfo")) {
+              //USERINFO
+              else if (args[0].equalsIgnoreCase(Main.prefix + "userinfo")) {
 
-                        try {
-                            long joinSpot;
-                            User tagUser;
-                            Member taggedMember;
+                  try {
+                       long joinSpot;
+                       User tagUser;
+                       Member taggedMember;
 
                             if(event.getMessage().toString().contains("@")) {
                                 tagUser = event.getMessage().getMentionedUsers().get(0);
                                 taggedMember = event.getMessage().getMentionedMembers().get(0);
-                                joinSpot = event.getGuild().getMembers().stream().sorted(Comparator.comparing(Member::getTimeJoined)).takeWhile(it -> !it.equals(taggedMember)).count() + 1;
-                            } else {
-                                joinSpot = event.getGuild().getMembers().stream().sorted(Comparator.comparing(Member::getTimeJoined)).takeWhile(it -> !it.equals(event.getMember())).count() + 1;
-                                    tagUser = event.getAuthor();
-                                    taggedMember = event.getMember();
+                            } else
+                            {
+                                tagUser = event.getAuthor();
+                                taggedMember = event.getMember();
                             }
 
                             EmbedBuilder emb = new EmbedBuilder();
@@ -215,15 +208,13 @@ public class Commands extends ListenerAdapter {
                                     "**User ID:** ``" + tagUser.getId() + "``\n" +
                                             "**Nickname:** " + taggedMember.getEffectiveName() + "\n" +
                                             "**Join Date:** " + joinDateClean + " *(" + daysJoined + " days ago)*" + "\n" +
-                                            "**Join Position:** " + joinSpot + "\n" +
                                             "**Creation Date:** " + creationDateClean + " *(" + numberOfDaysCreated(taggedMember) + " days ago)*" + "\n" +
                                             "**Status:** " + taggedMember.getOnlineStatus().getKey() + "\n" +
                                             "**Tag: ** " + taggedMember.getAsMention() + "\n" +
                                             "**Nitro Boosting: ** " + boostCheck(taggedMember) + "\n" +
                                             "**Number of Roles:** " + taggedMember.getRoles().size() + "\n" +
                                             "**Roles:** " + getRoles(taggedMember)
-                                    , false);
-
+                                            , false);
 
                             emb.setColor(taggedMember.getColor());
 
@@ -242,41 +233,6 @@ public class Commands extends ListenerAdapter {
                         } catch (Exception e) {
                             event.getChannel().sendMessage("Please tag a member in the server.").queue();
                         }
-
-                    }
-
-                    //JOIN LIST
-                    else
-                        if (args[0].equalsIgnoreCase(Main.prefix + "joinl") || args[0].equalsIgnoreCase(Main.prefix + "joinlist")) {
-                        int requestedCount = 10;
-                        try {
-                            if (!args[1].isEmpty()) {
-                                try {
-                                    requestedCount = Integer.valueOf(args[1]);
-                                    if(requestedCount < 2) {
-                                        requestedCount = 2;
-                                    } else if (requestedCount > 25) {
-                                        requestedCount = 25;
-                                    }
-                                } catch (Exception e) {
-                                    requestedCount = 10;
-                                }
-                            }
-                        } catch (Exception e) {
-                            requestedCount = 10;
-                        }
-
-                        List<Member> firstMemberList = event.getGuild().getMembers().stream().sorted(Comparator.comparing(Member::getTimeJoined)).limit(requestedCount).collect(Collectors.toList());
-
-                        EmbedBuilder emb = new EmbedBuilder();
-                        emb.setTitle("First " + requestedCount + " people to join __" + event.getGuild().getName() + "__" + ":");
-                        for(int i = 0; i <= firstMemberList.size() -1; i++) {
-
-                           emb.addField("**" + String.valueOf(i + 1) + ".**", firstMemberList.get(i).getAsMention() + "\n" + firstMemberList.get(i).getUser().getName() + "#" + firstMemberList.get(i).getUser().getDiscriminator(), false);
-                        }
-                        emb.setColor(event.getMember().getColor());
-                        emb.setFooter("Guild Created: " + numberOfDaysCreatedGuild(event.getGuild()) + " days ago");
-                        event.getChannel().sendMessage(emb.build()).queue();
                     }
 
         //COIN FLIP
@@ -295,16 +251,16 @@ public class Commands extends ListenerAdapter {
             event.getChannel().sendMessage(emb.build()).queue();
         }
 
+        //SUPPORT
         if (args[0].equalsIgnoreCase(Main.prefix + "support") || args[0].equalsIgnoreCase(Main.prefix + "supportserver")) {
             EmbedBuilder embed = new EmbedBuilder();
             embed.setColor(Color.ORANGE);
             embed.setTitle("-Join the Official StickyBot Support Server-");
             embed.setDescription("[StickyBot Support](https://discord.gg/SvNQTtf)");
             event.getChannel().sendMessage(embed.build()).queue();
-
         }
     }
-    
+
     public static String boostCheck(Member member) {
 
         if(member.getTimeBoosted() == null){
@@ -357,16 +313,6 @@ public class Commands extends ListenerAdapter {
         } else {
             return "Tier 0";
         }
-    }
-
-    public static String BotCount(Guild guild) {
-        int counter = 0;
-        for(Member member : guild.getMembers()) {
-            if(member.getUser().isBot()){
-                counter++;
-            }
-        }
-       return String.valueOf(counter);
     }
 }
 
