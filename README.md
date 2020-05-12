@@ -1,6 +1,6 @@
 # StickyBot Discord Bot
 
-###[www.stickybot.info](https://www.stickybot.info/)
+[www.stickybot.info](https://www.stickybot.info/)
 
 ![StickyBot Logo](https://images.discordapp.net/avatars/628400349979344919/b2aed74a6631ee9755a8ae56d8e582a8.png?size=512=250x)
 
