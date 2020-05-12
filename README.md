@@ -8,7 +8,7 @@ StickBot is a Discord bot that uses Discords REST API, Gradle, and JDA4. The bot
 
 **Add StickyBot to your server [here](https://top.gg/bot/628400349979344919).**
 
-## Installation
+## Self-Hosting
 
 This bot is not made to be self-hosted, it is on GitHub for transparency purposes. If you would like to self-host you will need to change these values in Main.java:
 
