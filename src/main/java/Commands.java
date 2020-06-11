@@ -18,6 +18,16 @@ public class Commands extends ListenerAdapter {
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         String[] args = event.getMessage().getContentRaw().split("\\s+");
 
+        String prefix = "?";
+
+        if(event.getAuthor().isBot()) {
+            return;
+        }
+
+        if(Main.mapPrefix.containsKey(event.getGuild().getId())) {
+            prefix = Main.mapPrefix.get(event.getGuild().getId());
+        }
+        
         //Uptime stuff
         RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
         long uptime = runtimeMXBean.getUptime();
