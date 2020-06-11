@@ -1,125 +1,180 @@
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.requests.GatewayIntent;
-import net.dv8tion.jda.api.sharding.DefaultShardManager;
-import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
-import net.dv8tion.jda.api.sharding.ShardManager;
-import net.dv8tion.jda.api.utils.ChunkingFilter;
-import net.dv8tion.jda.api.utils.MemberCachePolicy;
-import net.dv8tion.jda.api.utils.cache.CacheFlag;
-import org.discordbots.api.client.DiscordBotListAPI;
-
-import javax.security.auth.login.LoginException;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.sql.*;
-import java.util.HashMap;
+import java.text.NumberFormat;
+import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
-import static net.dv8tion.jda.api.entities.Activity.playing;
+public class StickyTime extends ListenerAdapter {
 
-public class Main {
-    public static ShardManager jda;
-    public static String prefix = "?";
+    public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
 
-    public static String botId = "642587979193516043";
-    public static String token = "***";
+       if(event.getAuthor().isBot()) {
+           return;
+       }
 
-    public static String dbUrl = "jdbc:mysql://localhost:3306/STICKYBOT4?useUnicode=true&characterEncoding=utf8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
-    public static String dbUser = "***";
-    public static String dbPassword = "***";
+        String[] args = event.getMessage().getContentRaw().split("\\s+");
+        //Member stickyBot = event.getGuild().getMemberById(Main.botId);
+        Guild stickyServer = event.getJDA().getGuildById("641158383138897941");
+        String channelId = event.getChannel().getId();
 
-    public static String topggAPIToken = "***";
+        String prefix = "?";
+        if(Main.mapPrefix.containsKey(event.getGuild().getId())) {
+            prefix = Main.mapPrefix.get(event.getGuild().getId());
+        }
 
-    public static Map<String, String> mapMessage = new HashMap<>();
-    public static Map<String, String> mapDeleteId = new HashMap<>();
-    public static Map<String, String> mapPrefix = new HashMap<>();
+        if (args[0].equalsIgnoreCase(prefix + "stick") && (permCheck(event.getMember() ))) {
+            if (guildHasSticky(event.getGuild().getId()) && !Main.premiumGuilds.containsValue(event.getGuild().getId())) {
+                event.getChannel().sendMessage("**There is already a active sticky message in this server in:** " +
+                        event.getGuild().getTextChannelById(getActiveStickyChannelId(event.getGuild().getId())).getAsMention() +
+                        ".\n\n__StickyBot Premium__ allows for unlimited stickies and other features." +
+                        "\nLearn more at https://www.stickybot.info").queue();
+            } else {
+                try {
+                    //remove last sticky message if there is one (user used sticky command while already having one)
+                    if(Main.mapDeleteId.get(channelId) != null) {
+                        event.getChannel().deleteMessageById(Main.mapDeleteId.get(channelId)).queue();
+                    }
 
-    //subID, prem guildID
-    public static Map<String, String> premiumGuilds = new HashMap<>();;
+                    //premium sticky
+                    if (Main.premiumGuilds.containsValue(event.getGuild().getId())) {
+                        Main.mapMessage.put(event.getChannel().getId(), event.getMessage().getContentRaw().substring(7));
+                        removeDB(channelId);
+                        addDB(channelId,(event.getMessage().getContentRaw().substring(7)));
+                    } else
 
+                    //classic sticky
+                    if (!Main.premiumGuilds.containsValue(event.getGuild().getId())) {
+                        Main.mapMessage.put(event.getChannel().getId(), "__**Stickied Message:**__\n\n" + event.getMessage().getContentRaw().substring(7));
+                        removeDB(channelId);
+                        addDB(channelId,("__**Stickied Message:**__\n\n" + event.getMessage().getContentRaw().substring(7)));
+                    }
 
-    //TODO Final Bot ID: 628400349979344919
-    //TODO Beta Bot ID: ****
-
-    //TODO Final Build Token: ***
-    //TODO Beta Build Token: ***
-
-    public static void main (String[] args) throws LoginException{
-
-        //Get sticky messages from DB
-        try {
-            Connection dbConn = DriverManager.getConnection(dbUrl,dbUser,dbPassword);
-            Statement myStmt = dbConn.createStatement();
-            String sql = "select * from newMessages";
-            ResultSet rs = myStmt.executeQuery(sql);
-
-            while (rs.next()) {
-                mapMessage.put(rs.getString("channelId"), rs.getString("message"));
-                //System.out.println(rs.getString("channelId") + " -> " + rs.getString("message"));
+                    event.getChannel().sendMessage(Main.mapMessage.get(channelId)).queue(m -> Main.mapDeleteId.put(event.getChannel().getId(), m.getId()));
+                    event.getMessage().addReaction("\u2705").queue();
+                } catch (Exception e) {
+                    event.getChannel().sendMessage("Please use this format: `?stick <message>`").queue();
+                }
             }
 
+        } else if (args[0].equalsIgnoreCase(prefix + "stick") && (!permCheck(event.getMember() ))) {
+            //Adds X emote
+            event.getMessage().addReaction("\u274C").queue();
+            event.getChannel().sendMessage("You need the global `Manage Messages` permission to use this command!").queue();
+        }
+
+        else if ( (args[0].equalsIgnoreCase(prefix + "stickstop") || args[0].equalsIgnoreCase(prefix + "unstick")) && (permCheck(event.getMember() ))) {
+            Main.mapMessage.remove(channelId);
+
+            if(Main.mapDeleteId.get(channelId) != null) {
+                event.getChannel().deleteMessageById(Main.mapDeleteId.get(channelId)).queue();
+            }
+
+            removeDB(channelId);
+            event.getMessage().addReaction("\u2705").queue();
+        } else if ( (args[0].equalsIgnoreCase(Main.prefix + "stickstop") || args[0].equalsIgnoreCase(Main.prefix + "unstick")) && (!permCheck(event.getMember() ))) {
+            //Adds X mark
+            event.getMessage().addReaction("\u274C").queue();
+            event.getMessage().addReaction("\u274C").queue();
+            event.getChannel().sendMessage("You need the global `Manage Messages` permission to use this command!").queue();
+        }
+
+        if(Main.mapMessage.get(channelId) != null) {
+            List<Message> history = event.getChannel().getHistory().retrievePast(5).complete();
+            for(Message m : history) {
+                //if message is sticky message
+                if(m.getContentRaw().equals(Main.mapMessage.get(channelId))) {
+                    //if message is older then 30 sec
+                    if(m.getTimeCreated().compareTo(OffsetDateTime.now().minusSeconds(15)) < 0) {
+                        m.delete().queue();
+                        event.getChannel().sendMessage(Main.mapMessage.get(channelId)).queue(mes -> Main.mapDeleteId.put(channelId, mes.getId()));
+
+                        //Added to make sure it does not bug and send two stickies (next 5 lines)
+                        List<Message> messageListDelete = event.getChannel().getHistory().retrievePast(10).complete();
+                        for (Message mess : messageListDelete.subList(1, 10)) {
+                            if (mess.getContentRaw().contains(Main.mapMessage.get(channelId))) {
+                                mess.delete().queue();
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+
+            //gets set to true if one of last five messages contains sticky message.
+            Boolean check = false;
+
+            for(Message m : history) {
+                if(m.getContentRaw().equals(Main.mapMessage.get(channelId))) {
+                    check = true;
+                }
+            }
+            if(!check) {
+                if(Main.mapDeleteId.get(channelId) != null) {
+                   event.getChannel().deleteMessageById(Main.mapDeleteId.get(channelId)).queue();
+                }
+                event.getChannel().sendMessage(Main.mapMessage.get(channelId)).queue();
+            }
+        }
+    }
+
+    public boolean permCheck(Member member) {
+        if (member.hasPermission(Permission.MESSAGE_MANAGE)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void addDB(String channelId, String message) {
+        try {
+            Connection dbConn = DriverManager.getConnection(Main.dbUrl,Main.dbUser,Main.dbPassword);
+            Statement myStmt = dbConn.createStatement();
+            String sql = "INSERT INTO newMessages (channelId, message)\nVALUES ( '" + channelId + "', '" + message + "' );";
+            myStmt.execute(sql);
+            myStmt.close();
         } catch ( SQLException e) {
             e.printStackTrace();
         }
+    }
 
-        //Get Premium Guilds from DB
+    public void removeDB(String channelId) {
         try {
-            Connection dbConn = DriverManager.getConnection(dbUrl,dbUser,dbPassword);
+            Connection dbConn = DriverManager.getConnection(Main.dbUrl,Main.dbUser,Main.dbPassword);
             Statement myStmt = dbConn.createStatement();
-            String sql = "select * from premium";
-            ResultSet rs = myStmt.executeQuery(sql);
-
-            while (rs.next()) {
-                premiumGuilds.put(rs.getString("userPaymentId"), rs.getString("premiumGuildId"));
-            }
-
+            String sql = "DELETE FROM newMessages WHERE channelId='" + channelId + "';";
+            myStmt.execute(sql);
+            myStmt.close();
         } catch ( SQLException e) {
             e.printStackTrace();
         }
+    }
 
-        //Get Premium Guilds from DB
-        try {
-            Connection dbConn = DriverManager.getConnection(dbUrl,dbUser,dbPassword);
-            Statement myStmt = dbConn.createStatement();
-            String sql = "select * from prefixs";
-            ResultSet rs = myStmt.executeQuery(sql);
+    //returns true if no active sticky is in channel, otherwise returns false.
+    public boolean guildHasSticky(String guildId) {
+        List<String> channelIds = Main.jda.getGuildById(guildId).getTextChannels().stream().map(textChannel -> textChannel.getId()).collect(Collectors.toList());
 
-            while (rs.next()) {
-                mapPrefix.put(rs.getString("serverId"), rs.getString("prefix"));
+        for (String id : channelIds) {
+            if (Main.mapMessage.containsKey(id)) {
+                    return true;
             }
-
-        } catch ( SQLException e) {
-            e.printStackTrace();
         }
+        return false;
+    }
 
-        jda = DefaultShardManagerBuilder.create(token,
-                GatewayIntent.GUILD_MESSAGES,
-                GatewayIntent.GUILD_MESSAGE_REACTIONS,
-                GatewayIntent.DIRECT_MESSAGES
-                ).setChunkingFilter(ChunkingFilter.NONE).setMemberCachePolicy(MemberCachePolicy.NONE)
-                 .addEventListeners(
-                         new Commands(),
-                         new JoinNewGuild(),
-                         new VirusCommand(),
-                         new DeleteChannelDBClear(),
-                         new StickyTime(),
-                         new ShardCommands(),
-                         new PrefixCommand(),
-                         new ManualPremiumCommands(),
-                         new LoadPremiumUpdates()
-                 )
-                 .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.EMOTE, CacheFlag.CLIENT_STATUS)
-                 .build();
+    public String getActiveStickyChannelId(String guildId) {
+        List<String> channelIds = Main.jda.getGuildById(guildId).getTextChannels().stream().map(textChannel -> textChannel.getId()).collect(Collectors.toList());
 
-        jda.setActivity(playing("?help"));
-
-        DiscordBotListAPI api = new DiscordBotListAPI.Builder()
-               .token(topggAPIToken)
-               .botId(botId)
-               .build();
-        int serverCount = (int) jda.getGuildCache().size();
-        api.setStats(serverCount);
+        for (String id : channelIds) {
+            if (Main.mapMessage.containsKey(id)) {
+                return id;
+            }
+        }
+        return "null";
     }
 }
-
