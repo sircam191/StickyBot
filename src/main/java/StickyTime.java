@@ -14,10 +14,6 @@ public class StickyTime extends ListenerAdapter {
 
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
 
-       if(event.getAuthor().isBot()) {
-           return;
-       }
-
         String[] args = event.getMessage().getContentRaw().split("\\s+");
         //Member stickyBot = event.getGuild().getMemberById(Main.botId);
         Guild stickyServer = event.getJDA().getGuildById("641158383138897941");
@@ -28,11 +24,11 @@ public class StickyTime extends ListenerAdapter {
             prefix = Main.mapPrefix.get(event.getGuild().getId());
         }
 
-        if (args[0].equalsIgnoreCase(prefix + "stick") && (permCheck(event.getMember() ))) {
+        if (args[0].equalsIgnoreCase(prefix + "stick") && (permCheck(event.getMember())) && !event.getAuthor().isBot()) {
             if (guildHasSticky(event.getGuild().getId()) && !Main.premiumGuilds.containsValue(event.getGuild().getId())) {
-                event.getChannel().sendMessage("**There is already a active sticky message in this server in:** " +
+                event.getChannel().sendMessage("**There is already an active sticky message in this server in:** " +
                         event.getGuild().getTextChannelById(getActiveStickyChannelId(event.getGuild().getId())).getAsMention() +
-                        ".\n\n__StickyBot Premium__ allows for unlimited stickies and other features." +
+                        ".\nYou need to stop that sticky using `?stickstop` before creating a new one.\n\n__StickyBot Premium__ allows for unlimited stickies and other features." +
                         "\nLearn more at https://www.stickybot.info").queue();
             } else {
                 try {
@@ -43,17 +39,24 @@ public class StickyTime extends ListenerAdapter {
 
                     //premium sticky
                     if (Main.premiumGuilds.containsValue(event.getGuild().getId())) {
-                        Main.mapMessage.put(event.getChannel().getId(), event.getMessage().getContentRaw().substring(7));
+
+                        String o = event.getMessage().getContentRaw();
+                        String [] arr = o.split(" ", 2);
+                        Main.mapMessage.put(event.getChannel().getId(), arr[1]);
                         removeDB(channelId);
-                        addDB(channelId,(event.getMessage().getContentRaw().substring(7)));
+                        addDB(channelId,(arr[1]));
                     } else
 
-                    //classic sticky
-                    if (!Main.premiumGuilds.containsValue(event.getGuild().getId())) {
-                        Main.mapMessage.put(event.getChannel().getId(), "__**Stickied Message:**__\n\n" + event.getMessage().getContentRaw().substring(7));
-                        removeDB(channelId);
-                        addDB(channelId,("__**Stickied Message:**__\n\n" + event.getMessage().getContentRaw().substring(7)));
-                    }
+                        //classic sticky
+                        if (!Main.premiumGuilds.containsValue(event.getGuild().getId())) {
+
+                            String o = event.getMessage().getContentRaw();
+                            String [] arr = o.split(" ", 2);
+
+                            Main.mapMessage.put(event.getChannel().getId(), "__**Stickied Message:**__\n\n" + arr[1]);
+                            removeDB(channelId);
+                            addDB(channelId,("__**Stickied Message:**__\n\n" + arr[1]));
+                        }
 
                     event.getChannel().sendMessage(Main.mapMessage.get(channelId)).queue(m -> Main.mapDeleteId.put(event.getChannel().getId(), m.getId()));
                     event.getMessage().addReaction("\u2705").queue();
@@ -115,7 +118,7 @@ public class StickyTime extends ListenerAdapter {
             }
             if(!check) {
                 if(Main.mapDeleteId.get(channelId) != null) {
-                   event.getChannel().deleteMessageById(Main.mapDeleteId.get(channelId)).queue();
+                    event.getChannel().deleteMessageById(Main.mapDeleteId.get(channelId)).queue();
                 }
                 event.getChannel().sendMessage(Main.mapMessage.get(channelId)).queue();
             }
@@ -160,7 +163,7 @@ public class StickyTime extends ListenerAdapter {
 
         for (String id : channelIds) {
             if (Main.mapMessage.containsKey(id)) {
-                    return true;
+                return true;
             }
         }
         return false;
