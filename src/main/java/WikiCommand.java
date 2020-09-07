@@ -31,7 +31,8 @@ public class WikiCommand extends ListenerAdapter {
             em.setTitle("Random WikiHow Article", wiki.getArticleUrl())
             .setDescription(wiki.getTitle())
             .setThumbnail(wiki.getImage())
-            .setColor(Color.yellow);
+            .setColor(Color.yellow)
+            .setFooter("Random Wiki requested by " + event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator());
             event.getChannel().sendMessage(em.build()).queue();
         }
     }
