@@ -33,6 +33,9 @@ public class Main {
     public static String weatherAPIToken = "**********************";
     public static DataWeatherClient weatherHelper;
 
+    public static String kSoftApiToken = "**********";
+    public static KSoftAPI kSoftApi;
+    
     public static Map<String, String> mapMessage = new HashMap<>();
     public static Map<String, String> mapDeleteId = new HashMap<>();
 
@@ -46,6 +49,14 @@ public class Main {
 
     public static void main (String[] args) throws LoginException {
 
+         try {
+            kSoftApi = new KSoftAPI(kSoftApiToken);
+            System.out.println("KSoft API Connected");
+        } catch (Exception e) {
+            System.out.println("KSoft API Connection Error");
+            e.printStackTrace();
+        }
+        
         try {
             weatherHelper = new UrlConnectionDataWeatherClient(weatherAPIToken);
             System.out.println("Weather API Connected");
@@ -131,8 +142,8 @@ public class Main {
                          new PrefixCommand(),
                          new ManualPremiumCommands(),
                          new LoadPremiumUpdates(),
-                         new StickyEmbed()//,
-                         //new StickyTest()
+                         new StickyEmbed(),
+                         new WikiCommand()
                  )
                  .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.EMOTE, CacheFlag.CLIENT_STATUS)
                  .build();
