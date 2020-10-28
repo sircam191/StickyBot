@@ -143,7 +143,9 @@ public class Main {
                          new ManualPremiumCommands(),
                          new LoadPremiumUpdates(),
                          new StickyEmbed(),
-                         new WikiCommand()
+                         new WikiCommand(),
+                         new AdminCommands(),
+                         new SelfAdvertise()
                  )
                  .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.EMOTE, CacheFlag.CLIENT_STATUS)
                  .build();
