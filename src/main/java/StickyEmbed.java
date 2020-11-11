@@ -3,13 +3,12 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import org.apache.commons.collections4.functors.EqualPredicate;
 
+import java.awt.*;
 import java.sql.*;
 import java.text.NumberFormat;
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class StickyEmbed extends ListenerAdapter {
 
@@ -17,7 +16,7 @@ public class StickyEmbed extends ListenerAdapter {
 
         String[] args = event.getMessage().getContentRaw().split("\\s+");
         //Member stickyBot = event.getGuild().getMemberById(Main.botId);
-        Guild stickyServer = event.getJDA().getGuildById("641158383138897941");
+        Guild stickyServer = Main.jda.getGuildById("641158383138897941");
         String channelId = event.getChannel().getId();
 
         String prefix = "?";
@@ -29,7 +28,10 @@ public class StickyEmbed extends ListenerAdapter {
 
 
             if (!Main.premiumGuilds.containsValue(event.getGuild().getId())) {
-                event.getChannel().sendMessage("**This is a StickyBot Premium command.**\nLearn more at https://stickybot.info").queue();
+                EmbedBuilder em = new EmbedBuilder();
+                em.setTitle("**Whoops! This is a StickyBot Premium Command!** ")
+                        .addField("__StickyBot Premium__ allows for sticky embeds plus other awesome features!", "Try it for free: [www.stickybot.com](https://www.stickybot.info)", false);
+                event.getChannel().sendMessage(em.setColor(Color.ORANGE).build()).queue();
             }
             else  {
                 try {
@@ -38,6 +40,12 @@ public class StickyEmbed extends ListenerAdapter {
                     String [] arr = o.split(" ", 2);
 
                     String message = arr[1];
+
+                    if(Character.isWhitespace(message.charAt(0))) {
+                        message.replaceFirst("\\s+", "");
+                    }
+
+
                     Main.mapMessageEmbed.put(event.getChannel().getId(), message);
                     removeDB(channelId);
                     addDB(channelId,(message));
@@ -52,13 +60,13 @@ public class StickyEmbed extends ListenerAdapter {
                 }
             }
 
-        } else if (args[0].equalsIgnoreCase(prefix + "stickembed") && (!permCheck(event.getMember() ))) {
+        } else if (args[0].equalsIgnoreCase(prefix + "stickembed") && (!permCheck(event.getMember()))) {
             //Adds X emote
             event.getMessage().addReaction("\u274C").queue();
-            event.getChannel().sendMessage("You need the global `Manage Messages` permission to use this command!").queue();
+            //event.getChannel().sendMessage("You need the global `Manage Messages` permission to use this command!").queue();
         }
 
-        else if ( (args[0].equalsIgnoreCase(prefix + "stickstop") || args[0].equalsIgnoreCase(prefix + "unstick")) && (permCheck(event.getMember() ))) {
+        else if ( (args[0].equalsIgnoreCase(prefix + "stickstop") || args[0].equalsIgnoreCase(prefix + "unstick")) && (permCheck(event.getMember()))) {
             Main.mapMessageEmbed.remove(channelId);
 
             if(Main.mapDeleteIdEmbed.get(channelId) != null) {
@@ -70,7 +78,7 @@ public class StickyEmbed extends ListenerAdapter {
         } else if ( (args[0].equalsIgnoreCase(Main.prefix + "stickstop") || args[0].equalsIgnoreCase(Main.prefix + "unstick")) && (!permCheck(event.getMember() ))) {
             //Adds X mark
             event.getMessage().addReaction("\u274C").queue();
-            event.getChannel().sendMessage("You need the global `Manage Messages` permission to use this command!").queue();
+            //event.getChannel().sendMessage("You need the global `Manage Messages` permission to use this command!").queue();
         }
 
         if(Main.mapMessageEmbed.get(channelId) != null) {
@@ -150,13 +158,17 @@ public class StickyEmbed extends ListenerAdapter {
         }
     }
 
+
     public void addDB(String channelId, String message) {
         try {
             Connection dbConn = DriverManager.getConnection(Main.dbUrl,Main.dbUser,Main.dbPassword);
-            Statement myStmt = dbConn.createStatement();
-            String sql = "INSERT INTO messagesEmbed (channelId, message)\nVALUES ( '" + channelId + "', '" + message + "' );";
-            myStmt.execute(sql);
+            String sql = "INSERT INTO messageEmbed (channelId, message) VALUES ( ?, ?)";
+            PreparedStatement myStmt = dbConn.prepareStatement(sql);
+            myStmt.setString(1, channelId);
+            myStmt.setString(2, message);
+            myStmt.execute();
             myStmt.close();
+
         } catch ( SQLException e) {
             e.printStackTrace();
         }
