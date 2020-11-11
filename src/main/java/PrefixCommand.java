@@ -2,21 +2,24 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class PrefixCommand extends ListenerAdapter
 {
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         String[] args = event.getMessage().getContentRaw().split("\\s+");
 
+        String prefix = "?";
+
         if(event.getAuthor().isBot()) {
             return;
         }
 
-            if (args[0].equalsIgnoreCase(Main.prefix + "prefix")) {
+        if(Main.mapPrefix.containsKey(event.getGuild().getId())) {
+            prefix = Main.mapPrefix.get(event.getGuild().getId());
+        }
+
+            if (args[0].equalsIgnoreCase(Main.prefix + "prefix") || args[0].equalsIgnoreCase(prefix + "prefix")) {
 
                 if (!event.getMember().hasPermission(Permission.MANAGE_SERVER)) {
                     event.getChannel().sendMessage("You need the `Manage Server` permission to use this command.").queue();
@@ -48,9 +51,11 @@ public class PrefixCommand extends ListenerAdapter
     public void addDB(String serverId, String prefix) {
         try {
             Connection dbConn = DriverManager.getConnection(Main.dbUrl,Main.dbUser,Main.dbPassword);
-            Statement myStmt = dbConn.createStatement();
-            String sql = "INSERT INTO prefixs (serverId, prefix)\nVALUES ( '" + serverId + "', '" + prefix + "' );";
-            myStmt.execute(sql);
+            String sql = "INSERT INTO prefixs (serverId, prefix) VALUES ( ?, ?)";
+            PreparedStatement myStmt = dbConn.prepareStatement(sql);
+            myStmt.setString(1, serverId);
+            myStmt.setString(2, prefix);
+            myStmt.execute();
             myStmt.close();
         } catch ( SQLException e) {
             e.printStackTrace();
