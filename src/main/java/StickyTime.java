@@ -156,10 +156,13 @@ public class StickyTime extends ListenerAdapter {
     public void addDB(String channelId, String message) {
         try {
             Connection dbConn = DriverManager.getConnection(Main.dbUrl,Main.dbUser,Main.dbPassword);
-            Statement myStmt = dbConn.createStatement();
-            String sql = "INSERT INTO newMessages (channelId, message)\nVALUES ( '" + channelId + "', '" + message.replaceAll("'", "") + "' );";
-            myStmt.execute(sql);
+            String sql = "INSERT INTO newMessages (channelId, message) VALUES ( ?, ?)";
+            PreparedStatement myStmt = dbConn.prepareStatement(sql);
+            myStmt.setString(1, channelId);
+            myStmt.setString(2, message);
+            myStmt.execute();
             myStmt.close();
+
         } catch ( SQLException e) {
             e.printStackTrace();
         }
