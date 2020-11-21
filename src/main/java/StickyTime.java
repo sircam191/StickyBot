@@ -10,6 +10,7 @@ import java.text.NumberFormat;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 public class StickyTime extends ListenerAdapter {
@@ -34,14 +35,7 @@ public class StickyTime extends ListenerAdapter {
                        event.getChannel().sendMessage(em.setColor(Color.ORANGE).build()).queue();
 
             } else {
-                try {
-                    for (Emote emote : event.getMessage().getEmotesBag() ) {
-                        if(emote.getGuild().getId() != event.getGuild().getId()) {
-                            event.getChannel().sendMessage("Error: Please use only emotes that are in this server!").queue();
-                            return;
-                        }
-                    }
-
+                    try {
                     //remove last sticky message if there is one (user used sticky command while already having one)
                     if(Main.mapDeleteId.get(channelId) != null) {
                         event.getChannel().deleteMessageById(Main.mapDeleteId.get(channelId)).queue(null, (error) -> {});
@@ -50,11 +44,12 @@ public class StickyTime extends ListenerAdapter {
                     //premium sticky
                     if (Main.premiumGuilds.containsValue(event.getGuild().getId())) {
 
-                        for (Emote emote : event.getMessage().getEmotesBag() ) {
-                            if(emote.getGuild().getId() != event.getGuild().getId()) {
-                                event.getChannel().sendMessage("Error: Please use only emotes that are in this server!").queue();
-                                return;
-                            }
+                        for (Emote emote : event.getMessage().getEmotes()) {
+                            event.getGuild().retrieveEmoteById(emote.getId()).queue(success -> {}, failure -> {
+                                event.getChannel().sendMessage("Error: Please only use emotes that are from this server.").queue();
+                                Main.mapMessage.remove(event.getChannel().getId());
+                                removeDB(channelId);
+                            });
                         }
 
                         String input = event.getMessage().getContentRaw();
@@ -79,6 +74,18 @@ public class StickyTime extends ListenerAdapter {
                                 return;
                             }
 
+                            for (Emote emote : event.getMessage().getEmotes()) {
+                                event.getGuild().retrieveEmoteById(emote.getId()).queue(success -> {}, failure -> {
+                                    event.getChannel().sendMessage("Error: Please only use emotes that are from this server.").queue();
+                                    Main.mapMessage.remove(event.getChannel().getId());
+                                    removeDB(channelId);
+                                });
+                            }
+
+
+
+
+
 
                             String o = event.getMessage().getContentRaw();
                             String [] arr = o.split(" ", 2);
@@ -87,13 +94,16 @@ public class StickyTime extends ListenerAdapter {
                             removeDB(channelId);
                             addDB(channelId,("__**Stickied Message:**__\n\n" + arr[1]));
                         }
-
+                        
                     event.getChannel().sendMessage(Main.mapMessage.get(channelId)).queue(m -> Main.mapDeleteId.put(event.getChannel().getId(), m.getId()));
                     event.getMessage().addReaction("\u2705").queue();
                 } catch (Exception e) {
-                    event.getChannel().sendMessage("Please use this format: `?stick <message>`\n*Only include emotes that are from this server.*").queue();
+                    event.getChannel().sendMessage("Please use this format: `?stick <message>`.").queue();
                 }
             }
+
+
+
         } else if (args[0].equalsIgnoreCase(prefix + "stick") && (!permCheck(event.getMember() ))) {
             //Adds X emote
             event.getMessage().addReaction("\u274C").queue();
