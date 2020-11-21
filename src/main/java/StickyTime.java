@@ -35,18 +35,33 @@ public class StickyTime extends ListenerAdapter {
 
             } else {
                 try {
+                    for (Emote emote : event.getMessage().getEmotesBag() ) {
+                        if(emote.getGuild().getId() != event.getGuild().getId()) {
+                            event.getChannel().sendMessage("Error: Please use only emotes that are in this server!").queue();
+                            return;
+                        }
+                    }
+
                     //remove last sticky message if there is one (user used sticky command while already having one)
                     if(Main.mapDeleteId.get(channelId) != null) {
-                        event.getChannel().deleteMessageById(Main.mapDeleteId.get(channelId)).queue();
+                        event.getChannel().deleteMessageById(Main.mapDeleteId.get(channelId)).queue(null, (error) -> {});
                     }
 
                     //premium sticky
                     if (Main.premiumGuilds.containsValue(event.getGuild().getId())) {
 
+                        for (Emote emote : event.getMessage().getEmotesBag() ) {
+                            if(emote.getGuild().getId() != event.getGuild().getId()) {
+                                event.getChannel().sendMessage("Error: Please use only emotes that are in this server!").queue();
+                                return;
+                            }
+                        }
+
                         String input = event.getMessage().getContentRaw();
 
-                        if (input.charAt(input.indexOf(" ") + 1) == '\n') {
-                            throw new Exception("error");
+                        if (event.getMessage().getContentRaw().contains(prefix + "stick \n")) {
+                            event.getChannel().sendMessage("Error: Please provide text after `" + prefix + "stick` before using a new line.").queue();
+                            return;
                         }
 
 
@@ -59,6 +74,12 @@ public class StickyTime extends ListenerAdapter {
                         //classic sticky
                         if (!Main.premiumGuilds.containsValue(event.getGuild().getId())) {
 
+                            if (event.getMessage().getContentRaw().contains(prefix + "stick \n")) {
+                                event.getChannel().sendMessage("Error: Please provide text after `" + prefix + "stick` before using a new line.").queue();
+                                return;
+                            }
+
+
                             String o = event.getMessage().getContentRaw();
                             String [] arr = o.split(" ", 2);
 
@@ -70,7 +91,7 @@ public class StickyTime extends ListenerAdapter {
                     event.getChannel().sendMessage(Main.mapMessage.get(channelId)).queue(m -> Main.mapDeleteId.put(event.getChannel().getId(), m.getId()));
                     event.getMessage().addReaction("\u2705").queue();
                 } catch (Exception e) {
-                    event.getChannel().sendMessage("Please use this format: `?stick <message>`").queue();
+                    event.getChannel().sendMessage("Please use this format: `?stick <message>`\n*Only include emotes that are from this server.*").queue();
                 }
             }
         } else if (args[0].equalsIgnoreCase(prefix + "stick") && (!permCheck(event.getMember() ))) {
@@ -83,7 +104,7 @@ public class StickyTime extends ListenerAdapter {
             Main.mapMessage.remove(channelId);
 
             if(Main.mapDeleteId.get(channelId) != null) {
-                event.getChannel().deleteMessageById(Main.mapDeleteId.get(channelId)).queue();
+                event.getChannel().deleteMessageById(Main.mapDeleteId.get(channelId)).queue(null, (error) -> {});
             }
 
             removeDB(channelId);
@@ -103,12 +124,13 @@ public class StickyTime extends ListenerAdapter {
                 if(m.getContentRaw().equals(Main.mapMessage.get(channelId))) {
                     //if message is older then 30 sec
                     if(m.getTimeCreated().compareTo(OffsetDateTime.now().minusSeconds(15)) < 0) {
-                        m.delete().queue();
+                        m.delete().queue(null, (error) -> {});
                         event.getChannel().sendMessage(Main.mapMessage.get(channelId)).queue(mes -> Main.mapDeleteId.put(channelId, mes.getId()));
                     }
                     break;
                 }
             }
+
 
             //gets set to true if one of last five messages contains sticky message.
             Boolean check = false;
@@ -120,7 +142,7 @@ public class StickyTime extends ListenerAdapter {
             }
             if(!check) {
                 if(Main.mapDeleteId.get(channelId) != null) {
-                    event.getChannel().deleteMessageById(Main.mapDeleteId.get(channelId)).queue();
+                    event.getChannel().deleteMessageById(Main.mapDeleteId.get(channelId)).queue(null, (error) -> {});
                 }
                 event.getChannel().sendMessage(Main.mapMessage.get(channelId)).queue();
             }
@@ -138,7 +160,7 @@ public class StickyTime extends ListenerAdapter {
             if (!indexes.isEmpty() && indexes.size() > 1) {
                 indexes.remove(0);
                 for (Message mess : indexes) {
-                    mess.delete().queue();
+                    mess.delete().queue(null, (error) -> {});
                 }
             }
 
