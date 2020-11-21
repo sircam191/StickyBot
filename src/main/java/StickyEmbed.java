@@ -36,6 +36,18 @@ public class StickyEmbed extends ListenerAdapter {
             else  {
                 try {
 
+                    for (Emote emote : event.getMessage().getEmotesBag() ) {
+                        if(emote.getGuild().getId() != event.getGuild().getId()) {
+                            event.getChannel().sendMessage("Error: Please use only emotes that are in this server!").queue();
+                            return;
+                        }
+                    }
+
+                    if (event.getMessage().getContentRaw().contains(prefix + "stick \n")) {
+                        event.getChannel().sendMessage("Error: Please provide text after `" + prefix + "stick` before using a new line.").queue();
+                        return;
+                    }
+
                     String o = event.getMessage().getContentRaw();
                     String [] arr = o.split(" ", 2);
 
@@ -50,13 +62,27 @@ public class StickyEmbed extends ListenerAdapter {
                     removeDB(channelId);
                     addDB(channelId,(message));
 
+                    //Send dev logging embed
+                    EmbedBuilder em = new EmbedBuilder();
+                    em.setTitle("Sticky EMBED Command Used:");
+                    em.setThumbnail(event.getGuild().getIconUrl());
+                    em.addField("Server: ", event.getGuild().getName(), false);
+                    em.addField("Server ID", event.getGuild().getId(), false);
+                    em.addField("Members: ", NumberFormat.getInstance().format(event.getGuild().retrieveMetaData().complete().getApproximateMembers()), false);
+                    em.addField("Used By: ", event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator(), false);
+                    em.addField("Used By ID: ", event.getAuthor().getId(), false);
+                    em.addField("Channel: ", event.getChannel().getName(), false);
+                    em.addField("Channel ID", channelId, false);
+                    em.addField("Stickied Message: ", Main.mapMessageEmbed.get(event.getChannel().getId()), false);
+                    stickyServer.getTextChannelById("646240819782746132").sendMessage(em.build()).queue();
+
                     EmbedBuilder emb = new EmbedBuilder();
                     emb.setDescription(message);
                     emb.setColor(event.getGuild().getMemberById(Main.botId).getColor());
                     event.getChannel().sendMessage(emb.build()).queue(m -> Main.mapDeleteIdEmbed.put(event.getChannel().getId(), m.getId()));
                     event.getMessage().addReaction("\u2705").queue();
                 } catch (Exception e) {
-                    event.getChannel().sendMessage("Please use this format: `?stickembed <message>`").queue();
+                    event.getChannel().sendMessage("Please use this format: `?stick <message>`\n*Only include emotes that are from this server.*").queue();
                 }
             }
 
@@ -70,7 +96,7 @@ public class StickyEmbed extends ListenerAdapter {
             Main.mapMessageEmbed.remove(channelId);
 
             if(Main.mapDeleteIdEmbed.get(channelId) != null) {
-                event.getChannel().deleteMessageById(Main.mapDeleteIdEmbed.get(channelId)).queue();
+                event.getChannel().deleteMessageById(Main.mapDeleteIdEmbed.get(channelId)).queue(null, (error) -> {});
             }
 
             removeDB(channelId);
@@ -88,7 +114,7 @@ public class StickyEmbed extends ListenerAdapter {
                 if(!m.getEmbeds().isEmpty() && embedCheck(m, channelId)) {
                     //if message is older then 30 sec
                     if(m.getTimeCreated().compareTo(OffsetDateTime.now().minusSeconds(15)) < 0) {
-                        m.delete().queue();
+                        m.delete().queue(null, (error) -> {});
 
                         EmbedBuilder emb = new EmbedBuilder();
                         emb.setDescription(Main.mapMessageEmbed.get(channelId));
@@ -99,7 +125,7 @@ public class StickyEmbed extends ListenerAdapter {
                         List<Message> messageListDelete = event.getChannel().getHistory().retrievePast(10).complete();
                         for (Message mess : messageListDelete.subList(1, 10)) {
                             if (!mess.getEmbeds().isEmpty() && embedCheck(mess, channelId)) {
-                                mess.delete().queue();
+                                mess.delete().queue(null, (error) -> {});
                             }
                         }
                     }
@@ -117,14 +143,14 @@ public class StickyEmbed extends ListenerAdapter {
             }
             if(!check) {
                 if(Main.mapDeleteIdEmbed.get(channelId) != null) {
-                    event.getChannel().deleteMessageById(Main.mapDeleteIdEmbed.get(channelId)).queue();
+                    event.getChannel().deleteMessageById(Main.mapDeleteIdEmbed.get(channelId)).queue(null, (error) -> {});
                 }
 
                 List<Message> history2 = event.getChannel().getHistory().retrievePast(6).complete();
                 for(Message m : history2) {
                     //if message is sticky message
                     if(!m.getEmbeds().isEmpty() && m.getEmbeds().get(0).getDescription().equals(Main.mapMessageEmbed.get(channelId))) {
-                        m.delete().queue();
+                        m.delete().queue(null, (error) -> {});
                     }
                 }
                 EmbedBuilder emb = new EmbedBuilder();
@@ -162,7 +188,7 @@ public class StickyEmbed extends ListenerAdapter {
     public void addDB(String channelId, String message) {
         try {
             Connection dbConn = DriverManager.getConnection(Main.dbUrl,Main.dbUser,Main.dbPassword);
-            String sql = "INSERT INTO messageEmbed (channelId, message) VALUES ( ?, ?)";
+            String sql = "INSERT INTO messagesEmbed (channelId, message) VALUES ( ?, ?)";
             PreparedStatement myStmt = dbConn.prepareStatement(sql);
             myStmt.setString(1, channelId);
             myStmt.setString(2, message);
