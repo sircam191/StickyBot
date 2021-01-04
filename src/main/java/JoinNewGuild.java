@@ -38,14 +38,22 @@ public class JoinNewGuild extends ListenerAdapter {
             {
                 EmbedBuilder eb = new EmbedBuilder();
                 eb.setColor(Color.yellow);
-                eb.setTitle("__Thank you for adding StickyBot to your server!__");
+                eb.setTitle("**Thank you for adding StickyBot to your server!**");
                 eb.setDescription("Here are the basics to get you started:");
-                eb.addField("Support Server:", "[StickyBot Support](https://discord.gg/SvNQTtf)", false);
-                eb.addField("Vote for StickyBot:", "[top.gg/StickyBot](https://top.gg/bot/628400349979344919)", false);
+                eb.addField("Note:", "The stickied message is sent every 5 messages or 15 seconds to comply with discord TOS.", false);
                 eb.addField("**Commands:** ", "Do ``?commands`` or ``?help``", false);
+                eb.addField("Support Server:", "*Bot support & giveaways!*\n[StickyBot Support](https://discord.gg/SvNQTtf)", false);
+                eb.addField("Vote for StickyBot:", "[top.gg/StickyBot](https://top.gg/bot/628400349979344919)", false);
                 eb.addField("Issues?", "Make sure the bot has perms to send and delete messages and is immune to Slow Mode in the channel.\nJoin the support server with any other issues you may encounter.", false);
                 eb.addField("Website:","[www.stickybot.info](https://www.stickybot.info/)", false);
-                eb.addField("Premium: ", "Unlock unlimited stickies and much more. Learn more: [www.stickybot.info/premium](https://www.stickybot.info/premium)", false);
+                eb.addField("Premium: ", "-Unlimited stickied messages."  +
+                        "\n-Use Embeds as stickies." +
+                        "\n-Custom Prefix." +
+                        "\n-Removes \"Stickied Message:\" header." +
+                        "\n-Premium support." +
+                        "\n-First week free." +
+                        "\n-More to come!" +
+                        "\n**Learn More** [**Here**](https://www.stickybot.info/premium)", false);
                 eb.setFooter("StickyBot", Main.jda.getShards().get(0).getSelfUser().getAvatarUrl());
                 channel.sendMessage(eb.build()).queue();
             });
