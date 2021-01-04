@@ -26,6 +26,7 @@ public class JoinNewGuild extends ListenerAdapter {
         em.addField("Guild Owner Tag", event.getGuild().retrieveOwner().complete().getAsMention(), false);
         em.addField("Guild Owner Raw", event.getGuild().retrieveOwner().complete().getEffectiveName() + "#" + event.getGuild().retrieveOwner().complete().getUser().getDiscriminator(), false);
         em.addField("Guild Owner ID", event.getGuild().retrieveOwner().complete().getId(), false);
+        em.addField("Time", OffsetDateTime.now().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)) + " PST", false);
         em.setFooter("StickyBot is now in " + event.getJDA().getGuilds().size() + " guilds", stickyBot.getUser().getEffectiveAvatarUrl());
         em.setThumbnail(event.getGuild().getIconUrl());
         em.setColor(Color.GREEN);
