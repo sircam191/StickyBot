@@ -317,11 +317,18 @@ public class Commands extends ListenerAdapter {
            }
 
             //PREMIUM
-            else if (args[0].equalsIgnoreCase(prefix + "premium") || args[0].equalsIgnoreCase(prefix + "stickybotpremium")) {
+           else if (args[0].equalsIgnoreCase(prefix + "premium") || args[0].equalsIgnoreCase(prefix + "stickybotpremium")) {
                 EmbedBuilder embed = new EmbedBuilder();
                 embed.setColor(Color.ORANGE);
-                embed.setTitle("-Unlock StickyBot Premium for unlimited stickies, embed stickies, a custom prefix, and more!-");
-                embed.setDescription("[StickyBot Premium](https://www.stickybot.info/premium)");
+                embed.setTitle("-StickyBot Premium-");
+                embed.addField("Features:", "-Unlimited stickied messages." +
+                        "\n-Use Embeds as stickies." +
+                        "\n-Custom Prefix." +
+                        "\n-Removes \"Stickied Message:\" header." +
+                        "\n-Premium support." +
+                        "\n-First week free." +
+                        "\n-More to come!", false);
+                embed.addField("Learn More:", "[`www.stickybot.info/premium`](https://www.stickybot.info/premium)", false);
                 event.getChannel().sendMessage(embed.build()).queue();
 
             //EMBED
