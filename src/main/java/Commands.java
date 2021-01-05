@@ -62,16 +62,20 @@ public class Commands extends ListenerAdapter {
                              "``" + prefix + "permcheck`` - Check if StickyBot has all the needed permissions.\n" +
                              "``" + prefix + "premium`` - Purchase StickyBot Premium.\n"
                      , false);
-             embed.addField("Premium Commands:", "``" + prefix + "prefix <prefix>`` - Sets StickyBots prefix.\n" +
+             embed.addField("Premium Commands:",
+                     "``" + prefix + "stickembed <message>`` - Creates a sticky with a embed.\n" +
+                             "``" + prefix + "setimage <image link>`` - Sets image for sticky embed in the channel.\n" +
+                             "``" + prefix + "removeimage`` - Removes image for sticky embed in the channel.\n" +
+                             "``" + prefix + "getimage`` - See the current channels sticky embed image & link.\n" +
+                             "``" + prefix + "prefix <prefix>`` - Sets StickyBots prefix.\n" +
                      "``?resetprefix`` - Resets prefix to `?`.\n" +
-                     "``" + prefix + "stickembed <message>`` - Creates a sticky with a **embed**.\n" +
-                    "(*Member must have Manage Server permissions to use prefix commands.*).", false);
+                             "(Sticky embed color will be the color of StickyBots role).\n" +
+                    "(*Member must have Manage Server permissions to use prefix & image commands.*).", false);
 
              embed.addField("Prefix:", "This guilds prefix: `" + prefix + "`", false);
              embed.setFooter("For support please join the Support Server. Use " + prefix + "support for the invite.", Main.jda.getShards().get(0).getSelfUser().getAvatarUrl());
              event.getChannel().sendMessage(embed.build()).queue();
             }
-
             //ABOUT
            else if (args[0].equalsIgnoreCase(prefix + "about")) {
 
@@ -317,12 +321,12 @@ public class Commands extends ListenerAdapter {
            }
 
             //PREMIUM
-           else if (args[0].equalsIgnoreCase(prefix + "premium") || args[0].equalsIgnoreCase(prefix + "stickybotpremium")) {
+            else if (args[0].equalsIgnoreCase(prefix + "premium") || args[0].equalsIgnoreCase(prefix + "stickybotpremium")) {
                 EmbedBuilder embed = new EmbedBuilder();
                 embed.setColor(Color.ORANGE);
                 embed.setTitle("-StickyBot Premium-");
                 embed.addField("Features:", "-Unlimited stickied messages." +
-                        "\n-Use Embeds as stickies." +
+                        "\n-Use Custom Embeds as stickies." +
                         "\n-Custom Prefix." +
                         "\n-Removes \"Stickied Message:\" header." +
                         "\n-Premium support." +
