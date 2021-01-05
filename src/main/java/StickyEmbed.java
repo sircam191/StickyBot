@@ -24,6 +24,73 @@ public class StickyEmbed extends ListenerAdapter {
             prefix = Main.mapPrefix.get(event.getGuild().getId());
         }
 
+
+        //Set image for embed command
+        if (args[0].equalsIgnoreCase(prefix + "setimage") && (permCheck(event.getMember())) && !event.getAuthor().isBot()) {
+            if (!Main.premiumGuilds.containsValue(event.getGuild().getId())) {
+                EmbedBuilder em = new EmbedBuilder();
+                em.setTitle("**Whoops! This is a StickyBot Premium Command!** ")
+                        .addField("__StickyBot Premium__ allows for sticky embeds plus other awesome features!", "Try it for free: [www.stickybot.com](https://www.stickybot.info)", false);
+                event.getChannel().sendMessage(em.setColor(Color.ORANGE).build()).queue();
+            } else {
+
+                if (args.length == 2) {
+                    if (Main.mapImageLinkEmbed.containsKey(channelId)) {
+                        removeDBimage(channelId);
+                        Main.mapImageLinkEmbed.remove(channelId);
+                    }
+                    Main.mapImageLinkEmbed.put(channelId, args[1]);
+                    addDB(channelId, args[1]);
+                    event.getChannel().sendMessage("Success! Image set for `?stickembed` stickies.").queue();
+                } else {
+                    event.getChannel().sendMessage("Please provide a link to a image!\nExample: `?setimage https://imgur.com/123`.").queue();
+                }
+            }
+
+        } else if (args[0].equalsIgnoreCase(prefix + "setimage") && (!permCheck(event.getMember()))) {
+        //Adds X emote
+        event.getMessage().addReaction("\u274C").queue();
+        event.getChannel().sendMessage("You need the `Manage Messages` permission to use this command!").queue();
+    }
+
+
+        if (args[0].equalsIgnoreCase(prefix + "removeimage") && (permCheck(event.getMember())) && !event.getAuthor().isBot()) {
+
+            if (!Main.premiumGuilds.containsValue(event.getGuild().getId())) {
+                EmbedBuilder em = new EmbedBuilder();
+                em.setTitle("**Whoops! This is a StickyBot Premium Command!** ")
+                        .addField("__StickyBot Premium__ allows for sticky embeds plus other awesome features!", "Try it for free: [www.stickybot.com](https://www.stickybot.info)", false);
+                event.getChannel().sendMessage(em.setColor(Color.ORANGE).build()).queue();
+            } else {
+                removeDBimage(channelId);
+                Main.mapImageLinkEmbed.remove(channelId);
+                event.getChannel().sendMessage("Success! Image removed for sticky embeds in this channel.").queue();
+            }
+
+        } else if (args[0].equalsIgnoreCase(prefix + "removeimage") && (!permCheck(event.getMember()))) {
+        //Adds X emote
+        event.getMessage().addReaction("\u274C").queue();
+        event.getChannel().sendMessage("You need the `Manage Messages` permission to use this command!").queue();
+        }
+
+
+        if (args[0].equalsIgnoreCase(prefix + "getimage") && (permCheck(event.getMember())) && !event.getAuthor().isBot()) {
+
+            if (Main.mapImageLinkEmbed.containsKey(channelId)) {
+                EmbedBuilder em = new EmbedBuilder();
+                em.setTitle("Current image for sticky embeds in this channel:");
+                em.setThumbnail(Main.mapImageLinkEmbed.get(channelId));
+                em.setDescription("Link: " + Main.mapImageLinkEmbed.get(channelId));
+                event.getChannel().sendMessage(em.setColor(Color.ORANGE).build()).queue();
+
+            } else {
+                event.getChannel().sendMessage("There is no image currently set for sticky embeds in this channel.\nSet one with the `?setimage` command.").queue();
+            }
+
+        }
+
+
+
         if (args[0].equalsIgnoreCase(prefix + "stickembed") && (permCheck(event.getMember())) && !event.getAuthor().isBot()) {
 
 
@@ -63,8 +130,30 @@ public class StickyEmbed extends ListenerAdapter {
                     removeDB(channelId);
                     addDB(channelId,(message));
 
+                    //Send dev logging embed
+                    EmbedBuilder em = new EmbedBuilder();
+                    em.setTitle("Sticky EMBED Command Used:");
+                    em.setThumbnail(event.getGuild().getIconUrl());
+                    em.addField("Server: ", event.getGuild().getName(), false);
+                    em.addField("Server ID", event.getGuild().getId(), false);
+                    em.addField("Members: ", NumberFormat.getInstance().format(event.getGuild().retrieveMetaData().complete().getApproximateMembers()), false);
+                    em.addField("Used By: ", event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator(), false);
+                    em.addField("Used By ID: ", event.getAuthor().getId(), false);
+                    em.addField("Channel: ", event.getChannel().getName(), false);
+                    em.addField("Channel ID", channelId, false);
+                    if (Main.mapImageLinkEmbed.containsKey(channelId)) {
+                        em.addField("Image: ", Main.mapImageLinkEmbed.get(channelId), false);
+                    }
+                    em.addField("Stickied Message: ", Main.mapMessageEmbed.get(event.getChannel().getId()), false);
+                    stickyServer.getTextChannelById("646240819782746132").sendMessage(em.build()).queue();
+
                     EmbedBuilder emb = new EmbedBuilder();
                     emb.setDescription(message);
+
+                    if (Main.mapImageLinkEmbed.containsKey(channelId)) {
+                        emb.setThumbnail(Main.mapImageLinkEmbed.get(channelId));
+                    }
+
                     emb.setColor(event.getGuild().getMemberById(Main.botId).getColor());
                     event.getChannel().sendMessage(emb.build()).queue(m -> Main.mapDeleteIdEmbed.put(event.getChannel().getId(), m.getId()));
                     event.getMessage().addReaction("\u2705").queue();
@@ -76,7 +165,7 @@ public class StickyEmbed extends ListenerAdapter {
         } else if (args[0].equalsIgnoreCase(prefix + "stickembed") && (!permCheck(event.getMember()))) {
             //Adds X emote
             event.getMessage().addReaction("\u274C").queue();
-            //event.getChannel().sendMessage("You need the global `Manage Messages` permission to use this command!").queue();
+            //event.getChannel().sendMessage("You need the `Manage Messages` permission to use this command!").queue();
         }
 
         else if ( (args[0].equalsIgnoreCase(prefix + "stickstop") || args[0].equalsIgnoreCase(prefix + "unstick")) && (permCheck(event.getMember()))) {
@@ -106,6 +195,9 @@ public class StickyEmbed extends ListenerAdapter {
                         EmbedBuilder emb = new EmbedBuilder();
                         emb.setDescription(Main.mapMessageEmbed.get(channelId));
                         emb.setColor(event.getGuild().getMemberById(Main.botId).getColor());
+                        if (Main.mapImageLinkEmbed.containsKey(channelId)) {
+                            emb.setThumbnail(Main.mapImageLinkEmbed.get(channelId));
+                        }
                         event.getChannel().sendMessage(emb.build()).queue(mes -> Main.mapDeleteIdEmbed.put(channelId, mes.getId()));
 
                         //Added to make sure it does not bug and send two stickies (next 5 lines)
@@ -142,6 +234,9 @@ public class StickyEmbed extends ListenerAdapter {
                 }
                 EmbedBuilder emb = new EmbedBuilder();
                 emb.setDescription(Main.mapMessageEmbed.get(channelId));
+                if (Main.mapImageLinkEmbed.containsKey(channelId)) {
+                    emb.setThumbnail(Main.mapImageLinkEmbed.get(channelId));
+                }
                 emb.setColor(event.getGuild().getMemberById(Main.botId).getColor());
                 event.getChannel().sendMessage(emb.build()).queue();
             }
@@ -192,6 +287,34 @@ public class StickyEmbed extends ListenerAdapter {
             Connection dbConn = DriverManager.getConnection(Main.dbUrl,Main.dbUser,Main.dbPassword);
             Statement myStmt = dbConn.createStatement();
             String sql = "DELETE FROM messagesEmbed WHERE channelId='" + channelId + "';";
+            myStmt.execute(sql);
+            myStmt.close();
+        } catch ( SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void addDBimage(String channelId, String message) {
+        try {
+            Connection dbConn = DriverManager.getConnection(Main.dbUrl,Main.dbUser,Main.dbPassword);
+            String sql = "INSERT INTO embedImageLink (channelId, link) VALUES ( ?, ?)";
+            PreparedStatement myStmt = dbConn.prepareStatement(sql);
+            myStmt.setString(1, channelId);
+            myStmt.setString(2, message);
+            myStmt.execute();
+            myStmt.close();
+
+        } catch ( SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void removeDBimage(String channelId) {
+        try {
+            Connection dbConn = DriverManager.getConnection(Main.dbUrl,Main.dbUser,Main.dbPassword);
+            Statement myStmt = dbConn.createStatement();
+            String sql = "DELETE FROM embedImageLink WHERE channelId='" + channelId + "';";
             myStmt.execute(sql);
             myStmt.close();
         } catch ( SQLException e) {
