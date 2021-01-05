@@ -127,6 +127,21 @@ public class Main {
             e.printStackTrace();
         }
 
+        //Get Embeds Image Links from DB
+        try {
+            Connection dbConn = DriverManager.getConnection(dbUrl,dbUser,dbPassword);
+            Statement myStmt = dbConn.createStatement();
+            String sql = "select * from embedImageLink";
+            ResultSet rs = myStmt.executeQuery(sql);
+
+            while (rs.next()) {
+                mapMessageEmbed.put(rs.getString("channelId"), rs.getString("link"));
+            }
+
+        } catch ( SQLException e) {
+            e.printStackTrace();
+        }
+        
         jda = DefaultShardManagerBuilder.create(token,
                 GatewayIntent.GUILD_MESSAGES,
                 GatewayIntent.GUILD_MESSAGE_REACTIONS,
