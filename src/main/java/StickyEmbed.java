@@ -130,23 +130,6 @@ public class StickyEmbed extends ListenerAdapter {
                     removeDB(channelId);
                     addDB(channelId,(message));
 
-                    //Send dev logging embed
-                    EmbedBuilder em = new EmbedBuilder();
-                    em.setTitle("Sticky EMBED Command Used:");
-                    em.setThumbnail(event.getGuild().getIconUrl());
-                    em.addField("Server: ", event.getGuild().getName(), false);
-                    em.addField("Server ID", event.getGuild().getId(), false);
-                    em.addField("Members: ", NumberFormat.getInstance().format(event.getGuild().retrieveMetaData().complete().getApproximateMembers()), false);
-                    em.addField("Used By: ", event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator(), false);
-                    em.addField("Used By ID: ", event.getAuthor().getId(), false);
-                    em.addField("Channel: ", event.getChannel().getName(), false);
-                    em.addField("Channel ID", channelId, false);
-                    if (Main.mapImageLinkEmbed.containsKey(channelId)) {
-                        em.addField("Image: ", Main.mapImageLinkEmbed.get(channelId), false);
-                    }
-                    em.addField("Stickied Message: ", Main.mapMessageEmbed.get(event.getChannel().getId()), false);
-                    stickyServer.getTextChannelById("646240819782746132").sendMessage(em.build()).queue();
-
                     EmbedBuilder emb = new EmbedBuilder();
                     emb.setDescription(message);
 
