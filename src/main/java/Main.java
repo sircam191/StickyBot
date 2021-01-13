@@ -135,7 +135,7 @@ public class Main {
             ResultSet rs = myStmt.executeQuery(sql);
 
             while (rs.next()) {
-                mapMessageEmbed.put(rs.getString("channelId"), rs.getString("link"));
+                mapImageLinkEmbed.put(rs.getString("channelId"), rs.getString("link"));
             }
 
         } catch ( SQLException e) {
