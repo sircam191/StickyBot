@@ -40,7 +40,7 @@ public class StickyEmbed extends ListenerAdapter {
                         Main.mapImageLinkEmbed.remove(channelId);
                     }
                     Main.mapImageLinkEmbed.put(channelId, args[1]);
-                    addDB(channelId, args[1]);
+                    addDBimage(channelId, args[1]);
                     event.getChannel().sendMessage("Success! Image set for `?stickembed` stickies.").queue();
                 } else {
                     event.getChannel().sendMessage("Please provide a link to a image!\nExample: `?setimage https://imgur.com/123`.").queue();
