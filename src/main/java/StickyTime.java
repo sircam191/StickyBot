@@ -94,7 +94,7 @@ public class StickyTime extends ListenerAdapter {
                             removeDB(channelId);
                             addDB(channelId,("__**Stickied Message:**__\n\n" + arr[1]));
                         }
-                        
+
                     event.getChannel().sendMessage(Main.mapMessage.get(channelId)).queue(m -> Main.mapDeleteId.put(event.getChannel().getId(), m.getId()));
                     event.getMessage().addReaction("\u2705").queue();
                 } catch (Exception e) {
@@ -129,32 +129,53 @@ public class StickyTime extends ListenerAdapter {
 
             List<Message> history = event.getChannel().getHistory().retrievePast(8).complete();
 
-            for(Message m : history.subList(0, 5)) {
-                //if message is sticky message
-                if(m.getContentRaw().equals(Main.mapMessage.get(channelId))) {
-                    //if message is older then 30 sec
-                    if(m.getTimeCreated().compareTo(OffsetDateTime.now().minusSeconds(15)) < 0) {
-                        m.delete().queue(null, (error) -> {});
-                        event.getChannel().sendMessage(Main.mapMessage.get(channelId)).queue(mes -> Main.mapDeleteId.put(channelId, mes.getId()));
+            try {
+                for(Message m : history.subList(0, 5)) {
+                    //if message is sticky message
+                    if(m.getContentRaw().equals(Main.mapMessage.get(channelId))) {
+                        //if message is older then 30 sec
+                        if(m.getTimeCreated().compareTo(OffsetDateTime.now().minusSeconds(15)) < 0) {
+                            m.delete().queue(null, (error) -> {});
+                            event.getChannel().sendMessage(Main.mapMessage.get(channelId)).queue(mes -> Main.mapDeleteId.put(channelId, mes.getId()));
+                        }
+                        break;
                     }
-                    break;
                 }
+            } catch (Exception e) {
+                System.out.println("Tried to get 5 messages in channel with less then 5, oh well big sad");
             }
+
 
 
             //gets set to true if one of last five messages contains sticky message.
             Boolean check = false;
 
-            for(Message m : history.subList(0, 5)) {
-                if(m.getContentRaw().equals(Main.mapMessage.get(channelId))) {
-                    check = true;
+            try {
+                for(Message m : history.subList(0, 5)) {
+                    if(m.getContentRaw().equals(Main.mapMessage.get(channelId))) {
+                        check = true;
+                    }
                 }
+            } catch (Exception e) {
+                System.out.println("Tried to get 5 messages in channel with less then 5, oh well big sad");
             }
+
+
+
             if(!check) {
                 if(Main.mapDeleteId.get(channelId) != null) {
                     event.getChannel().deleteMessageById(Main.mapDeleteId.get(channelId)).queue(null, (error) -> {});
                 }
-                event.getChannel().sendMessage(Main.mapMessage.get(channelId)).queue();
+
+                //If message send fails, stickstop
+                if (event.getChannel().canTalk()) {
+                    event.getChannel().sendMessage(Main.mapMessage.get(channelId)).queue();
+                } else {
+                    Main.mapMessage.remove(channelId);
+                    removeDB(channelId);
+                    System.out.println("StickStop Override due to missing permission");
+                }
+
             }
 
             //Added to make sure it does not bug and send two stickies (next 5 lines)
