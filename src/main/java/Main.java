@@ -160,7 +160,8 @@ public class Main {
                          new StickyEmbed(),
                          new WikiCommand(),
                          new AdminCommands(),
-                         new SelfAdvertise()
+                         new SelfAdvertise(),
+                         new AdvancedPoll()
                  )
                  .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.EMOTE, CacheFlag.CLIENT_STATUS)
                  .build();
