@@ -65,7 +65,21 @@ public class Main {
             e.printStackTrace();
         }
 
+//Get slow sticky messages from DB
+        try {
+            Connection dbConn = DriverManager.getConnection(dbUrl,dbUser,dbPassword);
+            Statement myStmt = dbConn.createStatement();
+            String sql = "select * from slowMessages";
+            ResultSet rs = myStmt.executeQuery(sql);
 
+            while (rs.next()) {
+                mapMessage.put(rs.getString("channelId"), rs.getString("message"));
+                //System.out.println(rs.getString("channelId") + " -> " + rs.getString("message"));
+            }
+
+        } catch ( SQLException e) {
+            e.printStackTrace();
+        }
         //Get sticky messages from DB
         try {
             Connection dbConn = DriverManager.getConnection(dbUrl,dbUser,dbPassword);
