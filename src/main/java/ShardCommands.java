@@ -9,12 +9,17 @@ public class ShardCommands extends ListenerAdapter
 {
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         String[] args = event.getMessage().getContentRaw().split("\\s+");
+        String prefix = "?";
 
         if(event.getAuthor().isBot()) {
             return;
         }
 
-        if (args[0].equalsIgnoreCase(Main.prefix + "shard") || args[0].equalsIgnoreCase(Main.prefix + "shards")) {
+        if(Main.mapPrefix.containsKey(event.getGuild().getId())) {
+            prefix = Main.mapPrefix.get(event.getGuild().getId());
+        }
+
+        if (args[0].equalsIgnoreCase(prefix + "shard") || args[0].equalsIgnoreCase(prefix + "shards")) {
 
             EmbedBuilder emb = new EmbedBuilder();
             emb.setColor(Color.ORANGE);
@@ -24,8 +29,11 @@ public class ShardCommands extends ListenerAdapter
 
             event.getChannel().sendMessage(emb.build()).queue();
 
-        } else if (args[0].equalsIgnoreCase(Main.prefix + "shardping")) {
+        } else if (args[0].equalsIgnoreCase(prefix + "shardping")) {
             String pings = "__**Shard Pings:**__\n";
+
+            pings += "`Average: " + Main.jda.getAverageGatewayPing() + "`\n";
+
             for (JDA shard : Main.jda.getShards()) {
                 pings += "**Shard:** " + shard.getShardInfo().getShardString() + " **Ping:** " + shard.getGatewayPing() + "ms. **Status:** " + shard.getStatus() + "\n";
             }
