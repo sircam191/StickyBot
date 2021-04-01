@@ -34,8 +34,66 @@ public class AdvancedPoll extends ListenerAdapter
                 emb.setDescription(options[0]);
                 emb.setTitle("POLL:");
 
-                if(options.length > 4) {
 
+                if(options.length > 7) {
+                    emb.addField("Options:",
+                            "\uD83C\uDDE6**:** " + options[1] +
+                                    "\n\uD83C\uDDE7**:** " + options[2] +
+                                    "\n\uD83C\uDDE8**:** " + options[3] +
+                                    "\n\uD83C\uDDE9**:** " + options[4] +
+                                    "\n\uD83C\uDDEA**:** " + options[5] +
+                                    "\n\uD83C\uDDEB**:** " + options[6] +
+                                    "\n\uD83C\uDDEC**:** " + options[7]
+                            , false);
+                    event.getChannel().sendMessage(emb.build()).queue(m -> {
+                        m.addReaction("\uD83C\uDDE6").queue();
+                        m.addReaction("\uD83C\uDDE7").queue();
+                        m.addReaction("\uD83C\uDDE8").queue();
+                        m.addReaction("\uD83C\uDDE9").queue();
+                        m.addReaction("\uD83C\uDDEA").queue();
+                        m.addReaction("\uD83C\uDDEB").queue();
+                        m.addReaction("\uD83C\uDDEC").queue();
+                    });
+                    event.getMessage().delete().queue();
+                }
+                else if(options.length > 6) {
+                    emb.addField("Options:",
+                            "\uD83C\uDDE6**:** " + options[1] +
+                                    "\n\uD83C\uDDE7**:** " + options[2] +
+                                    "\n\uD83C\uDDE8**:** " + options[3] +
+                                    "\n\uD83C\uDDE9**:** " + options[4] +
+                                    "\n\uD83C\uDDEA**:** " + options[5] +
+                                    "\n\uD83C\uDDEB**:** " + options[6]
+                            , false);
+                    event.getChannel().sendMessage(emb.build()).queue(m -> {
+                        m.addReaction("\uD83C\uDDE6").queue();
+                        m.addReaction("\uD83C\uDDE7").queue();
+                        m.addReaction("\uD83C\uDDE8").queue();
+                        m.addReaction("\uD83C\uDDE9").queue();
+                        m.addReaction("\uD83C\uDDEA").queue();
+                        m.addReaction("\uD83C\uDDEB").queue();
+                    });
+                    event.getMessage().delete().queue();
+                }
+                else if(options.length > 5) {
+
+                    emb.addField("Options:",
+                            "\uD83C\uDDE6**:** " + options[1] +
+                                    "\n\uD83C\uDDE7**:** " + options[2] +
+                                    "\n\uD83C\uDDE8**:** " + options[3] +
+                                    "\n\uD83C\uDDE9**:** " + options[4] +
+                                    "\n\uD83C\uDDEA**:** " + options[5]
+                            , false);
+                    event.getChannel().sendMessage(emb.build()).queue(m -> {
+                        m.addReaction("\uD83C\uDDE6").queue();
+                        m.addReaction("\uD83C\uDDE7").queue();
+                        m.addReaction("\uD83C\uDDE8").queue();
+                        m.addReaction("\uD83C\uDDE9").queue();
+                        m.addReaction("\uD83C\uDDEA").queue();
+                    });
+                    event.getMessage().delete().queue();
+                }
+                else if(options.length > 4) {
                     emb.addField( "Options:",
                             "\uD83C\uDDE6**:** " + options[1] +
                             "\n\uD83C\uDDE7**:** " + options[2] +
