@@ -1,5 +1,6 @@
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
@@ -14,6 +15,8 @@ import java.text.NumberFormat;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
@@ -244,12 +247,21 @@ public class Commands extends ListenerAdapter {
                     emb.setFooter("Rolled by: " + event.getMember().getEffectiveName(), event.getMember().getUser().getAvatarUrl());
                     event.getChannel().sendMessage(emb.build()).queue();
                 } else {
+
+                   String[] emotes = {"<:d1:831426766782201886>",
+                                        "<:d2:831426778505281577>",
+                                        "<:d3:831426786726248449>",
+                                        "<:d4:831426794551902248>",
+                                        "<:d5:831426802249105429>",
+                                        "<:d6:831426811254669322>"};
+
                    int dice1 = (int) (Math.random() * 6 + 1);
                    int dice2 = (int) (Math.random() * 6 + 1);
                    EmbedBuilder emb = new EmbedBuilder();
 
                    emb.setTitle("-Rolling Dice-");
-                   emb.setDescription("Dice 1: **" + (dice1) + "**" + "\nDice 2: **" + dice2 + "**" +
+                   emb.setDescription("Dice 1: "+ emotes[dice1 - 1] +  " **" + (dice1) + "** " +
+                           "\nDice 2: "+ emotes[dice2 - 1] +  " **" + (dice2) + "** " +
                            "\n\n**TOTAL: " + (dice1 + dice2) + "**");
 
                    emb.setColor(Color.WHITE);
