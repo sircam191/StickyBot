@@ -1,5 +1,7 @@
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.apache.commons.io.FileUtils;
@@ -8,8 +10,17 @@ import java.awt.*;
 import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class AdminCommands extends ListenerAdapter {
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
@@ -18,6 +29,57 @@ public class AdminCommands extends ListenerAdapter {
         if (event.getAuthor().isBot()) {
             return;
         }
+
+
+
+
+        if (args[0].equalsIgnoreCase(Main.prefix + "restartshard")) {
+            if (event.getMember().getIdLong() == 182729649703485440L) {
+
+                Main.jda.restart(Integer.parseInt(args[1]));
+                event.getChannel().sendMessage("Done Joe").queue();
+
+            }
+        }
+
+
+        if (args[0].equalsIgnoreCase(Main.prefix + "manualstop")) {
+            if (event.getMember().getIdLong() == 182729649703485440L) {
+
+                if (Main.mapMessage.containsKey(args[1])) {
+
+                Main.mapMessage.remove(args[1]);
+
+                    try {
+                        Connection dbConn = DriverManager.getConnection(Main.dbUrl,Main.dbUser,Main.dbPassword);
+                        Statement myStmt = dbConn.createStatement();
+                        String sql = "DELETE FROM newMessages WHERE channelId='" + args[1] + "';";
+                        myStmt.execute(sql);
+                        myStmt.close();
+                    } catch ( SQLException e) {
+                        e.printStackTrace();
+                    }
+                } else if (Main.mapMessageEmbed.containsKey(args[1])) {
+                    Main.mapMessageEmbed.remove(args[1]);
+                    try {
+                        Connection dbConn = DriverManager.getConnection(Main.dbUrl,Main.dbUser,Main.dbPassword);
+                        Statement myStmt = dbConn.createStatement();
+                        String sql = "DELETE FROM messagesEmbed WHERE channelId='" + args[1] + "';";
+                        myStmt.execute(sql);
+                        myStmt.close();
+                    } catch ( SQLException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+                event.getChannel().sendMessage("Done sir").queue();
+
+            }
+
+        }
+
+
 
         if (args[0].equalsIgnoreCase(Main.prefix + "adminstats")) {
             if (event.getMember().getIdLong() == 182729649703485440L) {
@@ -88,6 +150,35 @@ public class AdminCommands extends ListenerAdapter {
                 event.getMessage().addReaction("\u274C").queue();
             }
             }
+
+        else if (args[0].equalsIgnoreCase(Main.prefix + "checkpremium")) {
+            if (Main.premiumGuilds.containsValue(args[1])) {
+                event.getChannel().sendMessage("Server HAS premium").queue();
+            } else {
+                event.getChannel().sendMessage("Server Does NOT have premium.");
+            }
+
+        }
+        else if (args[0].equalsIgnoreCase(Main.prefix + "topservers")) {
+            if (event.getMember().getIdLong() == 182729649703485440L) {
+                var guilds = Main.jda.getGuilds().stream()
+                        .sorted(Comparator.comparingInt(Guild::getMemberCount).reversed())
+                        .limit(10)
+                        .collect(Collectors.toList());
+
+                String info = "";
+
+                for (Guild s : guilds) {
+                    info += "**Name:** " + s.getName() + "\n";
+                    info += "**Member Count:** " + NumberFormat.getInstance().format(s.retrieveMetaData().complete().getApproximateMembers()) + "\n";
+                    info += "**PFP Link:** `" + s.getIconUrl() + "`\n";
+                    info += "**ID:** ``" + s.getId() + "``\n\n";
+                }
+
+                event.getChannel().sendMessage(info + "\n*Out of* *" + Main.jda.getGuildCache().size() + "* *servers*").queue();
+            }
+
+        }
 
     }
 }
