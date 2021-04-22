@@ -2,7 +2,10 @@
 
 [www.stickybot.info](https://www.stickybot.info/)
 
-[![Discord Bots](https://top.gg/api/widget/628400349979344919.svg)](https://top.gg/bot/628400349979344919)
+[![Discord Bots](https://top.gg/api/widget/status/628400349979344919.svg)](https://top.gg/bot/628400349979344919)
+[![Discord Bots](https://top.gg/api/widget/servers/628400349979344919.svg)](https://top.gg/bot/628400349979344919)
+[![Discord Bots](https://top.gg/api/widget/owner/628400349979344919.svg)](https://top.gg/bot/628400349979344919)
+
 
 ![StickyBot Logo](https://images.discordapp.net/avatars/628400349979344919/b2aed74a6631ee9755a8ae56d8e582a8.png?size=512=250x)
 
