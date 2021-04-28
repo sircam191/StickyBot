@@ -155,7 +155,7 @@ public class AdminCommands extends ListenerAdapter {
             if (Main.premiumGuilds.containsValue(args[1])) {
                 event.getChannel().sendMessage("Server HAS premium").queue();
             } else {
-                event.getChannel().sendMessage("Server Does NOT have premium.");
+                event.getChannel().sendMessage("Server Does NOT have premium.").queue();
             }
 
         }
