@@ -13,14 +13,20 @@ sourceCompatibility = 11
 repositories {
     jcenter()
     maven { url 'https://jitpack.io' }
+    maven {
+        name 'm2-dv8tion'
+        url 'https://m2.dv8tion.net/releases'
+    }
 }
 
 dependencies {
-    compile 'net.dv8tion:JDA:4.1.1_108'
+    compile 'net.dv8tion:JDA:4.2.0_252'
     compile 'com.jagrosh:jda-utilities:3.0.2'
-    implementation 'com.github.mew:coronavirus:0.1.0'
     compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.19'
-
+    implementation 'com.github.DiscordBotList:DBL-Java-Library:2.0.1'
+    implementation 'org.openweathermap.java-api:api-core:1.2.3'
+    implementation 'com.github.KSoft-Si:KSoft4J:development-SNAPSHOT'
+    compile 'commons-io:commons-io:2.8.0'
 }
 
 
