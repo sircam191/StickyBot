@@ -11,7 +11,7 @@
 
 StickBot is a Discord bot that uses Discords REST API, Gradle, and JDA4. The bot lets a user "stick" a message to a channel, meaning that stickied message will always be the most recent message in the channel even when other users send a message. The bot connects to a mySQL database to save information so it will keep data after a restart or update. The bot has many other command, some of which use other APIs.
 
-**Add StickyBot to your server [here](https://top.gg/bot/628400349979344919).**
+**Add StickyBot to your server [here](https://www.stickybot.info).**
 
 *(NOTE: Not all source code is up-to-date of what is running on the live server for StickyBot. Some files have also been modified for privacy and security reasons.)*
 
