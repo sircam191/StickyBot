@@ -13,7 +13,7 @@ import org.fastily.jwiki.core.Wiki;
 import java.awt.*;
 import java.io.IOException;
 
-public class WikiCommands extends ListenerAdapter
+public class WikipediaCommands extends ListenerAdapter
 {
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
 
