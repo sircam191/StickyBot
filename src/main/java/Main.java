@@ -175,7 +175,8 @@ public class Main {
                          new WikiCommand(),
                          new AdminCommands(),
                          new SelfAdvertise(),
-                         new AdvancedPoll()
+                         new AdvancedPoll(),
+                         new WikiCommands
                  )
                  .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.EMOTE, CacheFlag.CLIENT_STATUS)
                  .build();
