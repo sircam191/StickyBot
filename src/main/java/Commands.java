@@ -47,28 +47,40 @@ public class Commands extends ListenerAdapter {
          //HELP or COMMANDS
         else if (args[0].equalsIgnoreCase(prefix + "help") || args[0].equalsIgnoreCase(prefix + "commands") || args[0].equalsIgnoreCase(Main.prefix + "help")) {
              EmbedBuilder embed = new EmbedBuilder();
-             embed.setTitle("**-Commands-**");
-             embed.setColor(Color.YELLOW);
+             embed.setTitle("**-StickyBot Commands-**");
+             embed.setColor(Color.ORANGE);
              embed.setDescription("[www.stickybot.info](https://www.stickybot.info/)\n(Do not include `<>` when using commands)");
-             embed.addField("Sticky Commands:", "``" + prefix + "stick <message>`` - Sticks message to the channel.\n" +
+             embed.addField("\uD83D\uDCCC Sticky Commands:", "``" + prefix + "stick <message>`` - Sticks message to the channel.\n" +
                      "``" + prefix + "stickstop`` - Cancels stickied message.\n (*Member must have Manage Messages permissions to use sticky commands.*).", false);
-             embed.addField("Other Commands:", "``?about`` - Support Server and other useful info.\n" +
+             embed.addField("\uD83C\uDF9B Utility Commands:",
                              "``" + prefix + "poll <question>`` - Create a poll for people to vote.\n" +
                              "``" + prefix + "apoll <question, option1, option2>`` - Create a multiple choice poll for people to vote. Separate the question and options with commas. Supports up to 7 options.\n" +
                              "``" + prefix + "userinfo <@user>`` - Get info on a member.\n" +
                              "``" + prefix + "serverinfo`` - Get info on the server.\n" +
-                             "``" + prefix + "embed <message>`` - Turns your message into a embed.\n" +
-                             "``" + prefix + "roll`` - Roll two dice.\n" +
-                             "``" + prefix + "weather <city>`` - Get the current weather in a city.\n" +
-                             "``" + prefix + "randomwiki`` - Get a random WikiHow article.\n" +
-                             "``" + prefix + "coinflip`` - Flips a coin.\n" +
-                             "``" + prefix + "invite`` - Invite link for StickyBot.\n" +
-                             "``" + prefix + "support`` - Invite to the StickyBot Support Server.\n" +
-                             "``" + prefix + "donate`` - Help keep StickyBot running smoothly.\n" +
-                             "``" + prefix + "permcheck`` - Check if StickyBot has all the needed permissions.\n" +
-                             "``" + prefix + "premium`` - Purchase StickyBot Premium.\n"
+                             "``" + prefix + "embed <message>`` - Turns your message into a embed.\n"
                      , false);
-             embed.addField("Premium Commands:",
+
+            embed.addField("\uD83D\uDE04 Fun Commands:",
+                            "``" + prefix + "roll`` - Roll two dice.\n" +
+                            "``" + prefix + "weather <city>`` - Get the current weather in a city.\n" +
+                            "``" + prefix + "wiki <article>`` - Get the requested Wikipedia article.\n" +
+                            "``" + prefix + "wiki random`` - Get a random Wikipedia article.\n" +
+                            "``" + prefix + "randomwiki`` - Get a random WikiHow article.\n" +
+                            "``" + prefix + "coinflip`` - Flips a coin.\n"
+                    , false);
+
+
+            embed.addField("\uD83D\uDCC3 Other Commands:",
+                            "``" + prefix + "invite`` - Invite link for StickyBot.\n" +
+                            "``" + prefix + "support`` - Invite to the StickyBot Support Server.\n" +
+                            "``" + prefix + "about`` - Information about StickyBot.\n" +
+                            "``" + prefix + "donate`` - Help keep StickyBot running smoothly.\n" +
+                            "``" + prefix + "permcheck`` - Check if StickyBot has all the needed permissions.\n" +
+                            "``" + prefix + "premium`` - Info about StickyBot Premium.\n"
+                    , false);
+
+
+             embed.addField("\uD83E\uDDE1 Premium Commands:",
                      "``" + prefix + "stickembed <message>`` - Creates a sticky with a embed.\n" +
                              "``" + prefix + "stickslow <message>`` - Creates a sticky that sends slower than a normal sticky.\n" +
                              "``" + prefix + "setimage <image link>`` - Sets image for sticky embed in the channel.\n" +
@@ -104,7 +116,7 @@ public class Commands extends ListenerAdapter {
             long numberOfSeconds = uptimeInSeconds % 60;
 
                 EmbedBuilder eb = new EmbedBuilder();
-                eb.setColor(Color.yellow);
+                eb.setColor(Color.orange);
                 eb.setTitle("**-StickyBot Information-**");
                 eb.addField("Developed By:", "P_O_G#2222\n(`182729649703485440`)", false);
                 eb.addField("Website:", "[www.stickybot.info](https://www.stickybot.info/)", false);
@@ -114,9 +126,9 @@ public class Commands extends ListenerAdapter {
                 eb.addField("Guilds:", "StickyBot is in **" + NumberFormat.getInstance().format(Main.jda.getGuildCache().size()) + "** Guilds", false);
                 eb.addField("Support Server:", "[StickyBot Support](https://discord.gg/SvNQTtf)", false);
                 eb.addField("Vote for StickyBot:", "[top.gg/stickybot](https://top.gg/bot/628400349979344919)", false);
-                eb.addField("Donate:", "[paypal.me/sircam19](https://www.paypal.me/sircam19)", false);
                 eb.addField("Premium: ", "[www.stickybot.info/premium](https://www.stickybot.info/premium)", false);
                 eb.addField("**Commands:** ", "Do ``?commands`` or ``?help``", false);
+                eb.addField("Donate:", "[paypal.me/sircam19](https://www.paypal.me/sircam19)", false);
                 eb.setFooter("StickyBot is Made with Java & JDA", Main.jda.getShards().get(0).getSelfUser().getAvatarUrl());
 
                 event.getChannel().sendMessage(eb.build()).queue();
@@ -175,7 +187,7 @@ public class Commands extends ListenerAdapter {
                         , false);
 
 
-                emb.setColor(Color.BLACK);
+                emb.setColor(Color.orange);
                 emb.setFooter(event.getGuild().getName(), event.getGuild().getIconUrl());
 
                 event.getChannel().sendMessage(emb.build()).queue();
@@ -242,7 +254,7 @@ public class Commands extends ListenerAdapter {
                    emb.setDescription("Dice 1: **" + (dice1) + "**" + "\nDice 2: **" + dice2 + "**" +
                            "\n\n**TOTAL: " + (dice1 + dice2) + "**");
 
-                    emb.setColor(Color.WHITE);
+                    emb.setColor(Color.orange);
                     emb.setThumbnail("https://studio.code.org/v3/assets/GBhvGLEcbJGFHdJfHkChqw/8TEb9oxGc.gif");
                     emb.setFooter("Rolled by: " + event.getMember().getEffectiveName(), event.getMember().getUser().getAvatarUrl());
                     event.getChannel().sendMessage(emb.build()).queue();
@@ -264,7 +276,7 @@ public class Commands extends ListenerAdapter {
                            "\nDice 2: "+ emotes[dice2 - 1] +  " **" + (dice2) + "** " +
                            "\n\n**TOTAL: " + (dice1 + dice2) + "**");
 
-                   emb.setColor(Color.WHITE);
+                   emb.setColor(Color.orange);
                    emb.setThumbnail("https://studio.code.org/v3/assets/GBhvGLEcbJGFHdJfHkChqw/8TEb9oxGc.gif");
                    emb.setFooter("Rolled by: " + event.getMember().getEffectiveName(), event.getMember().getUser().getAvatarUrl());
                    event.getChannel().sendMessage(emb.build()).queue();
@@ -335,7 +347,7 @@ public class Commands extends ListenerAdapter {
                 int random = (int) Math.round(Math.random());
                 EmbedBuilder emb = new EmbedBuilder();
                 emb.setTitle("-Coin Flip-");
-                emb.setColor(Color.GRAY);
+                emb.setColor(Color.orange);
 
                 if (random == 0) {
                     emb.setDescription("Coin Landed on **HEADS**!");
