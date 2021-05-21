@@ -13,6 +13,7 @@ StickBot is a Discord bot that uses Discords REST API, Gradle, and JDA4. The bot
 
 
 ## StickyBot has featrues such as:
+
 Sticking a message to a discord channel. [here](https://github.com/sircam191/StickyBot/blob/master/src/main/java/StickyTime.java)
 Sticking a embed message to a discord channel. [here](https://github.com/sircam191/StickyBot/blob/master/src/main/java/StickyEmbed.java)
 Creating Simple and multiple choice polls in a discord channel. [here](https://github.com/sircam191/StickyBot/blob/master/src/main/java/AdvancedPoll.java) and [here](https://github.com/sircam191/StickyBot/blob/master/src/main/java/Commands.java)
