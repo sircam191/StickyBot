@@ -14,15 +14,24 @@ StickBot is a Discord bot that uses Discords REST API, Gradle, and JDA4. The bot
 
 ## StickyBot has featrues such as:
 
-Sticking a message to a discord channel. [here](https://github.com/sircam191/StickyBot/blob/master/src/main/java/StickyTime.java)\n
+Sticking a message to a discord channel. [here](https://github.com/sircam191/StickyBot/blob/master/src/main/java/StickyTime.java)
+
 Sticking a embed message to a discord channel. [here](https://github.com/sircam191/StickyBot/blob/master/src/main/java/StickyEmbed.java)
+
 Creating Simple and multiple choice polls in a discord channel. [here](https://github.com/sircam191/StickyBot/blob/master/src/main/java/AdvancedPoll.java) and [here](https://github.com/sircam191/StickyBot/blob/master/src/main/java/Commands.java)
+
 Getting information on a discord user. [here](https://github.com/sircam191/StickyBot/blob/master/src/main/java/Commands.java)
+
 Getting the weather of a specified loction. [here](https://github.com/sircam191/StickyBot/blob/master/src/main/java/WeatherCommand.java)
+
 Searching Wikipedia for a article and returning the link, first paragragh, and image. [here](https://github.com/sircam191/StickyBot/blob/master/src/main/java/WikipediaCommands.java)
+
 Getting a random Wikipedia article and returing the link, first paragragh, and image. [here](https://github.com/sircam191/StickyBot/blob/master/src/main/java/WikipediaCommands.java)
+
 Getting a random WikiHow article and returing the link, and image. [here](https://github.com/sircam191/StickyBot/blob/master/src/main/java/WikiCommand.java)
+
 Fliping a coin. [here](https://github.com/sircam191/StickyBot/blob/master/src/main/java/Commands.java)
+
 Rolling two dice. [here](https://github.com/sircam191/StickyBot/blob/master/src/main/java/Commands.java)
 
 
