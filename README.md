@@ -36,6 +36,7 @@ StickBot is a Discord bot that uses Discords REST API, Gradle, and JDA4. The bot
 
 -And More.
 
+
 **Add StickyBot to your server [here](https://www.stickybot.info).**
 
 *(NOTE: Not all source code is up-to-date of what is running on the live server for StickyBot. Some files have also been modified for privacy and security reasons.)*
