@@ -64,7 +64,31 @@ public class WikipediaCommands extends ListenerAdapter
 
             String wikiText = wiki.getTextExtract(article);
 
-            if (wikiText.startsWith(article.substring(0, 1).toUpperCase() + article.substring(1) + " may refer to:")) {
+            if (wikiText.isEmpty()) {
+                final String BASE_URL = "https://en.wikipedia.org/api/rest_v1/page/summary/";
+
+                OkHttpClient client = new OkHttpClient();
+                Request request = new Request.Builder()
+                        .url(BASE_URL + article)
+                        .get()
+                        .build();
+
+                try {
+                    Response response = client.newCall(request).execute();
+                    String data = response.body().string();
+
+                    JsonObject newdata2 = new JsonParser().parse(data).getAsJsonObject();
+
+                    wikiText = newdata2.get("extract").toString();
+
+                    wikiText = wikiText.substring(1, wikiText.length() - 1);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+                if (wikiText.startsWith(article.substring(0, 1).toUpperCase() + article.substring(1) + " may refer to:")) {
                 em.setDescription("There are multiple results for **" + article + "**!\nTo see all of the results [Click Here](" + wikiLink + ").");
                 em.setFooter("Source: www.wikipedia.org", "https://upload.wikimedia.org/wikipedia/en/thumb/8/80/Wikipedia-logo-v2.svg/1200px-Wikipedia-logo-v2.svg.png");
                 em.setAuthor("Wiki Search By: " + event.getAuthor().getName(), event.getMessage().getJumpUrl(), event.getMember().getUser().getAvatarUrl());
@@ -114,6 +138,7 @@ public class WikipediaCommands extends ListenerAdapter
             String data = response.body().string();
 
             JsonObject newdata = new JsonParser().parse(data).getAsJsonObject().getAsJsonObject("thumbnail");
+
             try {
                 newdata.get("source");
             } catch (Exception e) {
