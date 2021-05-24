@@ -36,24 +36,40 @@ public class LoadPremiumUpdates extends ListenerAdapter {
             em.setTitle("You Unlocked StickyBot Premium!");
             em.setDescription("You or someone in your server has purchased StickyBot Premium for your server **" + serverName +
                     "**. To see what new features this has unlocked visit [www.stickybot.info](https://www.stickybot.info).");
-            
+
             Main.jda.getGuildById(args[1]).retrieveOwner().queue((u) -> {
                 u.getUser().openPrivateChannel().queue((c) -> {
                     c.sendMessage(em.build()).queue();
                 });
             });
+
+            /*
+            //if server owner is on support server give role.
+             event.getGuild().retrieveMemberById(Main.jda.getGuildById(args[1]).getOwnerId()).queue(success -> {
+                 event.getGuild().addRoleToMember(success.getId(), event.getGuild().getRoleById("720410755312255006")).queue();
+             }, failure -> {});
+            */
+
+
+
         }
 
         else if(event.getChannel().getId().equals(cancelId)) {
             String guildId = Main.premiumGuilds.get(args[4]);
 
-            //remove all stickies in server
-            removeStickies(guildId);
-            removePrefixDB(guildId);
-            Main.mapPrefix.remove(guildId);
             Main.premiumGuilds.remove(args[4]);
+            
             System.out.println("CANCEL SUB ID: " + args[4]);
             removeDB(args[4]);
+            
+            //remove all stickies in server & prefix
+            if (!Main.premiumGuilds.containsValue(guildId)) {
+                Main.mapPrefix.remove(guildId);
+                removeStickies(guildId);
+                removePrefixDB(guildId);
+                removeEmbeds(guildId);
+            }
+            
         }
     }
 
@@ -61,7 +77,7 @@ public class LoadPremiumUpdates extends ListenerAdapter {
         try {
             Connection dbConn = DriverManager.getConnection(Main.dbUrl,Main.dbUser,Main.dbPassword);
             Statement myStmt = dbConn.createStatement();
-            String sql = "INSERT INTO premium (userPaymentId, premiumGuildId)\nVALUES ( '" + userPaymentId + "', '" + premiumGuildId + "' );";
+            String sql = "INSERT INTO premium (userPaymentId, premiumGuildId)\nVALUES ( '" + userPaymentId + "', '" + premiumGuildId.replaceAll("'", "") + "' );";
             myStmt.execute(sql);
             myStmt.close();
         } catch ( SQLException e) {
@@ -112,7 +128,24 @@ public class LoadPremiumUpdates extends ListenerAdapter {
             }
         }
     }
+
+    public void removeEmbeds(String guildId) {
+        List<String> channelIds = Main.jda.getGuildById(guildId).getTextChannels().stream().map(textChannel -> textChannel.getId()).collect(Collectors.toList());
+
+        for (String id : channelIds) {
+            if (Main.mapMessageEmbed.containsKey(id)) {
+                Main.mapMessageEmbed.remove(id);
+
+                try {
+                    Connection dbConn = DriverManager.getConnection(Main.dbUrl,Main.dbUser,Main.dbPassword);
+                    Statement myStmt = dbConn.createStatement();
+                    String sql = "DELETE FROM messagesEmbed WHERE channelId='" + id + "';";
+                    myStmt.execute(sql);
+                    myStmt.close();
+                } catch ( SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 }
-
-
-
