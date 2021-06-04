@@ -4,7 +4,9 @@ import net.dv8tion.jda.api.sharding.ShardManager;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import net.explodingbush.ksoftapi.KSoftAPI;
 import org.discordbots.api.client.DiscordBotListAPI;
+import org.fastily.jwiki.core.Wiki;
 import org.openweathermap.api.DataWeatherClient;
 import org.openweathermap.api.UrlConnectionDataWeatherClient;
 
@@ -20,27 +22,36 @@ public class Main {
     public static ShardManager jda;
     public static String prefix = "?";
 
-    public static String botId = "642587979193516043";
-    public static String token = "**********";
+    public static String botId = "628400349979344919";
+    public static String token = "*****";
 
     public static String dbUrl = "jdbc:mysql://localhost:3306/STICKYBOT4?useUnicode=true&characterEncoding=utf8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
-    public static String dbUser = "******************";
-    public static String dbPassword = "*****************";
+    public static String dbUser = "***";
+    public static String dbPassword = "***";
 
-    public static String topggAPIToken = "**********************************";
+    public static String topggAPIToken = "***";
     public static DiscordBotListAPI topggAPI;
 
-    public static String weatherAPIToken = "**********************";
+    public static String weatherAPIToken = "a304864a49f35d09388788ef0e929f29";
     public static DataWeatherClient weatherHelper;
 
-    public static String kSoftApiToken = "**********";
+    public static String kSoftApiToken = "1128c280f0cfedf3a03852d4d4fd3108cf6a1912";
     public static KSoftAPI kSoftApi;
-    
+
+    public static Wiki wiki;
+
     public static Map<String, String> mapMessage = new HashMap<>();
     public static Map<String, String> mapDeleteId = new HashMap<>();
 
     public static Map<String, String> mapMessageEmbed = new HashMap<>();
     public static Map<String, String> mapDeleteIdEmbed = new HashMap<>();
+    public static Map<String, String> mapImageLinkEmbed = new HashMap<>();
+
+    public static Map<String, String> mapMessageEmbed2 = new HashMap<>();
+    public static Map<String, String> mapDeleteIdEmbed2 = new HashMap<>();
+
+    public static Map<String, String> mapDeleteId2 = new HashMap<>();
+    public static Map<String, String> mapMessageSlow = new HashMap<>();
 
     public static Map<String, String> mapPrefix = new HashMap<>();
 
@@ -49,14 +60,14 @@ public class Main {
 
     public static void main (String[] args) throws LoginException {
 
-         try {
+        try {
             kSoftApi = new KSoftAPI(kSoftApiToken);
             System.out.println("KSoft API Connected");
         } catch (Exception e) {
             System.out.println("KSoft API Connection Error");
             e.printStackTrace();
         }
-        
+
         try {
             weatherHelper = new UrlConnectionDataWeatherClient(weatherAPIToken);
             System.out.println("Weather API Connected");
@@ -65,11 +76,20 @@ public class Main {
             e.printStackTrace();
         }
 
-//Get slow sticky messages from DB
+        try {
+            wiki = new Wiki.Builder().build();
+            System.out.println("Wiki API Connected");
+        } catch (Exception e) {
+            System.out.println("Wiki API Connection Error");
+            e.printStackTrace();
+        }
+
+
+        //Get sticky messages from DB
         try {
             Connection dbConn = DriverManager.getConnection(dbUrl,dbUser,dbPassword);
             Statement myStmt = dbConn.createStatement();
-            String sql = "select * from slowMessages";
+            String sql = "select * from newMessages";
             ResultSet rs = myStmt.executeQuery(sql);
 
             while (rs.next()) {
@@ -80,11 +100,12 @@ public class Main {
         } catch ( SQLException e) {
             e.printStackTrace();
         }
-        //Get sticky messages from DB
+
+        //Get slow sticky messages from DB
         try {
             Connection dbConn = DriverManager.getConnection(dbUrl,dbUser,dbPassword);
             Statement myStmt = dbConn.createStatement();
-            String sql = "select * from newMessages";
+            String sql = "select * from slowMessages";
             ResultSet rs = myStmt.executeQuery(sql);
 
             while (rs.next()) {
@@ -155,7 +176,8 @@ public class Main {
         } catch ( SQLException e) {
             e.printStackTrace();
         }
-        
+
+
         jda = DefaultShardManagerBuilder.create(token,
                 GatewayIntent.GUILD_MESSAGES,
                 GatewayIntent.GUILD_MESSAGE_REACTIONS,
@@ -176,10 +198,14 @@ public class Main {
                          new AdminCommands(),
                          new SelfAdvertise(),
                          new AdvancedPoll(),
-                         new WikipediaCommands
+                         new SlowSticky(),
+                         new WikipediaCommands(),
+                         new ButtonTest(),
+                         new RollCommand()
                  )
                  .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.EMOTE, CacheFlag.CLIENT_STATUS)
-                 .build();
+                .build();
+
 
         jda.setActivity(playing("?help | www.stickybot.info"));
 
