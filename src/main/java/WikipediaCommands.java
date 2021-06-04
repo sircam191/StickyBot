@@ -3,6 +3,7 @@ import com.google.gson.JsonParser;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.components.Button;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -92,7 +93,7 @@ public class WikipediaCommands extends ListenerAdapter
                 em.setDescription("There are multiple results for **" + article + "**!\nTo see all of the results [Click Here](" + wikiLink + ").");
                 em.setFooter("Source: www.wikipedia.org", "https://upload.wikimedia.org/wikipedia/en/thumb/8/80/Wikipedia-logo-v2.svg/1200px-Wikipedia-logo-v2.svg.png");
                 em.setAuthor("Wiki Search By: " + event.getAuthor().getName(), event.getMessage().getJumpUrl(), event.getMember().getUser().getAvatarUrl());
-                event.getChannel().sendMessage(em.build()).queue();
+                event.getChannel().sendMessage(em.build()).setActionRow(Button.link(wikiLink, "Full Article")).queue();
                 return;
             }
 
@@ -105,7 +106,7 @@ public class WikipediaCommands extends ListenerAdapter
             em.setImage(getImageLink(article));
 
             em.setFooter("Source: www.wikipedia.org", "https://upload.wikimedia.org/wikipedia/en/thumb/8/80/Wikipedia-logo-v2.svg/1200px-Wikipedia-logo-v2.svg.png");
-            event.getChannel().sendMessage(em.build()).queue();
+            event.getChannel().sendMessage(em.build()).setActionRow(Button.link(wikiLink, "Full Article")).queue();
         }
     }
 
