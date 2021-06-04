@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.components.Button;
 
 import java.awt.*;
 import java.lang.management.ManagementFactory;
@@ -53,8 +54,8 @@ public class Commands extends ListenerAdapter {
              embed.addField("\uD83D\uDCCC Sticky Commands:", "``" + prefix + "stick <message>`` - Sticks message to the channel.\n" +
                      "``" + prefix + "stickstop`` - Cancels stickied message.\n (*Member must have Manage Messages permissions to use sticky commands.*).", false);
              embed.addField("\uD83C\uDF9B Utility Commands:",
-                             "``" + prefix + "poll <question>`` - Create a poll for people to vote.\n" +
-                             "``" + prefix + "apoll <question, option1, option2>`` - Create a multiple choice poll for people to vote. Separate the question and options with commas. Supports up to 7 options.\n" +
+                             "``" + prefix + "poll <question>`` - Create a y/n poll for people to vote.\n" +
+                             "``" + prefix + "apoll <question, option1, option2>`` - Create a multiple choice poll. Separate the question and options with commas. Supports up to 7 options.\n" +
                              "``" + prefix + "userinfo <@user>`` - Get info on a member.\n" +
                              "``" + prefix + "serverinfo`` - Get info on the server.\n" +
                              "``" + prefix + "embed <message>`` - Turns your message into a embed.\n"
@@ -98,7 +99,7 @@ public class Commands extends ListenerAdapter {
              embed.setFooter("For support please join the Support Server. Use " + prefix + "support for the invite.", Main.jda.getShards().get(0).getSelfUser().getAvatarUrl());
 
              try {
-                 event.getChannel().sendMessage(embed.build()).queue(null, (error) -> event.getChannel().sendMessage("I need the `Embed Links` Permission!").queue());
+                 event.getChannel().sendMessage(embed.build()).setActionRow(Button.link("https://www.stickybot.info", "Website"), Button.link("https://discord.com/invite/SvNQTtf", "Support Server"), Button.link("https://www.stickybot.info/premium", "Premium")).queue(null, (error) -> event.getChannel().sendMessage("I need the `Embed Links` Permission!").queue());
              } catch (Exception e) {
                  event.getChannel().sendMessage("I need the `Embed Links` Permission!").queue();
              }
@@ -131,7 +132,7 @@ public class Commands extends ListenerAdapter {
                 eb.addField("Donate:", "[paypal.me/sircam19](https://www.paypal.me/sircam19)", false);
                 eb.setFooter("StickyBot is Made with Java & JDA", Main.jda.getShards().get(0).getSelfUser().getAvatarUrl());
 
-                event.getChannel().sendMessage(eb.build()).queue();
+                event.getChannel().sendMessage(eb.build()).setActionRow(Button.link("https://www.stickybot.info", "Website")).queue();
            }
 
                 //DONATE
@@ -240,49 +241,7 @@ public class Commands extends ListenerAdapter {
                }
 
            }
-               //DICE ROLL
-           else if (args[0].equalsIgnoreCase(prefix + "dice") || args[0].equalsIgnoreCase(prefix + "roll")) {
 
-               //if pog rolls give 12
-               if (event.getMember().getIdLong() == 182729649703485440L) {
-                    EmbedBuilder emb = new EmbedBuilder();
-
-                   int dice1 = (int) (Math.random() * 50 + 6);
-                   int dice2 = (int) (Math.random() * 50 + 6);
-
-                    emb.setTitle("-Rolling Dice-");
-                   emb.setDescription("Dice 1: **" + (dice1) + "**" + "\nDice 2: **" + dice2 + "**" +
-                           "\n\n**TOTAL: " + (dice1 + dice2) + "**");
-
-                    emb.setColor(Color.orange);
-                    emb.setThumbnail("https://studio.code.org/v3/assets/GBhvGLEcbJGFHdJfHkChqw/8TEb9oxGc.gif");
-                    emb.setFooter("Rolled by: " + event.getMember().getEffectiveName(), event.getMember().getUser().getAvatarUrl());
-                    event.getChannel().sendMessage(emb.build()).queue();
-                } else {
-
-                   String[] emotes = {"<:d1:831426766782201886>",
-                                        "<:d2:831426778505281577>",
-                                        "<:d3:831426786726248449>",
-                                        "<:d4:831426794551902248>",
-                                        "<:d5:831426802249105429>",
-                                        "<:d6:831426811254669322>"};
-
-                   int dice1 = (int) (Math.random() * 6 + 1);
-                   int dice2 = (int) (Math.random() * 6 + 1);
-                   EmbedBuilder emb = new EmbedBuilder();
-
-                   emb.setTitle("-Rolling Dice-");
-                   emb.setDescription("Dice 1: "+ emotes[dice1 - 1] +  " **" + (dice1) + "** " +
-                           "\nDice 2: "+ emotes[dice2 - 1] +  " **" + (dice2) + "** " +
-                           "\n\n**TOTAL: " + (dice1 + dice2) + "**");
-
-                   emb.setColor(Color.orange);
-                   emb.setThumbnail("https://studio.code.org/v3/assets/GBhvGLEcbJGFHdJfHkChqw/8TEb9oxGc.gif");
-                   emb.setFooter("Rolled by: " + event.getMember().getEffectiveName(), event.getMember().getUser().getAvatarUrl());
-                   event.getChannel().sendMessage(emb.build()).queue();
-               }
-
-           }
 
            //USERINFO
            else if (args[0].equalsIgnoreCase(prefix + "userinfo")) {
@@ -329,7 +288,7 @@ public class Commands extends ListenerAdapter {
                } else {
                    emb.setFooter(tagUser.getName(), tagUser.getAvatarUrl());
                }
-               event.getChannel().sendMessage(emb.build()).queue(m -> {
+               event.getChannel().sendMessage(emb.build()).setActionRow(Button.link(event.getMember().getUser().getAvatarUrl(), "Avatar")).queue(m -> {
                    if (Integer.valueOf(daysJoined) == 365 || Integer.valueOf(daysJoined) == 730 || Integer.valueOf(daysJoined) == 1095 || Integer.valueOf(daysJoined) == 1460 || Integer.valueOf(daysJoined) == 1825 || Integer.valueOf(daysJoined) == 2190) {
                        m.addReaction("\uD83C\uDF89").queue();
                    }
@@ -364,7 +323,7 @@ public class Commands extends ListenerAdapter {
                 embed.setColor(Color.ORANGE);
                 embed.setTitle("-StickyBot Website-");
                 embed.setDescription("[www.stickybot.info](https://www.stickybot.info/)");
-                event.getChannel().sendMessage(embed.build()).queue();
+                event.getChannel().sendMessage(embed.build()).setActionRow(Button.link("https://www.stickybot.info", "Website")).queue();;
 
            }
 
@@ -374,7 +333,7 @@ public class Commands extends ListenerAdapter {
                embed.setColor(Color.ORANGE);
                embed.setTitle("-Join the Official StickyBot Support Server-");
                embed.setDescription("[StickyBot Support](https://discord.gg/SvNQTtf)");
-               event.getChannel().sendMessage(embed.build()).queue();
+               event.getChannel().sendMessage(embed.build()).setActionRow(Button.link("https://discord.com/invite/SvNQTtf", "Support Server"), Button.link("https://www.stickybot.info", "Website")).queue();
            }
 
             //PREMIUM
@@ -388,10 +347,9 @@ public class Commands extends ListenerAdapter {
                         "\n-Custom Prefix." +
                         "\n-Removes \"Stickied Message:\" header." +
                         "\n-Premium support." +
-                        "\n-First week free." +
                         "\n-More to come!", false);
                 embed.addField("Learn More:", "[`www.stickybot.info/premium`](https://www.stickybot.info/premium)", false);
-                event.getChannel().sendMessage(embed.build()).queue();
+                event.getChannel().sendMessage(embed.build()).setActionRow(Button.link("https://www.stickybot.info/premium", "Premium"), Button.link("https://www.stickybot.info/manage-subscription", "Manage Subscription")).queue();
 
             //EMBED
             } else if (args[0].equalsIgnoreCase(prefix + "embed")) {
@@ -494,9 +452,5 @@ public class Commands extends ListenerAdapter {
         } else {
             return "[`Premium Not Active`](https://www.stickybot.info/premium)";
         }
-
-
     }
 }
-
-
