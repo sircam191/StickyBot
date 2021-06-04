@@ -32,10 +32,10 @@ public class Main {
     public static String topggAPIToken = "***";
     public static DiscordBotListAPI topggAPI;
 
-    public static String weatherAPIToken = "a304864a49f35d09388788ef0e929f29";
+    public static String weatherAPIToken = "***";
     public static DataWeatherClient weatherHelper;
 
-    public static String kSoftApiToken = "1128c280f0cfedf3a03852d4d4fd3108cf6a1912";
+    public static String kSoftApiToken = "***";
     public static KSoftAPI kSoftApi;
 
     public static Wiki wiki;
