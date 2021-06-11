@@ -20,6 +20,10 @@ public class WeatherCommand extends ListenerAdapter {
             return;
         }
 
+        if (Main.mapDisable.containsKey(event.getGuild().getId())) {
+            return;
+        }
+
         String[] args = event.getMessage().getContentRaw().split("\\s+");
         String prefix = "?";
 
@@ -87,7 +91,7 @@ public class WeatherCommand extends ListenerAdapter {
                 }
 
             } catch (Exception e) {
-                event.getChannel().sendMessage("Hmm something went worng... try another city or try again later.").queue();
+                event.getChannel().sendMessage("Hmm something went wrong... make sure you entered the city correctly or try again later.").queue();
                 e.printStackTrace();
             }
         }
