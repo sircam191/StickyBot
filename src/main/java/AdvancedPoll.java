@@ -2,10 +2,6 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
-
 public class AdvancedPoll extends ListenerAdapter
 {
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
@@ -20,6 +16,9 @@ public class AdvancedPoll extends ListenerAdapter
             prefix = Main.mapPrefix.get(event.getGuild().getId());
         }
 
+        if (Main.mapDisable.containsKey(event.getGuild().getId())) {
+            return;
+        }
 
         if (args[0].equalsIgnoreCase(prefix + "apoll") || args[0].equalsIgnoreCase(prefix + "advancedpoll")) {
 
@@ -138,18 +137,6 @@ public class AdvancedPoll extends ListenerAdapter
             }
 
         }
-
     }
-
 }
 
-
-/*
-
-?apoll option1, option3
-
-A: \uD83C\uDDE6 (blue)
-B: \uD83C\uDDE7 (blue)
-C: \uD83C\uDDE8 (blue)
-
- */
