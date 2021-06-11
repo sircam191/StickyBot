@@ -32,8 +32,8 @@ public class LoadPremiumUpdates extends ListenerAdapter {
                 serverName = "Null";
             }
 
-            em.setColor(Color.ORANGE);
-            em.setTitle("You Unlocked StickyBot Premium!");
+           em.setColor(Color.ORANGE);
+            em.setTitle("\uD83C\uDF89 You Unlocked StickyBot Premium! \uD83C\uDF89");
             em.setDescription("You or someone in your server has purchased StickyBot Premium for your server **" + serverName +
                     "**. To see what new features this has unlocked visit [www.stickybot.info](https://www.stickybot.info).");
 
