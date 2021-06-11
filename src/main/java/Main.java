@@ -178,6 +178,21 @@ public class Main {
         }
 
 
+        //Get non-sticky disable Guilds from DB
+        try {
+            Connection dbConn = DriverManager.getConnection(dbUrl,dbUser,dbPassword);
+            Statement myStmt = dbConn.createStatement();
+            String sql = "select * from disabled";
+            ResultSet rs = myStmt.executeQuery(sql);
+
+            while (rs.next()) {
+                mapDisable.put(rs.getString("serverId"), rs.getString("status"));
+            }
+
+        } catch ( SQLException e) {
+            e.printStackTrace();
+        }
+        
         jda = DefaultShardManagerBuilder.create(token,
                 GatewayIntent.GUILD_MESSAGES,
                 GatewayIntent.GUILD_MESSAGE_REACTIONS,
@@ -201,7 +216,8 @@ public class Main {
                          new SlowSticky(),
                          new WikipediaCommands(),
                          new ButtonTest(),
-                         new RollCommand()
+                         new RollCommand(),
+                         new DisableCommands()
                  )
                  .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.EMOTE, CacheFlag.CLIENT_STATUS)
                 .build();
