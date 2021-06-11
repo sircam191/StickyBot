@@ -8,10 +8,13 @@ import java.awt.*;
 
 public class WikiCommand extends ListenerAdapter {
 
-
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
 
         if (event.getAuthor().isBot()) {
+            return;
+        }
+
+        if (Main.mapDisable.containsKey(event.getGuild().getId())) {
             return;
         }
 
