@@ -77,7 +77,9 @@ public class Commands extends ListenerAdapter {
                             "``" + prefix + "about`` - Information about StickyBot.\n" +
                             "``" + prefix + "donate`` - Help keep StickyBot running smoothly.\n" +
                             "``" + prefix + "permcheck`` - Check if StickyBot has all the needed permissions.\n" +
-                            "``" + prefix + "premium`` - Info about StickyBot Premium.\n"
+                            "``" + prefix + "premium`` - Info about StickyBot Premium.\n" +
+                            "``" + prefix + "disablecommands`` - Disable all non-sticky commands.\n" +
+                            "``" + prefix + "enablecommands`` - Enable all non-sticky commands.\n"
                     , false);
 
 
@@ -168,6 +170,9 @@ public class Commands extends ListenerAdapter {
             }
                 //SERVER INFO
             else if (args[0].equalsIgnoreCase(prefix + "serverinfo")) {
+                if (Main.mapDisable.containsKey(event.getGuild().getId())) {
+                    return;
+                }
                 String creationDateClean = String.valueOf(event.getGuild().getTimeCreated().getMonth() + " " + String.valueOf(event.getGuild().getTimeCreated().getDayOfMonth()) + ", " + String.valueOf(event.getGuild().getTimeCreated().getYear()));
 
                 EmbedBuilder emb = new EmbedBuilder();
@@ -196,6 +201,9 @@ public class Commands extends ListenerAdapter {
 
                //UPTIME
            else if (args[0].equalsIgnoreCase(prefix + "uptime")) {
+                if (Main.mapDisable.containsKey(event.getGuild().getId())) {
+                    return;
+                }
                 //Uptime stuff
                 RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
                 long uptime = runtimeMXBean.getUptime();
@@ -217,6 +225,9 @@ public class Commands extends ListenerAdapter {
            }
                 //POLL
            else if (args[0].equalsIgnoreCase(prefix + "poll")) {
+                if (Main.mapDisable.containsKey(event.getGuild().getId())) {
+                    return;
+                }
                String pollQ;
                try {
                    if (!args[1].isEmpty()) {
@@ -242,10 +253,11 @@ public class Commands extends ListenerAdapter {
 
            }
 
-
            //USERINFO
            else if (args[0].equalsIgnoreCase(prefix + "userinfo")) {
-
+                if (Main.mapDisable.containsKey(event.getGuild().getId())) {
+                    return;
+                }
                try {
                    User tagUser;
                    Member taggedMember;
@@ -305,6 +317,9 @@ public class Commands extends ListenerAdapter {
 
             //COIN FLIP
            else if (args[0].equalsIgnoreCase(prefix + "coinflip") || args[0].equalsIgnoreCase(prefix + "flip") || args[0].equalsIgnoreCase(prefix + "coin") || args[0].equalsIgnoreCase(prefix + "flipcoin")) {
+                if (Main.mapDisable.containsKey(event.getGuild().getId())) {
+                    return;
+                }
                 int random = (int) Math.round(Math.random());
                 EmbedBuilder emb = new EmbedBuilder();
                 emb.setTitle("-Coin Flip-");
@@ -355,7 +370,9 @@ public class Commands extends ListenerAdapter {
 
             //EMBED
             } else if (args[0].equalsIgnoreCase(prefix + "embed")) {
-
+                if (Main.mapDisable.containsKey(event.getGuild().getId())) {
+                    return;
+                }
                try {
                     EmbedBuilder emb = new EmbedBuilder();
                     emb.setDescription(event.getMessage().getContentRaw().substring(7));
@@ -455,4 +472,7 @@ public class Commands extends ListenerAdapter {
             return "[`Premium Not Active`](https://www.stickybot.info/premium)";
         }
     }
+
 }
+
+
