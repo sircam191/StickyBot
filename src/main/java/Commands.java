@@ -286,9 +286,10 @@ public class Commands extends ListenerAdapter {
                if (taggedMember.hasPermission(Permission.ADMINISTRATOR)) {
                    emb.setFooter(tagUser.getName() + " is a Admin", tagUser.getAvatarUrl());
                } else {
-                   emb.setFooter(tagUser.getName(), tagUser.getAvatarUrl());
+                   emb.setFooter(tagUser.getName(), tagUser.getDefaultAvatarUrl());
                }
-               event.getChannel().sendMessage(emb.build()).setActionRow(Button.link(event.getMember().getUser().getAvatarUrl(), "Avatar")).queue(m -> {
+
+               event.getChannel().sendMessage(emb.build()).setActionRow(Button.link(event.getMember().getUser().getEffectiveAvatarUrl(), "Avatar")).queue(m -> {
                    if (Integer.valueOf(daysJoined) == 365 || Integer.valueOf(daysJoined) == 730 || Integer.valueOf(daysJoined) == 1095 || Integer.valueOf(daysJoined) == 1460 || Integer.valueOf(daysJoined) == 1825 || Integer.valueOf(daysJoined) == 2190) {
                        m.addReaction("\uD83C\uDF89").queue();
                    }
@@ -296,6 +297,7 @@ public class Commands extends ListenerAdapter {
 
                  } catch (Exception e) {
                     event.getChannel().sendMessage("Please tag a member in the server.").queue();
+                    e.printStackTrace();
                   }
 
            }
