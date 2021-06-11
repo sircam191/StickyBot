@@ -26,6 +26,10 @@ public class WikipediaCommands extends ListenerAdapter
             return;
         }
 
+        if (Main.mapDisable.containsKey(event.getGuild().getId())) {
+            return;
+        }
+
         //sets prefix (? default, can be different for premium members)
         String prefix = "?";
         if(Main.mapPrefix.containsKey(event.getGuild().getId())) {
