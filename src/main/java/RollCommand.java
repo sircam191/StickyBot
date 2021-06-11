@@ -17,6 +17,10 @@ public class RollCommand extends ListenerAdapter {
             return;
         }
 
+        if (Main.mapDisable.containsKey(event.getGuild().getId())) {
+            return;
+        }
+
         if(Main.mapPrefix.containsKey(event.getGuild().getId())) {
             prefix = Main.mapPrefix.get(event.getGuild().getId());
         }
@@ -57,5 +61,6 @@ public class RollCommand extends ListenerAdapter {
             emb.setFooter("Rolled by: " + member.getEffectiveName(), member.getUser().getAvatarUrl());
 
             return emb;
+
         }
 }
