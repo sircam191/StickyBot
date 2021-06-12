@@ -28,7 +28,7 @@ public class SlowSticky extends ListenerAdapter {
 
 
         if (event.getMessage().getContentRaw().startsWith(prefix + "stickslow ") && event.getMessage().getContentRaw().matches("[\\S]+\\s{2,}.*") && (permCheck(event.getMember())) && !event.getAuthor().isBot()) {
-            event.getChannel().sendMessage(event.getMember().getAsMention() + " please only use one space after the `?stickslow` command!").queue();
+            event.getMessage().reply(event.getMember().getAsMention() + " please only use one space after the `?stickslow` command!").queue();
             return;
         }
 
@@ -36,8 +36,8 @@ public class SlowSticky extends ListenerAdapter {
             if (!Main.premiumGuilds.containsValue(event.getGuild().getId())) {
                 EmbedBuilder em = new EmbedBuilder();
                 em.setTitle("**Whoops! This is a StickyBot Premium Command!** ")
-                        .addField("__StickyBot Premium__ allows for slow stickys plus other awesome features!", "Try it for free: [www.stickybot.com](https://www.stickybot.info)", false);
-                event.getChannel().sendMessage(em.setColor(Color.ORANGE).build()).queue();
+                        .addField("__StickyBot Premium__ allows for slow stickys plus other awesome features!", "Learn more: [www.stickybot.com](https://www.stickybot.info)", false);
+                event.getMessage().reply(em.setColor(Color.ORANGE).build()).queue();
             } else {
                 try {
                     //remove last sticky message if there is one (user used sticky command while already having one)
@@ -58,7 +58,7 @@ public class SlowSticky extends ListenerAdapter {
 
                         for (Emote emote : event.getMessage().getEmotes()) {
                             event.getGuild().retrieveEmoteById(emote.getId()).queue(success -> {}, failure -> {
-                                event.getChannel().sendMessage(event.getMember().getAsMention() + " Error: Please only use emotes that are from this server.").queue();
+                                event.getMessage().reply(event.getMember().getAsMention() + " Error: Please only use emotes that are from this server.").queue();
                                 Main.mapMessage.remove(event.getChannel().getId());
                                 removeDB(channelId);
                             });
@@ -67,7 +67,7 @@ public class SlowSticky extends ListenerAdapter {
                         String input = event.getMessage().getContentRaw();
 
                         if (event.getMessage().getContentRaw().contains(prefix + "stickslow \n")) {
-                            event.getChannel().sendMessage(event.getMember().getAsMention() + " Error: Please provide text after `" + prefix + "stickslow` before using a new line.").queue();
+                            event.getMessage().reply(event.getMember().getAsMention() + " Error: Please provide text after `" + prefix + "stickslow` before using a new line.").queue();
                             return;
                         }
 
@@ -77,11 +77,10 @@ public class SlowSticky extends ListenerAdapter {
                         removeDB(channelId);
                         addDB(channelId,(arr[1]));
 
-
                     event.getChannel().sendMessage(Main.mapMessageSlow.get(channelId)).queue(m -> Main.mapDeleteId2.put(event.getChannel().getId(), m.getId()));
                     event.getMessage().addReaction("\u2705").queue();
                 } catch (Exception e) {
-                    event.getChannel().sendMessage(event.getMember().getAsMention() + " please use this format: `?stickslow <message>`.").queue();
+                    event.getMessage().reply(event.getMember().getAsMention() + " please use this format: `" + prefix + "stickslow <message>`.").queue();
                 }
             }
 
@@ -110,10 +109,7 @@ public class SlowSticky extends ListenerAdapter {
 
         if (Main.mapMessageSlow.get(channelId) != null) {
 
-
             List<Message> history = event.getChannel().getHistory().retrievePast(18).complete();
-
-
 
             try {
                 for(Message m : history.subList(0, 13)) {
@@ -131,8 +127,6 @@ public class SlowSticky extends ListenerAdapter {
                 //do nothing
             }
 
-
-
             //gets set to true if one of last five messages contains sticky message.
             Boolean check = false;
 
@@ -145,8 +139,6 @@ public class SlowSticky extends ListenerAdapter {
             } catch (Exception e) {
                 //do nothing
             }
-
-
 
             if(!check) {
                 if(Main.mapDeleteId2.get(channelId) != null) {
