@@ -19,31 +19,31 @@ public class PrefixCommand extends ListenerAdapter
             prefix = Main.mapPrefix.get(event.getGuild().getId());
         }
 
-            if (args[0].equalsIgnoreCase(Main.prefix + "prefix") || args[0].equalsIgnoreCase(prefix + "prefix")) {
+        if (args[0].equalsIgnoreCase(Main.prefix + "prefix") || args[0].equalsIgnoreCase(prefix + "prefix")) {
 
-                if (!event.getMember().hasPermission(Permission.MANAGE_SERVER)) {
-                    event.getChannel().sendMessage("You need the `Manage Server` permission to use this command.").queue();
-                } else if (!Main.premiumGuilds.containsValue(event.getGuild().getId())) {
-                    event.getChannel().sendMessage("This command requires __StickyBot Premium__.\nLearn more at https://www.stickybot.info").queue();
-                } else {
-                    try {
-                        if (args[1].isEmpty()) {
-                            event.getChannel().sendMessage("Please provide the new prefix in the command. Example: `?prefix !`").queue();
-                        } else {
-                            Main.mapPrefix.put(event.getGuild().getId(), args[1]);
-                            event.getChannel().sendMessage("Prefix set to `" + args[1] + "`").queue();
-                            removeDB(event.getGuild().getId());
-                            addDB(event.getGuild().getId(), args[1]);
-                        }
-                    } catch (Exception e) {
-                        event.getChannel().sendMessage("Please provide the new prefix in the command.").queue();
+             if (!event.getMember().hasPermission(Permission.MANAGE_SERVER)) {
+                 event.getMessage().reply(event.getMember().getAsMention() + " you need the `Manage Server` permission to use this command.").queue();
+             } else if (!Main.premiumGuilds.containsValue(event.getGuild().getId())) {
+                 event.getMessage().reply("This command requires __StickyBot Premium__.\nLearn more at https://www.stickybot.info").queue();
+             } else {
+                 try {
+                     if (args[1].isEmpty()) {
+                         event.getMessage().reply(event.getMember().getAsMention() + " please provide the new prefix in the command. Example: `?prefix !`").queue();
+                      } else {
+                         Main.mapPrefix.put(event.getGuild().getId(), args[1]);
+                         event.getChannel().sendMessage("Prefix set to `" + args[1] + "`").queue();
+                         removeDB(event.getGuild().getId());
+                         addDB(event.getGuild().getId(), args[1]);
+                      }
+                 } catch (Exception e) {
+                     event.getMessage().reply(event.getMember().getAsMention() + " please provide the new prefix in the command.").queue();
                     }
                 }
             }
 
-        if ( args[0].equalsIgnoreCase(Main.prefix + "resetprefix") && (event.getMember().hasPermission(Permission.MANAGE_SERVER)) ) {
+        if ( args[0].equalsIgnoreCase(Main.prefix + "resetprefix") || args[0].equalsIgnoreCase("?resetprefix") && (event.getMember().hasPermission(Permission.MANAGE_SERVER)) ) {
             Main.mapPrefix.remove(event.getGuild().getId());
-            event.getChannel().sendMessage("Prefix reset to `?`").queue();
+            event.getMessage().reply("Prefix reset to `?`").queue();
             removeDB(event.getGuild().getId());
         }
     }
