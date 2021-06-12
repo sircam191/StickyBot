@@ -1,6 +1,7 @@
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.Button;
@@ -40,7 +41,7 @@ public class WikipediaCommands extends ListenerAdapter
         if (args[0].equalsIgnoreCase(prefix + "wiki")) {
 
             if (args.length == 1) {
-                event.getChannel().sendMessage("Please provide a article to search!").queue();
+                event.getMessage().reply("Please provide a article to search!").queue();
                 return;
             }
 
@@ -57,7 +58,7 @@ public class WikipediaCommands extends ListenerAdapter
             }
 
             if (!wiki.exists(article)) {
-                event.getChannel().sendMessage("Hmm, " + event.getAuthor().getAsMention() + " there does not seem to be a Wikipedia page on this.\nTry searching something different or check for a typo.").queue();
+                event.getMessage().reply("Hmm, " + event.getAuthor().getAsMention() + " there does not seem to be a Wikipedia page on this.\nTry searching something different or check for a typo.").queue();
                 return;
             }
 
@@ -97,7 +98,7 @@ public class WikipediaCommands extends ListenerAdapter
                 em.setDescription("There are multiple results for **" + article + "**!\nTo see all of the results [Click Here](" + wikiLink + ").");
                 em.setFooter("Source: www.wikipedia.org", "https://upload.wikimedia.org/wikipedia/en/thumb/8/80/Wikipedia-logo-v2.svg/1200px-Wikipedia-logo-v2.svg.png");
                 em.setAuthor("Wiki Search By: " + event.getAuthor().getName(), event.getMessage().getJumpUrl(), event.getMember().getUser().getAvatarUrl());
-                event.getChannel().sendMessage(em.build()).setActionRow(Button.link(wikiLink, "Full Article")).queue();
+                event.getMessage().reply(em.build()).setActionRow(Button.link(wikiLink, "Full Article").withEmoji(Emoji.fromMarkdown("<:Wikipedia:853165092769103905>"))).queue();
                 return;
             }
 
@@ -110,7 +111,7 @@ public class WikipediaCommands extends ListenerAdapter
             em.setImage(getImageLink(article));
 
             em.setFooter("Source: www.wikipedia.org", "https://upload.wikimedia.org/wikipedia/en/thumb/8/80/Wikipedia-logo-v2.svg/1200px-Wikipedia-logo-v2.svg.png");
-            event.getChannel().sendMessage(em.build()).setActionRow(Button.link(wikiLink, "Full Article")).queue();
+            event.getMessage().reply(em.build()).setActionRow(Button.link(wikiLink, "Full Article").withEmoji(Emoji.fromMarkdown("<:Wikipedia:853165092769103905>"))).queue();
         }
     }
 
