@@ -37,7 +37,7 @@ public class WikiCommand extends ListenerAdapter {
             .setThumbnail(wiki.getImage())
             .setColor(Color.yellow)
             .setFooter("Random Wiki requested by " + event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator() + " Source: KSoft.Si API");
-            event.getChannel().sendMessage(em.build()).setActionRow(Button.link(wiki.getArticleUrl(), "Full Article")).queue();
+            event.getMessage().reply(em.build()).setActionRow(Button.link(wiki.getArticleUrl(), "Full Article")).queue();
         }
     }
 }
