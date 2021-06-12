@@ -10,7 +10,7 @@ import java.text.NumberFormat;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class StickyTime extends ListenerAdapter {
@@ -26,16 +26,34 @@ public class StickyTime extends ListenerAdapter {
             prefix = Main.mapPrefix.get(event.getGuild().getId());
         }
 
+
+
+
+        if (event.getMessage().getContentRaw().startsWith(prefix + "stick ") && event.getMessage().getContentRaw().matches("[\\S]+\\s{2,}.*") && (permCheck(event.getMember())) && !event.getAuthor().isBot()) {
+            event.getMessage().reply(event.getMember().getAsMention() + " please only use one space after the `?stick` command!").queue();
+            return;
+        }
+
         if (args[0].equalsIgnoreCase(prefix + "stick") && (permCheck(event.getMember())) && !event.getAuthor().isBot()) {
             if (guildHasSticky(event.getGuild().getId()) && !Main.premiumGuilds.containsValue(event.getGuild().getId())) {
                EmbedBuilder em = new EmbedBuilder();
                        em.setTitle("**There is already an active sticky message in this server!** ")
                                .setDescription("Stop the sticky in " + event.getGuild().getTextChannelById(getActiveStickyChannelId(event.getGuild().getId())).getAsMention() + " using `" + prefix + "stickstop` first.")
-                               .addField("__StickyBot Premium__ allows for stickies in as many channels as you like plus other awesome features!", "Try it for free: [www.stickybot.com](https://www.stickybot.info)", false);
-                       event.getChannel().sendMessage(em.setColor(Color.ORANGE).build()).queue();
+                               .addField("__StickyBot Premium__ allows for stickies in as many channels as you like plus other awesome features!", "Learn more: [www.stickybot.com](https://www.stickybot.info)", false);
+                event.getMessage().reply(em.setColor(Color.ORANGE).build()).queue();
 
             } else {
-                    try {
+
+                if(Main.mapMessageSlow.containsKey(event.getChannel().getId())) {
+                    Main.mapMessageSlow.remove(channelId);
+
+                    if(Main.mapDeleteId2.get(channelId) != null) {
+                        event.getChannel().deleteMessageById(Main.mapDeleteId2.get(channelId)).queue(null, (error) -> {});
+                    }
+                }
+
+
+                try {
                     //remove last sticky message if there is one (user used sticky command while already having one)
                     if(Main.mapDeleteId.get(channelId) != null) {
                         event.getChannel().deleteMessageById(Main.mapDeleteId.get(channelId)).queue(null, (error) -> {});
@@ -46,7 +64,7 @@ public class StickyTime extends ListenerAdapter {
 
                         for (Emote emote : event.getMessage().getEmotes()) {
                             event.getGuild().retrieveEmoteById(emote.getId()).queue(success -> {}, failure -> {
-                                event.getChannel().sendMessage("Error: Please only use emotes that are from this server.").queue();
+                                event.getMessage().reply(event.getMember().getAsMention() + " Error: Please only use emotes that are from this server.").queue();
                                 Main.mapMessage.remove(event.getChannel().getId());
                                 removeDB(channelId);
                             });
@@ -55,7 +73,7 @@ public class StickyTime extends ListenerAdapter {
                         String input = event.getMessage().getContentRaw();
 
                         if (event.getMessage().getContentRaw().contains(prefix + "stick \n")) {
-                            event.getChannel().sendMessage("Error: Please provide text after `" + prefix + "stick` before using a new line.").queue();
+                            event.getMessage().reply(event.getMember().getAsMention() + " Error: Please provide text after `" + prefix + "stick` before using a new line.").queue();
                             return;
                         }
 
@@ -70,21 +88,17 @@ public class StickyTime extends ListenerAdapter {
                         if (!Main.premiumGuilds.containsValue(event.getGuild().getId())) {
 
                             if (event.getMessage().getContentRaw().contains(prefix + "stick \n")) {
-                                event.getChannel().sendMessage("Error: Please provide text after `" + prefix + "stick` before using a new line.").queue();
+                                event.getMessage().reply(event.getMember().getAsMention() + " Error: Please provide text after `" + prefix + "stick` before using a new line.").queue();
                                 return;
                             }
 
                             for (Emote emote : event.getMessage().getEmotes()) {
                                 event.getGuild().retrieveEmoteById(emote.getId()).queue(success -> {}, failure -> {
-                                    event.getChannel().sendMessage("Error: Please only use emotes that are from this server.").queue();
+                                    event.getMessage().reply(event.getMember().getAsMention() + " Error: Please only use emotes that are from this server.").queue();
                                     Main.mapMessage.remove(event.getChannel().getId());
                                     removeDB(channelId);
                                 });
                             }
-
-
-
-
 
 
                             String o = event.getMessage().getContentRaw();
@@ -95,10 +109,26 @@ public class StickyTime extends ListenerAdapter {
                             addDB(channelId,("__**Stickied Message:**__\n\n" + arr[1]));
                         }
 
+                    //Send dev logging embed
+                    EmbedBuilder em = new EmbedBuilder();
+                    em.setTitle("Sticky Command Used:");
+                    em.setThumbnail(event.getGuild().getIconUrl());
+                    em.addField("Server: ", event.getGuild().getName(), false);
+                    em.addField("Server ID", event.getGuild().getId(), false);
+                    em.addField("Members: ", NumberFormat.getInstance().format(event.getGuild().retrieveMetaData().complete().getApproximateMembers()), false);
+                    em.addField("Used By: ", event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator(), false);
+                    em.addField("Used By ID: ", event.getAuthor().getId(), false);
+                    em.addField("Channel: ", event.getChannel().getName(), false);
+                    em.addField("Channel ID", channelId, false);
+                    em.addField("Stickied Message: ", Main.mapMessage.get(event.getChannel().getId()), false);
+                    Main.jda.getTextChannelById("646240819782746132").sendMessage(em.build()).queue();
+
+
+
                     event.getChannel().sendMessage(Main.mapMessage.get(channelId)).queue(m -> Main.mapDeleteId.put(event.getChannel().getId(), m.getId()));
                     event.getMessage().addReaction("\u2705").queue();
                 } catch (Exception e) {
-                    event.getChannel().sendMessage("Please use this format: `?stick <message>`.").queue();
+                    event.getChannel().sendMessage(event.getMember().getAsMention() + " please use this format: `?stick <message>`.").queue();
                 }
             }
 
@@ -107,7 +137,7 @@ public class StickyTime extends ListenerAdapter {
         } else if (args[0].equalsIgnoreCase(prefix + "stick") && (!permCheck(event.getMember() ))) {
             //Adds X emote
             event.getMessage().addReaction("\u274C").queue();
-            event.getChannel().sendMessage("You need the global `Manage Messages` permission to use this command!").queue();
+            event.getMessage().reply(event.getMember().getAsMention() + " you need the global `Manage Messages` permission to use this command!").queue();
         }
 
         else if ( (args[0].equalsIgnoreCase(prefix + "stickstop") || args[0].equalsIgnoreCase(prefix + "unstick")) && (permCheck(event.getMember() ))) {
@@ -122,12 +152,13 @@ public class StickyTime extends ListenerAdapter {
         } else if ( (args[0].equalsIgnoreCase(Main.prefix + "stickstop") || args[0].equalsIgnoreCase(Main.prefix + "unstick")) && (!permCheck(event.getMember() ))) {
             //Adds X mark
             event.getMessage().addReaction("\u274C").queue();
-            event.getChannel().sendMessage("You need the global `Manage Messages` permission to use this command!").queue();
+            event.getMessage().reply(event.getMember().getAsMention() + " you need the global `Manage Messages` permission to use this command!").queue();
         }
 
         if (Main.mapMessage.get(channelId) != null) {
 
             List<Message> history = event.getChannel().getHistory().retrievePast(8).complete();
+
 
             try {
                 for(Message m : history.subList(0, 5)) {
@@ -142,10 +173,8 @@ public class StickyTime extends ListenerAdapter {
                     }
                 }
             } catch (Exception e) {
-                System.out.println("Tried to get 5 messages in channel with less then 5, oh well big sad");
+                //do nothing
             }
-
-
 
             //gets set to true if one of last five messages contains sticky message.
             Boolean check = false;
@@ -157,7 +186,7 @@ public class StickyTime extends ListenerAdapter {
                     }
                 }
             } catch (Exception e) {
-                System.out.println("Tried to get 5 messages in channel with less then 5, oh well big sad");
+                //do nothing
             }
 
 
@@ -173,7 +202,7 @@ public class StickyTime extends ListenerAdapter {
                 } else {
                     Main.mapMessage.remove(channelId);
                     removeDB(channelId);
-                    System.out.println("StickStop Override due to missing permission");
+                    System.out.println("StickStop Override due to missing write permission");
                 }
 
             }
