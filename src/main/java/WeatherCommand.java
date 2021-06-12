@@ -84,14 +84,14 @@ public class WeatherCommand extends ListenerAdapter {
 
                     .setFooter("Weather for " + weather.getCityName() + " requested by " + event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator(), "https://pbs.twimg.com/profile_images/1173919481082580992/f95OeyEW.jpg")
                     .setColor(Color.yellow);
-                    event.getChannel().sendMessage(emb.build()).queue();
+                    event.getMessage().reply(emb.build()).queue();
 
                 } else {
-                    event.getChannel().sendMessage("Please use this format ``?weather <location>``.\nExample: ``?weather Seattle``").queue();
+                    event.getMessage().reply("Please use this format ``?weather <location>``.\nExample: ``?weather Seattle``").queue();
                 }
 
             } catch (Exception e) {
-                event.getChannel().sendMessage("Hmm something went wrong... make sure you entered the city correctly or try again later.").queue();
+                event.getMessage().reply("Hmm something went wrong... make sure you entered the city correctly or try again later.").queue();
                 e.printStackTrace();
             }
         }
