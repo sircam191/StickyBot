@@ -1,9 +1,6 @@
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Emote;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.Button;
@@ -41,7 +38,7 @@ public class Commands extends ListenerAdapter {
 
             int shardId = (int) ((event.getGuild().getIdLong() >>> 22) % Main.jda.getShardsTotal());
 
-            event.getChannel().sendMessage(">>> **Pong!**" + "\nThis Shard: (`" + shardId + "`) Ping: `" + Main.jda.getShardById(shardId).getGatewayPing() + "`ms."
+            event.getMessage().reply(">>> **Pong!**" + "\nThis Shard: (`" + shardId + "`) Ping: `" + Main.jda.getShardById(shardId).getGatewayPing() + "`ms."
                     + "\nAll Shards Average Ping: `" + Main.jda.getAverageGatewayPing() + "`ms.").queue();
         }
 
@@ -56,7 +53,7 @@ public class Commands extends ListenerAdapter {
              embed.addField("\uD83C\uDF9B Utility Commands:",
                              "``" + prefix + "poll <question>`` - Create a y/n poll for people to vote.\n" +
                              "``" + prefix + "apoll <question, option1, option2>`` - Create a multiple choice poll. Separate the question and options with commas. Supports up to 7 options.\n" +
-                             "``" + prefix + "userinfo <@user>`` - Get info on a member.\n" +
+                             "``" + prefix + "userinfo <@user>`` - Get info on a member. (@user can be a mention, ID, or left blank).\n" +
                              "``" + prefix + "serverinfo`` - Get info on the server.\n" +
                              "``" + prefix + "embed <message>`` - Turns your message into a embed.\n"
                      , false);
@@ -101,9 +98,13 @@ public class Commands extends ListenerAdapter {
              embed.setFooter("For support please join the Support Server. Use " + prefix + "support for the invite.", Main.jda.getShards().get(0).getSelfUser().getAvatarUrl());
 
              try {
-                 event.getChannel().sendMessage(embed.build()).setActionRow(Button.link("https://www.stickybot.info", "Website"), Button.link("https://discord.com/invite/SvNQTtf", "Support Server"), Button.link("https://www.stickybot.info/premium", "Premium")).queue(null, (error) -> event.getChannel().sendMessage("I need the `Embed Links` Permission!").queue());
+                 event.getMessage().reply(embed.build()).setActionRow(
+                         Button.link("https://www.stickybot.info", "Website").withEmoji(Emoji.fromMarkdown("<:StickyBotCircle:693004145065590856>")),
+                         Button.link("https://discord.com/invite/SvNQTtf", "Support Server").withEmoji(Emoji.fromMarkdown("<:discordEmote:853160010305765376>")),
+                         Button.link("https://www.stickybot.info/premium", "Premium").withEmoji(Emoji.fromMarkdown("\uD83E\uDDE1")))
+                         .queue(null, (error) -> event.getChannel().sendMessage("I need the `Embed Links` Permission!").queue());
              } catch (Exception e) {
-                 event.getChannel().sendMessage("I need the `Embed Links` Permission!").queue();
+                 event.getMessage().reply("I need the `Embed Links` Permission!").queue();
              }
             }
 
@@ -134,7 +135,9 @@ public class Commands extends ListenerAdapter {
                 eb.addField("Donate:", "[paypal.me/sircam19](https://www.paypal.me/sircam19)", false);
                 eb.setFooter("StickyBot is Made with Java & JDA", Main.jda.getShards().get(0).getSelfUser().getAvatarUrl());
 
-                event.getChannel().sendMessage(eb.build()).setActionRow(Button.link("https://www.stickybot.info", "Website")).queue();
+                event.getMessage().reply(eb.build()).setActionRow(Button.link("https://www.stickybot.info", "Website").withEmoji(Emoji.fromMarkdown("<:StickyBotCircle:693004145065590856>")),
+                        Button.link("https://discord.com/invite/SvNQTtf", "Support Server").withEmoji(Emoji.fromMarkdown("<:discordEmote:853160010305765376>")),
+                        Button.link("https://www.stickybot.info/premium", "Premium").withEmoji(Emoji.fromMarkdown("\uD83E\uDDE1"))).queue();
            }
 
                 //DONATE
@@ -145,7 +148,7 @@ public class Commands extends ListenerAdapter {
                embed.setDescription("[**paypal.me/sircam19**](https://www.paypal.me/sircam19)");
                embed.setFooter("Include your Discord name or ID in the donation to receive the @donator tag in the support server.");
                event.getMessage().addReaction("\u2764").queue();
-               event.getChannel().sendMessage(embed.build()).queue();
+               event.getMessage().reply(embed.build()).setActionRow(Button.link("https://www.paypal.me/sircam19", "PayPal").withEmoji(Emoji.fromMarkdown("<:paypal:853161440902250496>"))).queue();
 
            }
 
@@ -196,7 +199,7 @@ public class Commands extends ListenerAdapter {
                 emb.setColor(Color.orange);
                 emb.setFooter(event.getGuild().getName(), event.getGuild().getIconUrl());
 
-                event.getChannel().sendMessage(emb.build()).queue();
+                event.getMessage().reply(emb.build()).queue();
             }
 
                //UPTIME
@@ -220,7 +223,7 @@ public class Commands extends ListenerAdapter {
                 EmbedBuilder embed = new EmbedBuilder();
                 embed.setColor(Color.ORANGE);
                 embed.addField("Invite StickyBot to your server:", "[top.gg/StickyBot](https://top.gg/bot/628400349979344919)", false);
-                event.getChannel().sendMessage(embed.build()).queue();
+                event.getMessage().reply(embed.build()).queue();
 
            }
                 //POLL
@@ -248,7 +251,7 @@ public class Commands extends ListenerAdapter {
                        event.getMessage().delete().queue();
                    }
                } catch (Exception e) {
-                   event.getChannel().sendMessage("Please use this format ``?poll <your question>``.\nExample: ``?poll Is this a cool command?``").queue();
+                   event.getMessage().reply("Please use this format ``?poll <your question>``.\nExample: ``?poll Is this a cool command?``").queue();
                }
 
            }
@@ -262,9 +265,18 @@ public class Commands extends ListenerAdapter {
                    User tagUser;
                    Member taggedMember;
 
-                   if (event.getMessage().toString().contains("@")) {
+                   if (event.getMessage().getContentRaw().contains("@")) {
                        tagUser = event.getMessage().getMentionedUsers().get(0);
                        taggedMember = event.getMessage().getMentionedMembers().get(0);
+                   } else if (args.length == 2 && args[1].length() == 18 && !args[0].contains("[a-zA-Z]+")) {
+                        try {
+                            taggedMember = event.getGuild().retrieveMemberById(args[1]).complete();
+                            tagUser = Main.jda.retrieveUserById(args[1]).complete();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            event.getChannel().sendMessage(event.getMember().getAsMention() + " this user is not in this server.").queue();
+                            return;
+                       }
                    } else {
                        tagUser = event.getAuthor();
                        taggedMember = event.getMember();
@@ -276,7 +288,7 @@ public class Commands extends ListenerAdapter {
 
                    String daysJoined = numberOfDaysJoined(taggedMember);
 
-                   emb.setThumbnail(tagUser.getAvatarUrl());
+                   emb.setThumbnail(tagUser.getEffectiveAvatarUrl());
                    emb.setTitle("**-User Info-**");
                    emb.addField("Info for " + tagUser.getName() + "#" + tagUser.getDiscriminator(),
                            "**User ID:** ``" + tagUser.getId() + "``\n" +
@@ -301,7 +313,7 @@ public class Commands extends ListenerAdapter {
                    emb.setFooter(tagUser.getName(), tagUser.getDefaultAvatarUrl());
                }
 
-               event.getChannel().sendMessage(emb.build()).setActionRow(Button.link(event.getMember().getUser().getEffectiveAvatarUrl(), "Avatar")).queue(m -> {
+               event.getMessage().reply(emb.build()).setActionRow(Button.link(event.getMember().getUser().getEffectiveAvatarUrl(), "Avatar")).queue(m -> {
                    if (Integer.valueOf(daysJoined) == 365 || Integer.valueOf(daysJoined) == 730 || Integer.valueOf(daysJoined) == 1095 || Integer.valueOf(daysJoined) == 1460 || Integer.valueOf(daysJoined) == 1825 || Integer.valueOf(daysJoined) == 2190) {
                        m.addReaction("\uD83C\uDF89").queue();
                    }
@@ -331,7 +343,7 @@ public class Commands extends ListenerAdapter {
                     emb.setDescription("Coin Landed on **TAILS**!");
                 }
                 emb.setFooter("Flipped by: " + event.getMember().getEffectiveName(), event.getMember().getUser().getAvatarUrl());
-                event.getChannel().sendMessage(emb.build()).queue();
+                event.getMessage().reply(emb.build()).queue();
            }
 
                 //WEBSITE
@@ -340,7 +352,7 @@ public class Commands extends ListenerAdapter {
                 embed.setColor(Color.ORANGE);
                 embed.setTitle("-StickyBot Website-");
                 embed.setDescription("[www.stickybot.info](https://www.stickybot.info/)");
-                event.getChannel().sendMessage(embed.build()).setActionRow(Button.link("https://www.stickybot.info", "Website")).queue();;
+                event.getMessage().reply(embed.build()).setActionRow(Button.link("https://www.stickybot.info", "Website").withEmoji(Emoji.fromMarkdown("<:StickyBotCircle:693004145065590856>"))).queue();
 
            }
 
@@ -350,7 +362,9 @@ public class Commands extends ListenerAdapter {
                embed.setColor(Color.ORANGE);
                embed.setTitle("-Join the Official StickyBot Support Server-");
                embed.setDescription("[StickyBot Support](https://discord.gg/SvNQTtf)");
-               event.getChannel().sendMessage(embed.build()).setActionRow(Button.link("https://discord.com/invite/SvNQTtf", "Support Server"), Button.link("https://www.stickybot.info", "Website")).queue();
+                event.getMessage().reply(embed.build()).setActionRow(
+                       Button.link("https://discord.com/invite/SvNQTtf", "Support Server").withEmoji(Emoji.fromMarkdown("<:discordEmote:853160010305765376>")),
+                       Button.link("https://www.stickybot.info", "Website").withEmoji(Emoji.fromMarkdown("<:StickyBotCircle:693004145065590856>"))).queue();
            }
 
             //PREMIUM
@@ -366,7 +380,8 @@ public class Commands extends ListenerAdapter {
                         "\n-Premium support." +
                         "\n-More to come!", false);
                 embed.addField("Learn More:", "[`www.stickybot.info/premium`](https://www.stickybot.info/premium)", false);
-                event.getChannel().sendMessage(embed.build()).setActionRow(Button.link("https://www.stickybot.info/premium", "Premium"), Button.link("https://www.stickybot.info/manage-subscription", "Manage Subscription")).queue();
+                event.getMessage().reply(embed.build()).setActionRow(Button.link("https://www.stickybot.info/premium", "Premium").withEmoji(Emoji.fromMarkdown("\uD83E\uDDE1")),
+                        Button.link("https://www.stickybot.info/manage-subscription", "Manage Subscription").withEmoji(Emoji.fromMarkdown("<:StickyBotCircle:693004145065590856>"))).queue();
 
             //EMBED
             } else if (args[0].equalsIgnoreCase(prefix + "embed")) {
@@ -397,7 +412,7 @@ public class Commands extends ListenerAdapter {
 
                 result += "\n``" + event.getMessage().getTimeCreated().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)) + "``";
 
-            event.getChannel().sendMessage(result).queue();
+                event.getMessage().reply(result).queue();
             }
         }
 
