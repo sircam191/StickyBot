@@ -1,4 +1,5 @@
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -26,14 +27,14 @@ public class RollCommand extends ListenerAdapter {
         }
 
         if (args[0].equalsIgnoreCase(prefix + "dice") || args[0].equalsIgnoreCase(prefix + "roll")) {
-               event.getChannel().sendMessage(RollDice(event.getMember()).build()).setActionRow(Button.primary("rollAgain", "Roll Again!")).queue();
+            event.getMessage().reply(RollDice(event.getMember()).build()).setActionRow(Button.primary("rollAgain", "Roll Again!").withEmoji(Emoji.fromMarkdown("<:grey_dice:853159207708917771>"))).queue();
            }
         }
 
 
     public void onButtonClick(ButtonClickEvent event) {
         if (event.getButton().getId().equals("rollAgain")) {
-            event.replyEmbeds(RollDice(event.getMember()).build()).addActionRow(Button.primary("rollAgain", "Roll Again!")).queue();
+            event.replyEmbeds(RollDice(event.getMember()).build()).addActionRow(Button.primary("rollAgain", "Roll Again!").withEmoji(Emoji.fromMarkdown("<:grey_dice:853159207708917771>"))).queue();
         }
 
     }
@@ -63,4 +64,5 @@ public class RollCommand extends ListenerAdapter {
             return emb;
 
         }
+
 }
