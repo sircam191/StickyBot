@@ -130,10 +130,10 @@ public class AdvancedPoll extends ListenerAdapter
                     });
                     event.getMessage().delete().queue();
                 } else {
-                    event.getChannel().sendMessage("Please use this format: `" + prefix + "apoll What is your fav color?, Option1, Option2`.\n(*You can have up to 4 options*)").queue();
+                    event.getMessage().reply("Please use this format: `" + prefix + "apoll What is your fav color?, Option1, Option2`.\n(*You can have up to 4 options*)").queue();
                 }
             } catch (Exception e) {
-                event.getChannel().sendMessage("Whoops!\nPlease make sure StickyBot has the `Manage Messages` and `Embed Links` permissions.").queue();
+                event.getMessage().reply("Whoops!\nPlease make sure StickyBot has the `Manage Messages` and `Embed Links` permissions.").queue();
             }
 
         }
