@@ -95,7 +95,7 @@ public class Commands extends ListenerAdapter {
 
              embed.addField("Premium Status:", PremiumStatus(event.getGuild().getId()), true);
 
-             embed.setFooter("For support please join the Support Server. Use " + prefix + "support for the invite.", Main.jda.getShards().get(0).getSelfUser().getAvatarUrl());
+             embed.setFooter("Join our support server with any questions. We are happy to help!", Main.jda.getShards().get(0).getSelfUser().getAvatarUrl());
 
              try {
                  event.getMessage().reply(embed.build()).setActionRow(
@@ -320,7 +320,7 @@ public class Commands extends ListenerAdapter {
                });
 
                  } catch (Exception e) {
-                    event.getChannel().sendMessage("Please tag a member in the server.").queue();
+                    event.getMessage().reply("Please tag a member in the server, provide a user ID, or leave blank to get your own user info.").queue();
                     e.printStackTrace();
                   }
 
