@@ -148,7 +148,7 @@ public class WikipediaCommands extends ListenerAdapter
             try {
                 newdata.get("source");
             } catch (Exception e) {
-                return "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png";
+                return "https://static.thenounproject.com/png/1554489-200.png";
             }
             String imageLink = newdata.get("source").toString().substring(1, newdata.get("source").toString().length() - 1);
             return imageLink;
@@ -156,7 +156,7 @@ public class WikipediaCommands extends ListenerAdapter
         catch (IOException | HttpResponseHeaderParser.ParseException e) {
             e.printStackTrace();
         }
-        return "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png";
+        return "https://static.thenounproject.com/png/1554489-200.png";
     }
 }
 
