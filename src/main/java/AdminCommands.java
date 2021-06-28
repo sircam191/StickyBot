@@ -39,7 +39,7 @@ public class AdminCommands extends ListenerAdapter {
                             "`?shardping` - Get pings and status for all shards.\n" +
                                     "`?getshard <server ID>` - Get the shard number a server is on.\n" +
                                     "`?restartshard <shard>` - Restart a specific shard *(Restricted to Management Team)*.\n" +
-                                    "`?checkpremium <server ID>` - Check is the specified server has premium."
+                                    "`?checkpremium <server ID>` - Check if the specified server has premium."
                             , false)
                     .addField("Dev Only Commands:",
                             "`?manualstop <channel ID>` - StickStop a sticky in the specified channel.\n" +
