@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.apache.commons.io.FileUtils;
 
 import java.awt.*;
@@ -31,13 +32,39 @@ public class AdminCommands extends ListenerAdapter {
         }
 
 
+        if (args[0].equalsIgnoreCase(Main.prefix + "helpstaff")) {
+            EmbedBuilder emb = new EmbedBuilder();
+            emb.setTitle("**-StickyBot Staff Commands-**")
+                    .addField("Staff Commands:",
+                            "`?shardping` - Get pings and status for all shards." +
+                                    "`?getshard <server ID>` - Get the shard number a server is on." +
+                                    "`?restartshard <shard>` - Restart a specific shard *(Restricted to Management Team)*." +
+                                    "`?checkpremium <server ID>` - Check is the specified server has premium."
+                            , false)
+                    .addField("Dev Only Commands:",
+                            "`?manualstop <channel ID>` - StickStop a sticky in the specified channel." +
+                                    "`?restart` - Restart all shards (The whole bot)." +
+                                    "`?shutdown` - Shutdown StickyBot." +
+                                    "`?adminstats` - Get VPS stats.", false);
+        }
+
+
+        if (args[0].equalsIgnoreCase(Main.prefix + "getshard")) {
+            try {
+                event.getMessage().reply( "`" + args[1] + "` is on shard: **" + ((Long.parseLong(args[1]) >>> 22) % Main.jda.getShardsTotal()) + "**" ).queue();
+
+            } catch (Exception e) {
+                event.getMessage().reply("Something went wrong.\nUse the format: `?getshard 641158383138897941`.").queue();
+            }
+        }
 
 
         if (args[0].equalsIgnoreCase(Main.prefix + "restartshard")) {
-            if (event.getMember().getIdLong() == 182729649703485440L) {
+            //P_O_G || Polslaw
+            if (event.getMember().getIdLong() == 182729649703485440L || event.getMember().getIdLong() == 360261198761033738L) {
 
                 Main.jda.restart(Integer.parseInt(args[1]));
-                event.getChannel().sendMessage("Done Joe").queue();
+                event.getChannel().sendMessage("Done Joe\n*(Use ?shardping to check shards status)*").queue();
 
             }
         }
@@ -56,6 +83,8 @@ public class AdminCommands extends ListenerAdapter {
                         String sql = "DELETE FROM newMessages WHERE channelId='" + args[1] + "';";
                         myStmt.execute(sql);
                         myStmt.close();
+                        System.out.println("removed sticky message.");
+                        event.getChannel().sendMessage("Done sir").queue();
                     } catch ( SQLException e) {
                         e.printStackTrace();
                     }
@@ -67,19 +96,20 @@ public class AdminCommands extends ListenerAdapter {
                         String sql = "DELETE FROM messagesEmbed WHERE channelId='" + args[1] + "';";
                         myStmt.execute(sql);
                         myStmt.close();
+                        System.out.println("removed sticky message.");
+                        event.getChannel().sendMessage("Done sir").queue();
                     } catch ( SQLException e) {
                         e.printStackTrace();
                     }
 
+                } else {
+                    System.out.println("no active sticky in that channel or other error.");
+                    event.getChannel().sendMessage("no active sticky in that channel or other error").queue();
                 }
-
-                event.getChannel().sendMessage("Done sir").queue();
 
             }
 
         }
-
-
 
         if (args[0].equalsIgnoreCase(Main.prefix + "adminstats")) {
             if (event.getMember().getIdLong() == 182729649703485440L) {
@@ -174,11 +204,29 @@ public class AdminCommands extends ListenerAdapter {
                     info += "**PFP Link:** `" + s.getIconUrl() + "`\n";
                     info += "**ID:** ``" + s.getId() + "``\n\n";
                 }
-
                 event.getChannel().sendMessage(info + "\n*Out of* *" + Main.jda.getGuildCache().size() + "* *servers*").queue();
             }
 
         }
 
+        //SHUTDOWN
+        else if (args[0].equalsIgnoreCase(Main.prefix + "shutdown")) {
+            if (event.getMember().getIdLong() == 182729649703485440L) {
+                event.getChannel().sendMessage("```Shutting Down Bot```").queue();
+                Main.jda.shutdown();
+            } else {
+                event.getChannel().sendMessage(event.getMember().getAsMention() + " only ``P_O_G#2222`` can use this command.").queue();
+            }
+        }
+
+        //RESTART
+        if (args[0].equalsIgnoreCase(Main.prefix + "restart")) {
+            if (event.getMember().getIdLong() == 182729649703485440L) {
+                event.getChannel().sendMessage("```Restarting Bot```").queue();
+                Main.jda.restart();
+            } else {
+                event.getChannel().sendMessage(event.getMember().getAsMention() + " only ``P_O_G#2222`` can use this command.").queue();
+            }
+        }
     }
 }
