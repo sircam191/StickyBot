@@ -36,16 +36,20 @@ public class AdminCommands extends ListenerAdapter {
             EmbedBuilder emb = new EmbedBuilder();
             emb.setTitle("**-StickyBot Staff Commands-**")
                     .addField("Staff Commands:",
-                            "`?shardping` - Get pings and status for all shards." +
-                                    "`?getshard <server ID>` - Get the shard number a server is on." +
-                                    "`?restartshard <shard>` - Restart a specific shard *(Restricted to Management Team)*." +
+                            "`?shardping` - Get pings and status for all shards.\n" +
+                                    "`?getshard <server ID>` - Get the shard number a server is on.\n" +
+                                    "`?restartshard <shard>` - Restart a specific shard *(Restricted to Management Team)*.\n" +
                                     "`?checkpremium <server ID>` - Check is the specified server has premium."
                             , false)
                     .addField("Dev Only Commands:",
-                            "`?manualstop <channel ID>` - StickStop a sticky in the specified channel." +
-                                    "`?restart` - Restart all shards (The whole bot)." +
-                                    "`?shutdown` - Shutdown StickyBot." +
+                            "`?manualstop <channel ID>` - StickStop a sticky in the specified channel.\n" +
+                                    "`?restart` - Restart all shards (The whole bot).\n" +
+                                    "`?shutdown` - Shutdown StickyBot.\n" +
                                     "`?adminstats` - Get VPS stats.", false);
+
+            emb.setColor(Color.ORANGE);
+            event.getMessage().reply(emb.build()).queue();
+
         }
 
 
@@ -106,6 +110,7 @@ public class AdminCommands extends ListenerAdapter {
                     System.out.println("no active sticky in that channel or other error.");
                     event.getChannel().sendMessage("no active sticky in that channel or other error").queue();
                 }
+
 
             }
 
@@ -228,5 +233,8 @@ public class AdminCommands extends ListenerAdapter {
                 event.getChannel().sendMessage(event.getMember().getAsMention() + " only ``P_O_G#2222`` can use this command.").queue();
             }
         }
+
+
+
     }
 }
