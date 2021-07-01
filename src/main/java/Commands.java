@@ -398,10 +398,11 @@ public class Commands extends ListenerAdapter {
 
                 String result = "**-StickyBot Server Permission Check-**\n";
                 result += "__StickyBot's Permissions in this server:__\n" +
-                        "\nMessage History: `" + event.getMember().hasPermission(Permission.MESSAGE_HISTORY) +
-                                   "`\nManage Messages: `" + event.getMember().hasPermission(Permission.MESSAGE_MANAGE) +
-                                   "`\nEmbed Links: `" + event.getMember().hasPermission(Permission.MESSAGE_EMBED_LINKS) +
-                                   "`\nAdd Message Reactions: `" + event.getMember().hasPermission(Permission.MESSAGE_ADD_REACTION) + "`";
+                        "\nMessage History: `" + event.getGuild().retrieveMemberById(Main.botId).complete().hasPermission(Permission.MESSAGE_HISTORY) +
+                                   "`\nManage Messages: `" + event.getGuild().retrieveMemberById(Main.botId).complete().hasPermission(Permission.MESSAGE_MANAGE) +
+                                   "`\nEmbed Links: `" + event.getGuild().retrieveMemberById(Main.botId).complete().hasPermission(Permission.MESSAGE_EMBED_LINKS) +
+                                   "`\nAdd Message Reactions: `" + event.getGuild().retrieveMemberById(Main.botId).complete().hasPermission(Permission.MESSAGE_ADD_REACTION) +
+                                    "`\nUse External Emojis: `" + event.getGuild().retrieveMemberById(Main.botId).complete().hasPermission(Permission.MESSAGE_EXT_EMOJI) + "`";
 
                 result += "\n``" + event.getMessage().getTimeCreated().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)) + "``";
 
