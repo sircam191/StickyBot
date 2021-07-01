@@ -26,7 +26,7 @@ public class WikiCommand extends ListenerAdapter {
             prefix = Main.mapPrefix.get(event.getGuild().getId());
         }
 
-        if (args[0].equalsIgnoreCase(prefix + "randomwiki")) {
+        if (args[0].equalsIgnoreCase(prefix + "wikihow")) {
 
           Wikihow wiki = Main.kSoftApi.getRandomWikihow().execute();
 
