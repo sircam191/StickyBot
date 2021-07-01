@@ -3,6 +3,7 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.Button;
 
 import java.awt.*;
@@ -60,10 +61,10 @@ public class Commands extends ListenerAdapter {
 
             embed.addField("\uD83D\uDE04 Fun Commands:",
                             "``" + prefix + "roll`` - Roll two dice.\n" +
-                            "``" + prefix + "weather <city>`` - Get the current weather in a city.\n" +
+                            "``" + prefix + "weather <location>`` - Get the current weather in a city.\n" +
                             "``" + prefix + "wiki <article>`` - Get the requested Wikipedia article.\n" +
                             "``" + prefix + "wiki random`` - Get a random Wikipedia article.\n" +
-                            "``" + prefix + "randomwiki`` - Get a random WikiHow article.\n" +
+                            "``" + prefix + "wikihow`` - Get a random WikiHow article.\n" +
                             "``" + prefix + "coinflip`` - Flips a coin.\n"
                     , false);
 
@@ -98,10 +99,13 @@ public class Commands extends ListenerAdapter {
              embed.setFooter("Join our support server with any questions. We are happy to help!", Main.jda.getShards().get(0).getSelfUser().getAvatarUrl());
 
              try {
-                 event.getMessage().reply(embed.build()).setActionRow(
-                         Button.link("https://www.stickybot.info", "Website").withEmoji(Emoji.fromMarkdown("<:StickyBotCircle:693004145065590856>")),
-                         Button.link("https://discord.com/invite/SvNQTtf", "Support Server").withEmoji(Emoji.fromMarkdown("<:discordEmote:853160010305765376>")),
-                         Button.link("https://www.stickybot.info/premium", "Premium").withEmoji(Emoji.fromMarkdown("\uD83E\uDDE1")))
+                 event.getMessage().reply(embed.build()).setActionRows(
+                         ActionRow.of(Button.link("https://www.stickybot.info", "Website").withEmoji(Emoji.fromMarkdown("<:StickyBotCircle:693004145065590856>")),
+                         Button.link("https://discord.com/invite/SvNQTtf", "Support Server").withEmoji(Emoji.fromMarkdown("<:discordEmote:853160010305765376>"))),
+                         ActionRow.of(Button.link("https://www.stickybot.info/premium", "Premium").withEmoji(Emoji.fromMarkdown("\uD83E\uDDE1")),
+                         Button.link("https://docs.stickybot.info", "Docs").withEmoji(Emoji.fromMarkdown("<:iBlue:860060995979706389>")))
+
+                        )
                          .queue(null, (error) -> event.getChannel().sendMessage("I need the `Embed Links` Permission!").queue());
              } catch (Exception e) {
                  event.getMessage().reply("I need the `Embed Links` Permission!").queue();
@@ -137,7 +141,8 @@ public class Commands extends ListenerAdapter {
 
                 event.getMessage().reply(eb.build()).setActionRow(Button.link("https://www.stickybot.info", "Website").withEmoji(Emoji.fromMarkdown("<:StickyBotCircle:693004145065590856>")),
                         Button.link("https://discord.com/invite/SvNQTtf", "Support Server").withEmoji(Emoji.fromMarkdown("<:discordEmote:853160010305765376>")),
-                        Button.link("https://www.stickybot.info/premium", "Premium").withEmoji(Emoji.fromMarkdown("\uD83E\uDDE1"))).queue();
+                        Button.link("https://www.stickybot.info/premium", "Premium").withEmoji(Emoji.fromMarkdown("\uD83E\uDDE1")),
+                        Button.link("https://docs.stickybot.info", "Docs").withEmoji(Emoji.fromMarkdown("<:iBlue:860060995979706389>"))).queue();
            }
 
                 //DONATE
@@ -152,25 +157,7 @@ public class Commands extends ListenerAdapter {
 
            }
 
-                    //SHUTDOWN
-           else if (args[0].equalsIgnoreCase(prefix + "shutdown")) {
-            if (event.getMember().getIdLong() == 182729649703485440L) {
-                event.getChannel().sendMessage("```Shutting Down Bot```").queue();
-                Main.jda.shutdown();
-            } else {
-                event.getChannel().sendMessage(event.getMember().getAsMention() + " only ``P_O_G#2222`` can use this command.").queue();
-            }
-        }
 
-            //RESTART
-            if (args[0].equalsIgnoreCase(prefix + "restart")) {
-                if (event.getMember().getIdLong() == 182729649703485440L) {
-                    event.getChannel().sendMessage("```Restarting Bot```").queue();
-                    Main.jda.restart();
-                } else {
-                    event.getChannel().sendMessage(event.getMember().getAsMention() + " only ``P_O_G#2222`` can use this command.").queue();
-                }
-            }
                 //SERVER INFO
             else if (args[0].equalsIgnoreCase(prefix + "serverinfo")) {
                 if (Main.mapDisable.containsKey(event.getGuild().getId())) {
@@ -308,9 +295,9 @@ public class Commands extends ListenerAdapter {
                    emb.setColor(taggedMember.getColor());
 
                if (taggedMember.hasPermission(Permission.ADMINISTRATOR)) {
-                   emb.setFooter(tagUser.getName() + " is a Admin", tagUser.getAvatarUrl());
+                   emb.setFooter(tagUser.getName() + " is a Admin", tagUser.getEffectiveAvatarUrl());
                } else {
-                   emb.setFooter(tagUser.getName(), tagUser.getDefaultAvatarUrl());
+                   emb.setFooter(tagUser.getName(), tagUser.getEffectiveAvatarUrl());
                }
 
                event.getMessage().reply(emb.build()).setActionRow(Button.link(event.getMember().getUser().getEffectiveAvatarUrl(), "Avatar")).queue(m -> {
@@ -364,7 +351,8 @@ public class Commands extends ListenerAdapter {
                embed.setDescription("[StickyBot Support](https://discord.gg/SvNQTtf)");
                 event.getMessage().reply(embed.build()).setActionRow(
                        Button.link("https://discord.com/invite/SvNQTtf", "Support Server").withEmoji(Emoji.fromMarkdown("<:discordEmote:853160010305765376>")),
-                       Button.link("https://www.stickybot.info", "Website").withEmoji(Emoji.fromMarkdown("<:StickyBotCircle:693004145065590856>"))).queue();
+                       Button.link("https://www.stickybot.info", "Website").withEmoji(Emoji.fromMarkdown("<:StickyBotCircle:693004145065590856>")),
+                        Button.link("https://docs.stickybot.info", "Docs").withEmoji(Emoji.fromMarkdown("<:iBlue:860060995979706389>"))).queue();
            }
 
             //PREMIUM
@@ -388,6 +376,11 @@ public class Commands extends ListenerAdapter {
                 if (Main.mapDisable.containsKey(event.getGuild().getId())) {
                     return;
                 }
+                if (event.getMessage().getContentRaw().length() > 1000) {
+                    event.getMessage().reply("Error: text is too long, text must be under 1000 characters.").queue();
+                    return;
+                }
+
                try {
                     EmbedBuilder emb = new EmbedBuilder();
                     emb.setDescription(event.getMessage().getContentRaw().substring(7));
