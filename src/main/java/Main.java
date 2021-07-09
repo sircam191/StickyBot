@@ -218,7 +218,9 @@ public class Main {
                          new ButtonTest(),
                          new RollCommand(),
                          new DisableCommands(),
-                         new DisconnectEventMessages()
+                         new DisconnectEventMessages(),
+                         new LoveCalc(),
+                         new UrbanDict()
                  )
                  .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.EMOTE, CacheFlag.CLIENT_STATUS)
                 .build();
