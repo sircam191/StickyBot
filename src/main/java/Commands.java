@@ -9,13 +9,10 @@ import net.dv8tion.jda.api.interactions.components.Button;
 import java.awt.*;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
-import java.sql.*;
 import java.text.NumberFormat;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.ArrayList;
-import java.util.List;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
@@ -31,7 +28,6 @@ public class Commands extends ListenerAdapter {
         if(Main.mapPrefix.containsKey(event.getGuild().getId())) {
             prefix = Main.mapPrefix.get(event.getGuild().getId());
         }
-
 
 
         //PING
@@ -65,7 +61,9 @@ public class Commands extends ListenerAdapter {
                             "``" + prefix + "wiki <article>`` - Get the requested Wikipedia article.\n" +
                             "``" + prefix + "wiki random`` - Get a random Wikipedia article.\n" +
                             "``" + prefix + "wikihow`` - Get a random WikiHow article.\n" +
-                            "``" + prefix + "coinflip`` - Flips a coin.\n"
+                            "``" + prefix + "urban <lookup>`` - Look something up on the Urban Dictionary.\n" +
+                            "``" + prefix + "love <name1, name2>`` - Get the compatibility % on two names.\n" +
+                            "``" + prefix + "coinflip`` - Flips a coin."
                     , false);
 
 
@@ -210,7 +208,7 @@ public class Commands extends ListenerAdapter {
                 EmbedBuilder embed = new EmbedBuilder();
                 embed.setColor(Color.ORANGE);
                 embed.addField("Invite StickyBot to your server:", "[top.gg/StickyBot](https://top.gg/bot/628400349979344919)", false);
-                event.getMessage().reply(embed.build()).queue();
+                event.getMessage().replyEmbeds(embed.build()).queue();
 
            }
                 //POLL
@@ -219,7 +217,8 @@ public class Commands extends ListenerAdapter {
                     return;
                 }
                String pollQ;
-               try {
+
+                try {
                    if (!args[1].isEmpty()) {
                        pollQ = String.join(" ", args).substring(5);
 
@@ -382,8 +381,8 @@ public class Commands extends ListenerAdapter {
                 }
 
                try {
-                    EmbedBuilder emb = new EmbedBuilder();
-                    emb.setDescription(event.getMessage().getContentRaw().substring(7));
+                   EmbedBuilder emb = new EmbedBuilder();
+                    emb.setDescription(event.getMessage().getContentRaw().replace(prefix + "poll", ""));
                     emb.setColor(event.getGuild().getMemberById(Main.botId).getColor());
                     emb.setFooter("Embed By: " + event.getMember().getUser().getName());
                     event.getChannel().sendMessage(emb.build()).queue();
