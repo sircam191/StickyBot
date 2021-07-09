@@ -30,6 +30,10 @@ StickBot is a Discord bot that uses Discords REST API, Gradle, and JDA4. The bot
 
 -Getting a random WikiHow article and returing the link, and image. [here](https://github.com/sircam191/StickyBot/blob/master/src/main/java/WikiCommand.java).
 
+-Lookup something on the Urban Dictionary [here](https://github.com/sircam191/StickyBot/blob/master/src/main/java/UrbanDict.java). 
+
+-Get the compatibility % on two names [here](https://github.com/sircam191/StickyBot/blob/master/src/main/java/LoveCalc.java).
+
 -Fliping a coin. [here](https://github.com/sircam191/StickyBot/blob/master/src/main/java/Commands.java).
 
 -Rolling two dice. [here](https://github.com/sircam191/StickyBot/blob/master/src/main/java/Commands.java).
