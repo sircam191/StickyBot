@@ -24,6 +24,10 @@ public class UrbanDict extends ListenerAdapter
             return;
         }
 
+        if (Main.mapDisable.containsKey(event.getGuild().getId())) {
+            return;
+        }
+
         if (Main.mapPrefix.containsKey(event.getGuild().getId())) {
             prefix = Main.mapPrefix.get(event.getGuild().getId());
         }
@@ -50,17 +54,16 @@ public class UrbanDict extends ListenerAdapter
                 Request request = new Request.Builder()
                         .url("https://mashape-community-urban-dictionary.p.rapidapi.com/define?term=" + lookup)
                         .get()
-                        .addHeader("x-rapidapi-key", "**********************")
+                        .addHeader("x-rapidapi-key", "**********************************")
                         .addHeader("x-rapidapi-host", "mashape-community-urban-dictionary.p.rapidapi.com")
                         .build();
 
                 Response response = client.newCall(request).execute();
 
                 String data = response.body().string();
-                System.out.println(data);
+                System.out.println("Urban Dict Lookup: " + lookup);
 
                 JsonObject jsonObject = new JsonParser().parse(data.trim()).getAsJsonObject().get("list").getAsJsonArray().get(0).getAsJsonObject();
-
 
                 EmbedBuilder emb = new EmbedBuilder();
                 emb.setColor(Color.ORANGE)
