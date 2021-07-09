@@ -23,6 +23,10 @@ public class LoveCalc extends ListenerAdapter
             return;
         }
 
+        if (Main.mapDisable.containsKey(event.getGuild().getId())) {
+            return;
+        }
+
         if (Main.mapPrefix.containsKey(event.getGuild().getId())) {
             prefix = Main.mapPrefix.get(event.getGuild().getId());
         }
@@ -36,40 +40,48 @@ public class LoveCalc extends ListenerAdapter
             }
 
 
-
             String rawInput = event.getMessage().getContentRaw().replace(prefix + "love", "");
 
             String[] names = rawInput.split("\\s*,\\s*");
 
-
             OkHttpClient client = new OkHttpClient();
-
 
 
             try {
                 Request request = new Request.Builder()
                         .url("https://love-calculator.p.rapidapi.com/getPercentage?fname=" + names[0].trim() + "&sname=" + names[1])
                         .get()
-                        .addHeader("x-rapidapi-key", "**************")
+                        .addHeader("x-rapidapi-key", "******************************")
                         .addHeader("x-rapidapi-host", "love-calculator.p.rapidapi.com")
                         .build();
 
                 Response response = client.newCall(request).execute();
 
                 String data = response.body().string();
-                System.out.println(data);
+                System.out.println("Name compatibility lookup: " + data);
 
                 JsonObject jsonObject = new JsonParser().parse(data.trim()).getAsJsonObject();
+
+                int percent = jsonObject.get("percentage").getAsInt();
 
                 EmbedBuilder emb = new EmbedBuilder();
                 emb.setColor(Color.ORANGE)
                         .setTitle("-Compatibility Check-")
                         .setFooter("Used by " + event.getMember().getUser().getAsTag(), event.getMember().getUser().getEffectiveAvatarUrl())
-                        .setDescription(StringUtils.capitalize(names[0].trim()) + " & " + StringUtils.capitalize(names[1]))
-                        .addField("Compatibility Percentage:", "`" + jsonObject.get("percentage").getAsInt() + "%`",false)
-                        .addField("Message:", jsonObject.get("result").getAsString(),false);
+                        .setDescription(StringUtils.capitalize(names[0].trim()) + " & " + StringUtils.capitalize(names[1]));
 
-                event.getMessage().reply(emb.build()).queue();
+
+                if(percent < 50) {
+                    emb.addField("Compatibility Percentage:", "`" + percent + "%` " + "\uD83D\uDC94",false);
+                } else if (percent >= 50 && percent < 80) {
+                    emb.addField("Compatibility Percentage:", "`" + percent + "%` " + "\u2764",false);
+                } else {
+                    emb.addField("Compatibility Percentage:", "`" + percent + "%` " + "\uD83D\uDC96",false);
+                }
+
+                emb.addField("Message:", jsonObject.get("result").getAsString(),false);
+
+                event.getMessage().replyEmbeds(emb.build()).queue();
                 response.close();
             } catch (Exception e) {
                 event.getMessage().reply("Whoops! Something went wrong. Make sure you provide two names.\nExample: `" + prefix + "love Alice, Sam`").queue();
