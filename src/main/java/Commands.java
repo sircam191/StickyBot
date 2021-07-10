@@ -382,7 +382,7 @@ public class Commands extends ListenerAdapter {
 
                try {
                    EmbedBuilder emb = new EmbedBuilder();
-                    emb.setDescription(event.getMessage().getContentRaw().replace(prefix + "poll", ""));
+                    emb.setDescription(event.getMessage().getContentRaw().replace(prefix + "embed", ""));
                     emb.setColor(event.getGuild().getMemberById(Main.botId).getColor());
                     emb.setFooter("Embed By: " + event.getMember().getUser().getName());
                     event.getChannel().sendMessage(emb.build()).queue();
