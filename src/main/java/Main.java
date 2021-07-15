@@ -227,7 +227,8 @@ public class Main {
                          new DisableCommands(),
                          new DisconnectEventMessages(),
                          new LoveCalc(),
-                         new UrbanDict()
+                         new UrbanDict(),
+                         new HelpCommand()
                  )
                  .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.EMOTE, CacheFlag.CLIENT_STATUS)
                 .build();
