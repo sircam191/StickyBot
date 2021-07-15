@@ -3,7 +3,6 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.Button;
 
 import java.awt.*;
@@ -17,17 +16,17 @@ import java.time.format.FormatStyle;
 import static java.time.temporal.ChronoUnit.DAYS;
 
 public class Commands extends ListenerAdapter {
-    public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-        String[] args = event.getMessage().getContentRaw().split("\\s+");
-        String prefix = "?";
+            public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
+                String[] args = event.getMessage().getContentRaw().split("\\s+");
+                String prefix = "?";
 
-        if(event.getAuthor().isBot()) {
-            return;
-        }
+                if(event.getAuthor().isBot()) {
+                    return;
+                }
 
-        if(Main.mapPrefix.containsKey(event.getGuild().getId())) {
-            prefix = Main.mapPrefix.get(event.getGuild().getId());
-        }
+                if(Main.mapPrefix.containsKey(event.getGuild().getId())) {
+                    prefix = Main.mapPrefix.get(event.getGuild().getId());
+                }
 
 
         //PING
@@ -38,77 +37,6 @@ public class Commands extends ListenerAdapter {
             event.getMessage().reply(">>> **Pong!**" + "\nThis Shard: (`" + shardId + "`) Ping: `" + Main.jda.getShardById(shardId).getGatewayPing() + "`ms."
                     + "\nAll Shards Average Ping: `" + Main.jda.getAverageGatewayPing() + "`ms.").queue();
         }
-
-         //HELP or COMMANDS
-        else if (args[0].equalsIgnoreCase(prefix + "help") || args[0].equalsIgnoreCase(prefix + "commands") || args[0].equalsIgnoreCase(Main.prefix + "help")) {
-             EmbedBuilder embed = new EmbedBuilder();
-             embed.setTitle("**-StickyBot Commands-**");
-             embed.setColor(Color.ORANGE);
-             embed.setDescription("[www.stickybot.info](https://www.stickybot.info/)\n(Do not include `<>` when using commands)");
-             embed.addField("\uD83D\uDCCC Sticky Commands:", "``" + prefix + "stick <message>`` - Sticks message to the channel.\n" +
-                     "``" + prefix + "stickstop`` - Cancels stickied message.\n (*Member must have Manage Messages permissions to use sticky commands.*).", false);
-             embed.addField("\uD83C\uDF9B Utility Commands:",
-                             "``" + prefix + "poll <question>`` - Create a y/n poll for people to vote.\n" +
-                             "``" + prefix + "apoll <question, option1, option2>`` - Create a multiple choice poll. Separate the question and options with commas. Supports up to 7 options.\n" +
-                             "``" + prefix + "userinfo <@user>`` - Get info on a member. (@user can be a mention, ID, or left blank).\n" +
-                             "``" + prefix + "serverinfo`` - Get info on the server.\n" +
-                             "``" + prefix + "embed <message>`` - Turns your message into a embed.\n"
-                     , false);
-
-            embed.addField("\uD83D\uDE04 Fun Commands:",
-                            "``" + prefix + "roll`` - Roll two dice.\n" +
-                            "``" + prefix + "weather <location>`` - Get the current weather in a city.\n" +
-                            "``" + prefix + "wiki <article>`` - Get the requested Wikipedia article.\n" +
-                            "``" + prefix + "wiki random`` - Get a random Wikipedia article.\n" +
-                            "``" + prefix + "wikihow`` - Get a random WikiHow article.\n" +
-                            "``" + prefix + "urban <lookup>`` - Look something up on the Urban Dictionary.\n" +
-                            "``" + prefix + "love <name1, name2>`` - Get the compatibility % on two names.\n" +
-                            "``" + prefix + "coinflip`` - Flips a coin."
-                    , false);
-
-
-            embed.addField("\uD83D\uDCC3 Other Commands:",
-                            "``" + prefix + "invite`` - Invite link for StickyBot.\n" +
-                            "``" + prefix + "support`` - Invite to the StickyBot Support Server.\n" +
-                            "``" + prefix + "about`` - Information about StickyBot.\n" +
-                            "``" + prefix + "donate`` - Help keep StickyBot running smoothly.\n" +
-                            "``" + prefix + "permcheck`` - Check if StickyBot has all the needed permissions.\n" +
-                            "``" + prefix + "premium`` - Info about StickyBot Premium.\n" +
-                            "``" + prefix + "disablecommands`` - Disable all non-sticky commands.\n" +
-                            "``" + prefix + "enablecommands`` - Enable all non-sticky commands.\n"
-                    , false);
-
-
-             embed.addField("\uD83E\uDDE1 Premium Commands:",
-                     "``" + prefix + "stickembed <message>`` - Creates a sticky with a embed.\n" +
-                             "``" + prefix + "stickslow <message>`` - Creates a sticky that sends slower than a normal sticky.\n" +
-                             "``" + prefix + "setimage <image link>`` - Sets image for sticky embed in the channel.\n" +
-                             "``" + prefix + "removeimage`` - Removes image for sticky embed in the channel.\n" +
-                             "``" + prefix + "getimage`` - See the current channels sticky embed image & link.\n" +
-                             "``" + prefix + "prefix <prefix>`` - Sets StickyBots prefix.\n" +
-                     "``?resetprefix`` - Resets prefix to `?`.\n" +
-                             "(Sticky embed color will be the color of StickyBots role).\n" +
-                    "(*Member must have Manage Server permissions to use prefix & image commands.*).", false);
-
-             embed.addField("Prefix:", "This guilds prefix: `" + prefix + "`", true);
-
-             embed.addField("Premium Status:", PremiumStatus(event.getGuild().getId()), true);
-
-             embed.setFooter("Join our support server with any questions. We are happy to help!", Main.jda.getShards().get(0).getSelfUser().getAvatarUrl());
-
-             try {
-                 event.getMessage().reply(embed.build()).setActionRows(
-                         ActionRow.of(Button.link("https://www.stickybot.info", "Website").withEmoji(Emoji.fromMarkdown("<:StickyBotCircle:693004145065590856>")),
-                         Button.link("https://discord.com/invite/SvNQTtf", "Support Server").withEmoji(Emoji.fromMarkdown("<:discordEmote:853160010305765376>"))),
-                         ActionRow.of(Button.link("https://www.stickybot.info/premium", "Premium").withEmoji(Emoji.fromMarkdown("\uD83E\uDDE1")),
-                         Button.link("https://docs.stickybot.info", "Docs").withEmoji(Emoji.fromMarkdown("<:iBlue:860060995979706389>")))
-
-                        )
-                         .queue(null, (error) -> event.getChannel().sendMessage("I need the `Embed Links` Permission!").queue());
-             } catch (Exception e) {
-                 event.getMessage().reply("I need the `Embed Links` Permission!").queue();
-             }
-            }
 
             //ABOUT
            else if (args[0].equalsIgnoreCase(prefix + "about")) {
@@ -348,7 +276,7 @@ public class Commands extends ListenerAdapter {
                embed.setColor(Color.ORANGE);
                embed.setTitle("-Join the Official StickyBot Support Server-");
                embed.setDescription("[StickyBot Support](https://discord.gg/SvNQTtf)");
-                event.getMessage().reply(embed.build()).setActionRow(
+                event.getMessage().replyEmbeds(embed.build()).setActionRow(
                        Button.link("https://discord.com/invite/SvNQTtf", "Support Server").withEmoji(Emoji.fromMarkdown("<:discordEmote:853160010305765376>")),
                        Button.link("https://www.stickybot.info", "Website").withEmoji(Emoji.fromMarkdown("<:StickyBotCircle:693004145065590856>")),
                         Button.link("https://docs.stickybot.info", "Docs").withEmoji(Emoji.fromMarkdown("<:iBlue:860060995979706389>"))).queue();
@@ -367,7 +295,7 @@ public class Commands extends ListenerAdapter {
                         "\n-Premium support." +
                         "\n-More to come!", false);
                 embed.addField("Learn More:", "[`www.stickybot.info/premium`](https://www.stickybot.info/premium)", false);
-                event.getMessage().reply(embed.build()).setActionRow(Button.link("https://www.stickybot.info/premium", "Premium").withEmoji(Emoji.fromMarkdown("\uD83E\uDDE1")),
+                event.getMessage().replyEmbeds(embed.build()).setActionRow(Button.link("https://www.stickybot.info/premium", "Premium").withEmoji(Emoji.fromMarkdown("\uD83E\uDDE1")),
                         Button.link("https://www.stickybot.info/manage-subscription", "Manage Subscription").withEmoji(Emoji.fromMarkdown("<:StickyBotCircle:693004145065590856>"))).queue();
 
             //EMBED
@@ -379,7 +307,6 @@ public class Commands extends ListenerAdapter {
                     event.getMessage().reply("Error: text is too long, text must be under 1000 characters.").queue();
                     return;
                 }
-
                try {
                    EmbedBuilder emb = new EmbedBuilder();
                     emb.setDescription(event.getMessage().getContentRaw().replace(prefix + "embed", ""));
@@ -395,18 +322,41 @@ public class Commands extends ListenerAdapter {
             //PERM CHECK
             else if (args[0].equalsIgnoreCase(prefix + "permcheck")) {
 
-                String result = "**-StickyBot Server Permission Check-**\n";
-                result += "__StickyBot's Permissions in this server:__\n" +
-                        "\nMessage History: `" + event.getGuild().retrieveMemberById(Main.botId).complete().hasPermission(Permission.MESSAGE_HISTORY) +
-                                   "`\nManage Messages: `" + event.getGuild().retrieveMemberById(Main.botId).complete().hasPermission(Permission.MESSAGE_MANAGE) +
-                                   "`\nEmbed Links: `" + event.getGuild().retrieveMemberById(Main.botId).complete().hasPermission(Permission.MESSAGE_EMBED_LINKS) +
-                                   "`\nAdd Message Reactions: `" + event.getGuild().retrieveMemberById(Main.botId).complete().hasPermission(Permission.MESSAGE_ADD_REACTION) +
-                                    "`\nUse External Emojis: `" + event.getGuild().retrieveMemberById(Main.botId).complete().hasPermission(Permission.MESSAGE_EXT_EMOJI) + "`";
+                String mH;
+                String mM;
+                String eL;
+                String aMR;
+                String uEE;
 
-                result += "\n``" + event.getMessage().getTimeCreated().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)) + "``";
 
-                event.getMessage().reply(result).queue();
+            if (event.getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_HISTORY)) {mH = "java";} else {mH = "c";}
+            if (event.getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_MANAGE)) {mM = "java";} else {mM = "c";}
+            if (event.getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_EMBED_LINKS)) {eL = "java";} else {eL = "c";}
+            if (event.getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_ADD_REACTION)) {aMR = "java";} else {aMR = "c";}
+            if (event.getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_EXT_EMOJI)) {uEE = "java";} else {uEE = "c";}
+
+
+            String result = "**StickyBot has the following permissions in this CHANNEL:**\n\n";
+                result +=
+                        "```" + mH + "\nMessage History: " + event.getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_HISTORY) + "```" +
+                                   "```" + mM + "\nManage Messages: " + event.getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_MANAGE) + "```" +
+                                   "```" + eL + "\nEmbed Links: " + event.getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_EMBED_LINKS) + "```" +
+                                   "```" + aMR + "\nAdd Message Reactions: " + event.getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_ADD_REACTION) + "```" +
+                                    "```" + uEE + "\nUse External Emojis: " + event.getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_EXT_EMOJI) + "```";
+
+                if(mH.equals("c") || mM.equals("c") || eL.equals("c") || aMR.equals("c") || uEE.equals("c")) {
+                    result += "\n__Make sure all these are set to true in you channel/server settings for StickyBot for function properly.__\n";
+                }
+
+                result += "\nCommand used: ``" + event.getMessage().getTimeCreated().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)) + "`` by: " + event.getMember().getAsMention();
+
+                event.getChannel().sendMessage(result).queue();
             }
+            //IF BOT IS MENTIONED
+            else if (!event.getMessage().getMentionedMembers().isEmpty() && event.getMessage().getMentionedMembers().get(0).getUser().getId().equals(Main.botId)) {
+                event.getMessage().reply("**Hey!**\uD83D\uDC4B\nMy prefix in this server is: `" + prefix + "`.\nUse the `" + prefix + "help` command to get a list of commands.").queue();
+
+        }
         }
 
     public static String boostCheck(Member member) {
@@ -471,14 +421,6 @@ public class Commands extends ListenerAdapter {
             }
         }
        return String.valueOf(counter);
-    }
-
-    public static String PremiumStatus(String guildId) {
-        if (Main.premiumGuilds.containsValue(guildId)) {
-            return "[`Premium Active`](https://www.stickybot.info/manage-subscription)\uD83D\uDC9B";
-        } else {
-            return "[`Premium Not Active`](https://www.stickybot.info/premium)";
-        }
     }
 
 }
