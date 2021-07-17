@@ -170,7 +170,7 @@ public class Commands extends ListenerAdapter {
 
            }
 
-           //USERINFO
+              //USERINFO
            else if (args[0].equalsIgnoreCase(prefix + "userinfo")) {
                 if (Main.mapDisable.containsKey(event.getGuild().getId())) {
                     return;
@@ -202,21 +202,53 @@ public class Commands extends ListenerAdapter {
 
                    String daysJoined = numberOfDaysJoined(taggedMember);
 
+                   String badges = tagUser.getFlags().toString();
+                   String badgesEmotes = "";
+
+                   if(badges.contains("BUG_HUNTER")) {
+                        badgesEmotes += "<:bughunter:865689196570869770> ";
+                   }if(badges.contains("MODERATOR")) {
+                       badgesEmotes += "<:mod:865689196529188884> ";
+                   }if(badges.contains("EARLY_SUPPORTER")) {
+                       badgesEmotes += "<:supporter:865689196589219880> ";
+                   }if(badges.contains("BALANCE")) {
+                       badgesEmotes += "<:balance:865689196466143232> ";
+                   }if(badges.contains("BRAVERY")) {
+                       badgesEmotes += "<:bravery:865689196597084200> ";
+                   }if(badges.contains("BRILLIANCE")) {
+                       badgesEmotes += "<:brilliance:865692499648446505> ";
+                   }if(badges.contains("PARTNER")) {
+                       badgesEmotes += "<:partner:865689196668911656> ";
+                   }if(badges.contains("STAFF")) {
+                       badgesEmotes += "<:staff:865689196568248351> ";
+                   }if(badges.contains("DEVELOPER")) {
+                       badgesEmotes += "<:DiscordBotDev:730213279707693167> ";
+                   }if(!boostCheck(taggedMember).equals("Member not boosting.")) {
+                       badgesEmotes += "<:boost:865689196449234985> ";
+                   }if(tagUser.getEffectiveAvatarUrl().endsWith(".gif")) {
+                       badgesEmotes += "<:nitro:865689196249612299> ";
+                   }
+
+                   else {
+                       badgesEmotes = "None";
+                   }
+
                    emb.setThumbnail(tagUser.getEffectiveAvatarUrl());
                    emb.setTitle("**-User Info-**");
                    emb.addField("Info for " + tagUser.getName() + "#" + tagUser.getDiscriminator(),
-                           "**User ID:** ``" + tagUser.getId() + "``\n" +
-                                   "**Nickname:** " + taggedMember.getEffectiveName() + "\n" +
-                                   "**Join Date:** " + joinDateClean + " *(" + daysJoined + " days ago)*" + "\n" +
+                           "<:settings:865689196567724052> **User ID:** ``" + tagUser.getId() + "``\n" +
+                                   "<:add:865689196492750848> **Nickname:** " + taggedMember.getEffectiveName() + "\n" +
+                                   "<:rules:865689196332056607> **Join Date:** " + joinDateClean + " *(" + daysJoined + " days ago)*" + "\n" +
                                    //"**Join Position:** " + joinSpot + "\n" +
-                                   "**Creation Date:** " + creationDateClean + " *(" + numberOfDaysCreated(taggedMember) + " days ago)*" + "\n" +
+                                   "<:rules:865689196332056607> **Creation Date:** " + creationDateClean + " *(" + numberOfDaysCreated(taggedMember) + " days ago)*" + "\n" +
                                    //"**Status:** " + taggedMember.getOnlineStatus().getKey() + "\n" +
-                                   "**Tag: ** " + taggedMember.getAsMention() + "\n" +
-                                   "**Nitro Boosting: ** " + boostCheck(taggedMember) + "\n" +
-                                   "**Number of Roles:** " + taggedMember.getRoles().size()
+                                   "<:info:865689196521193482> **Badges: **" + badgesEmotes + "\n" +
+                                   "<:__:865689196446089256> **Tag: ** " + taggedMember.getAsMention() + "\n" +
+                                   "<:boost:865689196449234985> **Nitro Boosting: ** " + boostCheck(taggedMember) + "\n" +
+                                   "<:roles:865690170229391420> **Number of Roles:** " + taggedMember.getRoles().size()
                            , false);
 
-                   emb.addField("**Roles: **", getRoles(taggedMember), false );
+                   emb.addField("<:roles:865690170229391420> **Roles: **", getRoles(taggedMember), false );
 
 
                    emb.setColor(taggedMember.getColor());
