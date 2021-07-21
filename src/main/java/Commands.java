@@ -170,7 +170,7 @@ public class Commands extends ListenerAdapter {
 
            }
 
-              //USERINFO
+               //USERINFO
            else if (args[0].equalsIgnoreCase(prefix + "userinfo")) {
                 if (Main.mapDisable.containsKey(event.getGuild().getId())) {
                     return;
@@ -202,36 +202,37 @@ public class Commands extends ListenerAdapter {
 
                    String daysJoined = numberOfDaysJoined(taggedMember);
 
-                   String badges = tagUser.getFlags().toString();
+                   EnumSet<User.UserFlag> badges = tagUser.getFlags();
                    String badgesEmotes = "";
 
-                   if(badges.contains("BUG_HUNTER")) {
+                   System.out.println(tagUser.getFlags().toString());
+
+                   if(badges.contains(User.UserFlag.BUG_HUNTER_LEVEL_1) || badges.contains(User.UserFlag.BUG_HUNTER_LEVEL_2)) {
                         badgesEmotes += "<:bughunter:865689196570869770> ";
-                   }if(badges.contains("MODERATOR")) {
+                   }if(badges.contains(User.UserFlag.CERTIFIED_MODERATOR)) {
                        badgesEmotes += "<:mod:865689196529188884> ";
-                   }if(badges.contains("EARLY_SUPPORTER")) {
+                   }if(badges.contains(User.UserFlag.EARLY_SUPPORTER)) {
                        badgesEmotes += "<:supporter:865689196589219880> ";
-                   }if(badges.contains("BALANCE")) {
+                   }if(badges.contains(User.UserFlag.HYPESQUAD_BALANCE)) {
                        badgesEmotes += "<:balance:865689196466143232> ";
-                   }if(badges.contains("BRAVERY")) {
+                   }if(badges.contains(User.UserFlag.HYPESQUAD_BRAVERY)) {
                        badgesEmotes += "<:bravery:865689196597084200> ";
-                   }if(badges.contains("BRILLIANCE")) {
+                   }if(badges.contains(User.UserFlag.HYPESQUAD_BRILLIANCE)) {
                        badgesEmotes += "<:brilliance:865692499648446505> ";
-                   }if(badges.contains("PARTNER")) {
+                   }if(badges.contains(User.UserFlag.PARTNER)) {
                        badgesEmotes += "<:partner:865689196668911656> ";
-                   }if(badges.contains("STAFF")) {
+                   }if(badges.contains(User.UserFlag.STAFF)) {
                        badgesEmotes += "<:staff:865689196568248351> ";
-                   }if(badges.contains("DEVELOPER")) {
+                   }if(badges.contains(User.UserFlag.VERIFIED_DEVELOPER)) {
                        badgesEmotes += "<:DiscordBotDev:730213279707693167> ";
                    }if(!boostCheck(taggedMember).equals("Member not boosting.")) {
                        badgesEmotes += "<:boost:865689196449234985> ";
                    }if(tagUser.getEffectiveAvatarUrl().endsWith(".gif")) {
                        badgesEmotes += "<:nitro:865689196249612299> ";
-                   }
-
-                   else {
+                   } if(badgesEmotes.equals("")) {
                        badgesEmotes = "None";
                    }
+
 
                    emb.setThumbnail(tagUser.getEffectiveAvatarUrl());
                    emb.setTitle("**-User Info-**");
@@ -266,7 +267,7 @@ public class Commands extends ListenerAdapter {
                });
 
                  } catch (Exception e) {
-                    event.getMessage().reply("Please tag a member in the server, provide a user ID, or leave blank to get your own user info.").queue();
+                    event.getMessage().reply(event.getMember().getAsMention() + " please tag a member in the server, provide a user ID, or leave blank to get your own user info.").queue();
                     e.printStackTrace();
                   }
 
