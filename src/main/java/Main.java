@@ -185,6 +185,21 @@ public class Main {
             e.printStackTrace();
         }
 
+        //Get BIG Embeds Image Links from DB
+        try {
+            Connection dbConn = DriverManager.getConnection(dbUrl,dbUser,dbPassword);
+            Statement myStmt = dbConn.createStatement();
+            String sql = "select * from bigEmbedImageLink";
+            ResultSet rs = myStmt.executeQuery(sql);
+
+            while (rs.next()) {
+                mapImageLinkEmbed.put(rs.getString("channelId"), rs.getString("link"));
+            }
+
+        } catch ( SQLException e) {
+            e.printStackTrace();
+        }
+        
         //Get non-sticky disable Guilds from DB
         try {
             Connection dbConn = DriverManager.getConnection(dbUrl,dbUser,dbPassword);
