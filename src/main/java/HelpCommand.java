@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.interactions.components.Button;
 
 import java.awt.*;
 
+
 public class HelpCommand extends ListenerAdapter {
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         String[] args = event.getMessage().getContentRaw().split("\\s+");
@@ -66,6 +67,8 @@ public class HelpCommand extends ListenerAdapter {
                             "``" + prefix + "stickslow <message>`` - Creates a sticky that sends slower than a normal sticky.\n" +
                             "``" + prefix + "setimage <image link>`` - Sets image for sticky embed in the channel.\n" +
                             "``" + prefix + "removeimage`` - Removes image for sticky embed in the channel.\n" +
+                            "``" + prefix + "setbigimage <image link>`` - Sets big image for sticky embed in the channel.\n" +
+                            "``" + prefix + "removebigimage`` - Removes big image for sticky embed in the channel.\n" +
                             "``" + prefix + "getimage`` - See the current channels sticky embed image & link.\n" +
                             "``" + prefix + "prefix <prefix>`` - Sets StickyBots prefix.\n" +
                             "``?resetprefix`` - Resets prefix to `?`.\n" +
