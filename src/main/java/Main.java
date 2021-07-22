@@ -193,7 +193,7 @@ public class Main {
             ResultSet rs = myStmt.executeQuery(sql);
 
             while (rs.next()) {
-                mapImageLinkEmbed.put(rs.getString("channelId"), rs.getString("link"));
+                mapBigImageLinkEmbed.put(rs.getString("channelId"), rs.getString("link"));
             }
 
         } catch ( SQLException e) {
