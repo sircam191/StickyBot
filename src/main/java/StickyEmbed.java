@@ -303,6 +303,9 @@ public class StickyEmbed extends ListenerAdapter {
                 if (Main.mapImageLinkEmbed.containsKey(channelId)) {
                     emb.setThumbnail(Main.mapImageLinkEmbed.get(channelId));
                 }
+                if (Main.mapBigImageLinkEmbed.containsKey(channelId)) {
+                    emb.setImage(Main.mapBigImageLinkEmbed.get(channelId));
+                }
                 emb.setColor(event.getGuild().getMemberById(Main.botId).getColor());
 
                 try {
