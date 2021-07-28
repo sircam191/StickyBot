@@ -352,6 +352,17 @@ public class Commands extends ListenerAdapter {
                 event.getMessage().delete().queue();
             }
 
+            //DOCS
+                else if (args[0].equalsIgnoreCase(prefix + "docs")) {
+                    if (Main.mapDisable.containsKey(event.getGuild().getId())) {
+                     return;
+                  }
+                    EmbedBuilder emb = new EmbedBuilder();
+                    emb.setTitle("-StickyBot Docs-")
+                            .setDescription("Here are the StickyBot Docs for the most in-depth and up to date information about StickyBot.\n[docs.stickybot.info](https://docs.stickybot.info/stickybot/).");
+                    event.getMessage().replyEmbeds(emb.build()).setActionRow(Button.link("https://docs.stickybot.info/stickybot/", "Docs").withEmoji(Emoji.fromMarkdown("<:iBlue:860060995979706389>"))).queue();
+                }             
+                                         
             //PERM CHECK
             else if (args[0].equalsIgnoreCase(prefix + "permcheck")) {
 
