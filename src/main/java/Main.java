@@ -218,8 +218,7 @@ public class Main {
 
         jda = DefaultShardManagerBuilder.create(token,
                 GatewayIntent.GUILD_MESSAGES,
-                GatewayIntent.GUILD_MESSAGE_REACTIONS,
-                GatewayIntent.DIRECT_MESSAGES
+                GatewayIntent.GUILD_MESSAGE_REACTIONS
                 ).setChunkingFilter(ChunkingFilter.NONE).setMemberCachePolicy(MemberCachePolicy.NONE)
                  .addEventListeners(
                          new Commands(),
