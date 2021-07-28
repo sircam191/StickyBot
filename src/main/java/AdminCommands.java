@@ -45,6 +45,8 @@ public class AdminCommands extends ListenerAdapter {
                             "`?manualstop <channel ID>` - StickStop a sticky in the specified channel.\n" +
                                     "`?restart` - Restart all shards (The whole bot).\n" +
                                     "`?shutdown` - Shutdown StickyBot.\n" +
+                                    "`?addpremium <serverID>` - Manually add a premium server.\n" +
+                                    "`?removepremium <serverID>` - Manually remove a premium server.\n" +
                                     "`?adminstats` - Get VPS stats.", false);
 
             emb.setColor(Color.ORANGE);
