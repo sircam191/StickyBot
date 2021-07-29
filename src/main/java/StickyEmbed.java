@@ -58,7 +58,6 @@ public class StickyEmbed extends ListenerAdapter {
             event.getMessage().reply(event.getMember().getAsMention() + " you need the `Manage Messages` permission to use this command!").queue();
     }
 
-
         if (args[0].equalsIgnoreCase(prefix + "removeimage") && (permCheck(event.getMember())) && !event.getAuthor().isBot()) {
 
             if (!Main.premiumGuilds.containsValue(event.getGuild().getId())) {
@@ -94,10 +93,6 @@ public class StickyEmbed extends ListenerAdapter {
 
         }
 
-
-
-
-
         //Set BIG image for embed command
         if (args[0].equalsIgnoreCase(prefix + "setbigimage") && (permCheck(event.getMember())) && !event.getAuthor().isBot()) {
             if (!Main.premiumGuilds.containsValue(event.getGuild().getId())) {
@@ -126,7 +121,6 @@ public class StickyEmbed extends ListenerAdapter {
             event.getMessage().reply(event.getMember().getAsMention() + " you need the `Manage Messages` permission to use this command!").queue();
         }
 
-
         if (args[0].equalsIgnoreCase(prefix + "removebigimage") && (permCheck(event.getMember())) && !event.getAuthor().isBot()) {
 
             if (!Main.premiumGuilds.containsValue(event.getGuild().getId())) {
@@ -146,7 +140,6 @@ public class StickyEmbed extends ListenerAdapter {
             event.getMessage().reply(event.getMember().getAsMention() + " you need the `Manage Messages` permission to use this command!").queue();
         }
 
-
         if (args[0].equalsIgnoreCase(prefix + "getbigimage") && (permCheck(event.getMember())) && !event.getAuthor().isBot()) {
 
             if (Main.mapImageLinkEmbed.containsKey(channelId)) {
@@ -159,13 +152,7 @@ public class StickyEmbed extends ListenerAdapter {
             } else {
                 event.getMessage().reply(event.getMember().getAsMention() + " there is no image currently set for sticky embeds in this channel.\nSet one with the `" + prefix + "setimage` command.").queue();
             }
-
         }
-
-
-
-
-
 
 
         if (args[0].equalsIgnoreCase(prefix + "stickembed") && (permCheck(event.getMember())) && !event.getAuthor().isBot()) {
@@ -247,87 +234,91 @@ public class StickyEmbed extends ListenerAdapter {
         }
 
         if(Main.mapMessageEmbed.get(channelId) != null) {
-            List<Message> history = event.getChannel().getHistory().retrievePast(5).complete();
-            for(Message m : history) {
-                //if message is sticky message
-                if(!m.getEmbeds().isEmpty() && embedCheck(m, channelId)) {
-                    //if message is older then 30 sec
-                    if(m.getTimeCreated().compareTo(OffsetDateTime.now().minusSeconds(15)) < 0) {
-                        m.delete().queue(null, (error) -> {});
+            event.getChannel().getHistory().retrievePast(5).queue(history -> {
 
-                        EmbedBuilder emb = new EmbedBuilder();
-                        emb.setDescription(Main.mapMessageEmbed.get(channelId));
-                        emb.setColor(event.getGuild().getMemberById(Main.botId).getColor());
-                        if (Main.mapImageLinkEmbed.containsKey(channelId)) {
-                            emb.setThumbnail(Main.mapImageLinkEmbed.get(channelId));
-                        }
-                        if (Main.mapBigImageLinkEmbed.containsKey(channelId)) {
-                            emb.setImage(Main.mapBigImageLinkEmbed.get(channelId));
-                        }
-                        event.getChannel().sendMessage(emb.build()).queue(mes -> Main.mapDeleteIdEmbed.put(channelId, mes.getId()));
+                for(Message m : history) {
+                    //if message is sticky message
+                    if(!m.getEmbeds().isEmpty() && embedCheck(m, channelId)) {
+                        //if message is older then 30 sec
+                        if(m.getTimeCreated().compareTo(OffsetDateTime.now().minusSeconds(15)) < 0) {
+                            m.delete().queue(null, (error) -> {});
 
-                        //Added to make sure it does not bug and send two stickies (next 5 lines)
-                        List<Message> messageListDelete = event.getChannel().getHistory().retrievePast(10).complete();
-                        for (Message mess : messageListDelete.subList(1, 10)) {
-                            if (!mess.getEmbeds().isEmpty() && embedCheck(mess, channelId)) {
-                                mess.delete().queue(null, (error) -> {});
+                            EmbedBuilder emb = new EmbedBuilder();
+                            emb.setDescription(Main.mapMessageEmbed.get(channelId));
+                            emb.setColor(event.getGuild().getMemberById(Main.botId).getColor());
+                            if (Main.mapImageLinkEmbed.containsKey(channelId)) {
+                                emb.setThumbnail(Main.mapImageLinkEmbed.get(channelId));
+                            }
+                            if (Main.mapBigImageLinkEmbed.containsKey(channelId)) {
+                                emb.setImage(Main.mapBigImageLinkEmbed.get(channelId));
+                            }
+                            event.getChannel().sendMessage(emb.build()).queue(mes -> Main.mapDeleteIdEmbed.put(channelId, mes.getId()));
+
+                            //Added to make sure it does not bug and send two stickies (next 5 lines)
+                            event.getChannel().getHistory().retrievePast(10).queue(messageListDelete -> {
+
+                            for (Message mess : messageListDelete.subList(1, 10)) {
+                                if (!mess.getEmbeds().isEmpty() && embedCheck(mess, channelId)) {
+                                    mess.delete().queue(null, (error) -> {});
+                                }
+                            }
+                            });
+                        }
+                        break;
+                    }
+                }
+
+                //gets set to true if one of last five messages contains sticky message.
+                Boolean check = false;
+
+                for(Message m : history) {
+                    if(!m.getEmbeds().isEmpty() && embedCheck(m, channelId)) {
+                        check = true;
+                    }
+                }
+                if(!check) {
+                    if(Main.mapDeleteIdEmbed.get(channelId) != null) {
+                        event.getChannel().deleteMessageById(Main.mapDeleteIdEmbed.get(channelId)).queue(null, (error) -> {});
+                    }
+
+                    event.getChannel().getHistory().retrievePast(6).queue(history2 -> {
+                        for(Message m : history2) {
+                            //if message is sticky message
+                            if(!m.getEmbeds().isEmpty() && m.getEmbeds().get(0).getDescription().equals(Main.mapMessageEmbed.get(channelId))) {
+                                m.delete().queue(null, (error) -> {});
                             }
                         }
+                    });
+
+                    EmbedBuilder emb = new EmbedBuilder();
+                    emb.setDescription(Main.mapMessageEmbed.get(channelId));
+                    if (Main.mapImageLinkEmbed.containsKey(channelId)) {
+                        emb.setThumbnail(Main.mapImageLinkEmbed.get(channelId));
                     }
-                    break;
-                }
-            }
-
-            //gets set to true if one of last five messages contains sticky message.
-            Boolean check = false;
-
-            for(Message m : history) {
-                if(!m.getEmbeds().isEmpty() && embedCheck(m, channelId)) {
-                    check = true;
-                }
-            }
-            if(!check) {
-                if(Main.mapDeleteIdEmbed.get(channelId) != null) {
-                    event.getChannel().deleteMessageById(Main.mapDeleteIdEmbed.get(channelId)).queue(null, (error) -> {});
-                }
-
-                List<Message> history2 = event.getChannel().getHistory().retrievePast(6).complete();
-                for(Message m : history2) {
-                    //if message is sticky message
-                    if(!m.getEmbeds().isEmpty() && m.getEmbeds().get(0).getDescription().equals(Main.mapMessageEmbed.get(channelId))) {
-                        m.delete().queue(null, (error) -> {});
+                    if (Main.mapBigImageLinkEmbed.containsKey(channelId)) {
+                        emb.setImage(Main.mapBigImageLinkEmbed.get(channelId));
                     }
-                }
-                EmbedBuilder emb = new EmbedBuilder();
-                emb.setDescription(Main.mapMessageEmbed.get(channelId));
-                if (Main.mapImageLinkEmbed.containsKey(channelId)) {
-                    emb.setThumbnail(Main.mapImageLinkEmbed.get(channelId));
-                }
-                if (Main.mapBigImageLinkEmbed.containsKey(channelId)) {
-                    emb.setImage(Main.mapBigImageLinkEmbed.get(channelId));
-                }
-                emb.setColor(event.getGuild().getMemberById(Main.botId).getColor());
+                    emb.setColor(event.getGuild().getMemberById(Main.botId).getColor());
 
-                try {
-                    event.getChannel().sendMessage(emb.build()).queue(null, (error) -> {
+                    try {
+                        event.getChannel().sendMessage(emb.build()).queue(null, (error) -> {
 
+                            Main.mapMessageEmbed.remove(channelId);
+                            Main.mapDeleteId.remove(channelId);
+                            removeDB(channelId);
+                            System.out.println("Tried to send sticky message in channel with no MESSAGE_WRITE perms. Sticky message has been stopped:");
+                            System.out.println("Channel ID: " + channelId + "\nServer ID: " + event.getGuild().getId());
+
+                        });
+                    } catch (Exception e) {
                         Main.mapMessageEmbed.remove(channelId);
                         Main.mapDeleteId.remove(channelId);
                         removeDB(channelId);
                         System.out.println("Tried to send sticky message in channel with no MESSAGE_WRITE perms. Sticky message has been stopped:");
                         System.out.println("Channel ID: " + channelId + "\nServer ID: " + event.getGuild().getId());
-
-                    });
-                } catch (Exception e) {
-                    Main.mapMessageEmbed.remove(channelId);
-                    Main.mapDeleteId.remove(channelId);
-                    removeDB(channelId);
-                    System.out.println("Tried to send sticky message in channel with no MESSAGE_WRITE perms. Sticky message has been stopped:");
-                    System.out.println("Channel ID: " + channelId + "\nServer ID: " + event.getGuild().getId());
+                    }
                 }
-
-
-            }
+            });
         }
     }
 
