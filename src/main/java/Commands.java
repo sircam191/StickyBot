@@ -397,7 +397,7 @@ public class Commands extends ListenerAdapter {
                 event.getChannel().sendMessage(result).queue();
             }
             //IF BOT IS MENTIONED
-            else if (!event.getMessage().getMentionedMembers().isEmpty() && event.getMessage().getMentionedMembers().get(0).getUser().getId().equals(Main.botId)) {
+            else if (!event.getMessage().getMentionedMembers().isEmpty() && event.getMessage().getMentionedMembers().get(0).getUser().getId().equals(Main.botId) && event.getMessage().getReferencedMessage() == null) {
                 event.getMessage().reply("**Hey!**\uD83D\uDC4B\nMy prefix in this server is: `" + prefix + "`.\nUse the `" + prefix + "help` command to get a list of commands.").queue();
 
         }
