@@ -11,6 +11,7 @@ version '1.0'
 sourceCompatibility = 11
 
 
+
 repositories {
     jcenter()
     mavenCentral()
@@ -22,7 +23,7 @@ repositories {
 }
 
 dependencies {
-    compile 'net.dv8tion:JDA:4.3.0_277'
+    compile 'net.dv8tion:JDA:4.3.0_305'
     compile 'com.jagrosh:jda-utilities:3.0.2'
     compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.19'
     implementation 'com.github.DiscordBotList:DBL-Java-Library:2.0.1'
@@ -32,6 +33,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.konghq:unirest-java:3.4.00'
     compile 'commons-io:commons-io:2.8.0'
+    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 }
 
 
