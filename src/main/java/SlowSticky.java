@@ -24,9 +24,6 @@ public class SlowSticky extends ListenerAdapter {
             prefix = Main.mapPrefix.get(event.getGuild().getId());
         }
 
-
-
-
         if (event.getMessage().getContentRaw().startsWith(prefix + "stickslow ") && event.getMessage().getContentRaw().matches("[\\S]+\\s{2,}.*") && (permCheck(event.getMember())) && !event.getAuthor().isBot()) {
             event.getMessage().reply(event.getMember().getAsMention() + " please only use one space after the `?stickslow` command!").queue();
             return;
@@ -83,8 +80,7 @@ public class SlowSticky extends ListenerAdapter {
                     event.getMessage().reply(event.getMember().getAsMention() + " please use this format: `" + prefix + "stickslow <message>`.").queue();
                 }
             }
-
-
+            
 
         } else if (args[0].equalsIgnoreCase(prefix + "stickslow") && (!permCheck(event.getMember() ))) {
             //Adds X emote
@@ -109,70 +105,67 @@ public class SlowSticky extends ListenerAdapter {
 
         if (Main.mapMessageSlow.get(channelId) != null) {
 
-            List<Message> history = event.getChannel().getHistory().retrievePast(18).complete();
-
-            try {
-                for(Message m : history.subList(0, 13)) {
-                    //if message is sticky message
-                    if(m.getContentRaw().equals(Main.mapMessageSlow.get(channelId))) {
-                        //if message is older then 35 sec
-                        if(m.getTimeCreated().compareTo(OffsetDateTime.now().minusSeconds(35)) < 0) {
-                            m.delete().queue(null, (error) -> {});
-                            event.getChannel().sendMessage(Main.mapMessageSlow.get(channelId)).queue(mes -> Main.mapDeleteId2.put(channelId, mes.getId()));
+            event.getChannel().getHistory().retrievePast(18).queue(history -> {
+                try {
+                    for(Message m : history.subList(0, 13)) {
+                        //if message is sticky message
+                        if(m.getContentRaw().equals(Main.mapMessageSlow.get(channelId))) {
+                            //if message is older then 35 sec
+                            if(m.getTimeCreated().compareTo(OffsetDateTime.now().minusSeconds(35)) < 0) {
+                                m.delete().queue(null, (error) -> {});
+                                event.getChannel().sendMessage(Main.mapMessageSlow.get(channelId)).queue(mes -> Main.mapDeleteId2.put(channelId, mes.getId()));
+                            }
+                            break;
                         }
-                        break;
+                    }
+                } catch (Exception e) {
+                    //do nothing
+                }
+
+                //gets set to true if one of last five messages contains sticky message.
+                Boolean check = false;
+
+                try {
+                    for(Message m : history.subList(0, 13)) {
+                        if(m.getContentRaw().equals(Main.mapMessageSlow.get(channelId))) {
+                            check = true;
+                        }
+                    }
+                } catch (Exception e) {
+                    //do nothing
+                }
+
+                if(!check) {
+                    if(Main.mapDeleteId2.get(channelId) != null) {
+                        event.getChannel().deleteMessageById(Main.mapDeleteId2.get(channelId)).queue(null, (error) -> {});
+                    }
+
+                    //If message send fails, stickstop
+                    if (event.getChannel().canTalk()) {
+                        event.getChannel().sendMessage(Main.mapMessageSlow.get(channelId)).queue();
+                    } else {
+                        Main.mapMessageSlow.remove(channelId);
+                        removeDB(channelId);
+                        System.out.println("StickStop Override due to missing write permission");
                     }
                 }
-            } catch (Exception e) {
-                //do nothing
-            }
 
-            //gets set to true if one of last five messages contains sticky message.
-            Boolean check = false;
+                //Added to make sure it does not bug and send two stickies (next 5 lines)
+                List<Message> indexes = new ArrayList<>();
 
-            try {
-                for(Message m : history.subList(0, 13)) {
-                    if(m.getContentRaw().equals(Main.mapMessageSlow.get(channelId))) {
-                        check = true;
+                for (Message mes : history) {
+                    if (mes.getContentRaw().equals(Main.mapMessageSlow.get(channelId))) {
+                        indexes.add(mes);
                     }
                 }
-            } catch (Exception e) {
-                //do nothing
-            }
 
-            if(!check) {
-                if(Main.mapDeleteId2.get(channelId) != null) {
-                    event.getChannel().deleteMessageById(Main.mapDeleteId2.get(channelId)).queue(null, (error) -> {});
+                if (!indexes.isEmpty() && indexes.size() > 1) {
+                    indexes.remove(0);
+                    for (Message mess : indexes) {
+                        mess.delete().queue(null, (error) -> {});
+                    }
                 }
-
-                //If message send fails, stickstop
-                if (event.getChannel().canTalk()) {
-                    event.getChannel().sendMessage(Main.mapMessageSlow.get(channelId)).queue();
-                } else {
-                    Main.mapMessageSlow.remove(channelId);
-                    removeDB(channelId);
-                    System.out.println("StickStop Override due to missing write permission");
-                }
-
-            }
-
-            //Added to make sure it does not bug and send two stickies (next 5 lines)
-
-            List<Message> indexes = new ArrayList<>();
-
-            for (Message mes : history) {
-                if (mes.getContentRaw().equals(Main.mapMessageSlow.get(channelId))) {
-                    indexes.add(mes);
-                }
-            }
-
-            if (!indexes.isEmpty() && indexes.size() > 1) {
-                indexes.remove(0);
-                for (Message mess : indexes) {
-                    mess.delete().queue(null, (error) -> {});
-                }
-            }
-
+            });
         }
     }
 
@@ -198,7 +191,6 @@ public class SlowSticky extends ListenerAdapter {
             e.printStackTrace();
         }
     }
-
 
     public void removeDB(String channelId) {
         try {
