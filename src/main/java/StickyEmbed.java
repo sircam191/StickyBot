@@ -94,7 +94,7 @@ public class StickyEmbed extends ListenerAdapter {
                     em.addField("Big Image Link: ", "[here](" + Main.mapBigImageLinkEmbed.get(channelId) + ")" , true);
                 }
 
-                event.getMessage().replyEmbeds(em.setColor(Color.ORANGE).build()).setActionRow(Button.link(Main.mapImageLinkEmbed.get(channelId), "Image")).queue();
+                event.getMessage().replyEmbeds(em.setColor(Color.ORANGE).build();
 
             } else {
                 event.getMessage().reply(event.getMember().getAsMention() + " there is no image currently set for sticky embeds in this channel.\nSet one with the `" + prefix + "setimage` command.").queue();
