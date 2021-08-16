@@ -182,7 +182,7 @@ public class HelpNew extends ListenerAdapter {
 
         } else if (event.getButton().getId().equals("premium")) {
             EmbedBuilder embed = new EmbedBuilder();
-            embed.setTitle("**-StickyBot OTHER Commands-**");
+            embed.setTitle("**-StickyBot PREMIUM Commands-**");
             embed.setColor(Color.ORANGE);
             embed.setFooter("Click a button to see other commands!", Main.jda.getShards().get(0).getSelfUser().getAvatarUrl());
             embed.setDescription("[www.stickybot.info](https://www.stickybot.info/)\n(Do not include `<>` when using commands)");
