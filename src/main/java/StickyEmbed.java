@@ -58,6 +58,7 @@ public class StickyEmbed extends ListenerAdapter {
             event.getMessage().reply(event.getMember().getAsMention() + " you need the `Manage Messages` permission to use this command!").queue();
     }
 
+
         if (args[0].equalsIgnoreCase(prefix + "removeimage") && (permCheck(event.getMember())) && !event.getAuthor().isBot()) {
 
             if (!Main.premiumGuilds.containsValue(event.getGuild().getId())) {
@@ -80,18 +81,30 @@ public class StickyEmbed extends ListenerAdapter {
 
         if (args[0].equalsIgnoreCase(prefix + "getimage") && (permCheck(event.getMember())) && !event.getAuthor().isBot()) {
 
-            if (Main.mapImageLinkEmbed.containsKey(channelId)) {
+            if (Main.mapImageLinkEmbed.containsKey(channelId) || Main.mapBigImageLinkEmbed.containsKey(channelId)) {
                 EmbedBuilder em = new EmbedBuilder();
                 em.setTitle("Current image for sticky embeds in this channel:");
-                em.setThumbnail(Main.mapImageLinkEmbed.get(channelId));
-                em.setDescription("Link: " + Main.mapImageLinkEmbed.get(channelId));
-                event.getMessage().reply(em.setColor(Color.ORANGE).build()).setActionRow(Button.link(Main.mapImageLinkEmbed.get(channelId), "Image")).queue();
+                if (Main.mapImageLinkEmbed.containsKey(channelId)) {
+                    em.setThumbnail(Main.mapImageLinkEmbed.get(channelId));
+                    em.addField("Small Image Link: ", "[here](" + Main.mapImageLinkEmbed.get(channelId) + ")", true);
+                }
+
+                if (Main.mapBigImageLinkEmbed.containsKey(channelId)) {
+                    em.setImage(Main.mapBigImageLinkEmbed.get(channelId));
+                    em.addField("Big Image Link: ", "[here](" + Main.mapBigImageLinkEmbed.get(channelId) + ")" , true);
+                }
+
+                event.getMessage().replyEmbeds(em.setColor(Color.ORANGE).build()).setActionRow(Button.link(Main.mapImageLinkEmbed.get(channelId), "Image")).queue();
 
             } else {
                 event.getMessage().reply(event.getMember().getAsMention() + " there is no image currently set for sticky embeds in this channel.\nSet one with the `" + prefix + "setimage` command.").queue();
             }
 
         }
+
+
+
+
 
         //Set BIG image for embed command
         if (args[0].equalsIgnoreCase(prefix + "setbigimage") && (permCheck(event.getMember())) && !event.getAuthor().isBot()) {
@@ -121,6 +134,7 @@ public class StickyEmbed extends ListenerAdapter {
             event.getMessage().reply(event.getMember().getAsMention() + " you need the `Manage Messages` permission to use this command!").queue();
         }
 
+
         if (args[0].equalsIgnoreCase(prefix + "removebigimage") && (permCheck(event.getMember())) && !event.getAuthor().isBot()) {
 
             if (!Main.premiumGuilds.containsValue(event.getGuild().getId())) {
@@ -140,6 +154,7 @@ public class StickyEmbed extends ListenerAdapter {
             event.getMessage().reply(event.getMember().getAsMention() + " you need the `Manage Messages` permission to use this command!").queue();
         }
 
+
         if (args[0].equalsIgnoreCase(prefix + "getbigimage") && (permCheck(event.getMember())) && !event.getAuthor().isBot()) {
 
             if (Main.mapImageLinkEmbed.containsKey(channelId)) {
@@ -152,7 +167,9 @@ public class StickyEmbed extends ListenerAdapter {
             } else {
                 event.getMessage().reply(event.getMember().getAsMention() + " there is no image currently set for sticky embeds in this channel.\nSet one with the `" + prefix + "setimage` command.").queue();
             }
+
         }
+
 
 
         if (args[0].equalsIgnoreCase(prefix + "stickembed") && (permCheck(event.getMember())) && !event.getAuthor().isBot()) {
