@@ -49,7 +49,7 @@ public class LoveCalc extends ListenerAdapter
                 Request request = new Request.Builder()
                         .url("https://love-calculator.p.rapidapi.com/getPercentage?fname=" + names[0].trim() + "&sname=" + names[1])
                         .get()
-                        .addHeader("x-rapidapi-key", "7ea6d5bfe9msh1c72829a802fbc3p1d81c6jsna40a16df07d2")
+                        .addHeader("x-rapidapi-key", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
                         .addHeader("x-rapidapi-host", "love-calculator.p.rapidapi.com")
                         .build();
 
