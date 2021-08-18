@@ -1,6 +1,7 @@
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -27,7 +28,7 @@ public class WikipediaCommands extends ListenerAdapter
             return;
         }
 
-        if (Main.mapDisable.containsKey(event.getGuild().getId())) {
+        if (Main.mapDisable.containsKey(event.getGuild().getId()) && !event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
             return;
         }
 
@@ -36,7 +37,6 @@ public class WikipediaCommands extends ListenerAdapter
         if(Main.mapPrefix.containsKey(event.getGuild().getId())) {
             prefix = Main.mapPrefix.get(event.getGuild().getId());
         }
-
 
         if (args[0].equalsIgnoreCase(prefix + "wiki")) {
 
@@ -98,7 +98,7 @@ public class WikipediaCommands extends ListenerAdapter
                 em.setDescription("There are multiple results for **" + article + "**!\nTo see all of the results [Click Here](" + wikiLink + ").");
                 em.setFooter("Source: www.wikipedia.org", "https://upload.wikimedia.org/wikipedia/en/thumb/8/80/Wikipedia-logo-v2.svg/1200px-Wikipedia-logo-v2.svg.png");
                 em.setAuthor("Wiki Search By: " + event.getAuthor().getName(), event.getMessage().getJumpUrl(), event.getMember().getUser().getAvatarUrl());
-                event.getMessage().reply(em.build()).setActionRow(Button.link(wikiLink, "Full Article").withEmoji(Emoji.fromMarkdown("<:Wikipedia:853165092769103905>"))).queue();
+                event.getMessage().replyEmbeds(em.build()).setActionRow(Button.link(wikiLink, "Full Article").withEmoji(Emoji.fromMarkdown("<:Wikipedia:853165092769103905>"))).queue();
                 return;
             }
 
