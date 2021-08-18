@@ -1,4 +1,5 @@
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -18,7 +19,7 @@ public class RollCommand extends ListenerAdapter {
             return;
         }
 
-        if (Main.mapDisable.containsKey(event.getGuild().getId())) {
+        if (Main.mapDisable.containsKey(event.getGuild().getId()) && !event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
             return;
         }
 
@@ -38,8 +39,6 @@ public class RollCommand extends ListenerAdapter {
         }
 
     }
-
-
         public EmbedBuilder RollDice(Member member) {
             String[] emotes = {"<:d1:831426766782201886>",
                     "<:d2:831426778505281577>",
@@ -64,5 +63,6 @@ public class RollCommand extends ListenerAdapter {
             return emb;
 
         }
+
 
 }
