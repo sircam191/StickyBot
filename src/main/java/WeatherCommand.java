@@ -1,4 +1,5 @@
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.apache.commons.lang3.text.WordUtils;
@@ -20,7 +21,7 @@ public class WeatherCommand extends ListenerAdapter {
             return;
         }
 
-        if (Main.mapDisable.containsKey(event.getGuild().getId())) {
+        if (Main.mapDisable.containsKey(event.getGuild().getId()) && !event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
             return;
         }
 
