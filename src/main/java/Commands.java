@@ -3,6 +3,7 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.Button;
 
 import java.awt.*;
@@ -12,6 +13,10 @@ import java.text.NumberFormat;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.List;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
@@ -65,30 +70,35 @@ public class Commands extends ListenerAdapter {
                 eb.addField("Donate:", "[paypal.me/sircam19](https://www.paypal.me/sircam19)", false);
                 eb.setFooter("StickyBot is Made with Java & JDA", Main.jda.getShards().get(0).getSelfUser().getAvatarUrl());
 
-                 event.getMessage().replyEmbeds(eb.build()).setActionRows(
+                event.getMessage().replyEmbeds(eb.build()).setActionRows(
                         ActionRow.of(Button.link("https://www.stickybot.info", "Website").withEmoji(Emoji.fromMarkdown("<:StickyBotCircle:693004145065590856>")),
                         Button.link("https://discord.com/invite/SvNQTtf", "Support Server").withEmoji(Emoji.fromMarkdown("<:discordEmote:853160010305765376>"))),
                         ActionRow.of(Button.link("https://www.stickybot.info/premium", "Premium").withEmoji(Emoji.fromMarkdown("\uD83E\uDDE1")),
                         Button.link("https://docs.stickybot.info", "Docs").withEmoji(Emoji.fromMarkdown("<:iBlue:860060995979706389>"))))
                         .queue();
+
+
            }
 
                 //DONATE
            else if (args[0].equalsIgnoreCase(prefix + "donate") || args[0].equalsIgnoreCase(prefix + "dono")) {
+            if (Main.mapDisable.containsKey(event.getGuild().getId()) && !event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
+                return;
+            }
                EmbedBuilder embed = new EmbedBuilder();
                embed.setColor(Color.ORANGE);
                embed.setTitle("Help Keep StickyBot up and running smoothly!");
                embed.setDescription("[**paypal.me/sircam19**](https://www.paypal.me/sircam19)");
                embed.setFooter("Include your Discord name or ID in the donation to receive the @donator tag in the support server.");
                event.getMessage().addReaction("\u2764").queue();
-               event.getMessage().reply(embed.build()).setActionRow(Button.link("https://www.paypal.me/sircam19", "PayPal").withEmoji(Emoji.fromMarkdown("<:paypal:853161440902250496>"))).queue();
+               event.getMessage().replyEmbeds(embed.build()).setActionRow(Button.link("https://www.paypal.me/sircam19", "PayPal").withEmoji(Emoji.fromMarkdown("<:paypal:853161440902250496>"))).queue();
 
            }
 
 
                 //SERVER INFO
             else if (args[0].equalsIgnoreCase(prefix + "serverinfo")) {
-                if (Main.mapDisable.containsKey(event.getGuild().getId())) {
+                if (Main.mapDisable.containsKey(event.getGuild().getId()) && !event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
                     return;
                 }
                 String creationDateClean = String.valueOf(event.getGuild().getTimeCreated().getMonth() + " " + String.valueOf(event.getGuild().getTimeCreated().getDayOfMonth()) + ", " + String.valueOf(event.getGuild().getTimeCreated().getYear()));
@@ -119,7 +129,7 @@ public class Commands extends ListenerAdapter {
 
                //UPTIME
            else if (args[0].equalsIgnoreCase(prefix + "uptime")) {
-                if (Main.mapDisable.containsKey(event.getGuild().getId())) {
+                if (Main.mapDisable.containsKey(event.getGuild().getId()) && !event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
                     return;
                 }
                 //Uptime stuff
@@ -135,15 +145,18 @@ public class Commands extends ListenerAdapter {
 
             //INVITE
            else if (args[0].equalsIgnoreCase(prefix + "invite")) {
-                EmbedBuilder embed = new EmbedBuilder();
+            if (Main.mapDisable.containsKey(event.getGuild().getId()) && !event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
+                return;
+            }
+               EmbedBuilder embed = new EmbedBuilder();
                 embed.setColor(Color.ORANGE);
-                embed.addField("Invite StickyBot to your server:", "[top.gg/StickyBot](https://top.gg/bot/628400349979344919)", false);
-                event.getMessage().replyEmbeds(embed.build()).queue();
+                embed.addField("Invite StickyBot to your server:", "[here](https://www.stickybot.info)", false);
+                event.getMessage().replyEmbeds(embed.build()).setActionRow(Button.link("https://www.stickybot.info", "Invite Link")).queue();
 
            }
                 //POLL
            else if (args[0].equalsIgnoreCase(prefix + "poll")) {
-                if (Main.mapDisable.containsKey(event.getGuild().getId())) {
+                if (Main.mapDisable.containsKey(event.getGuild().getId()) && !event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
                     return;
                 }
                String pollQ;
@@ -172,9 +185,9 @@ public class Commands extends ListenerAdapter {
 
            }
 
-               //USERINFO
+           //USERINFO
            else if (args[0].equalsIgnoreCase(prefix + "userinfo")) {
-                if (Main.mapDisable.containsKey(event.getGuild().getId())) {
+                if (Main.mapDisable.containsKey(event.getGuild().getId()) && !event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
                     return;
                 }
                try {
@@ -190,7 +203,7 @@ public class Commands extends ListenerAdapter {
                             tagUser = Main.jda.retrieveUserById(args[1]).complete();
                         } catch (Exception e) {
                             e.printStackTrace();
-                            event.getChannel().sendMessage(event.getMember().getAsMention() + " this user is not in this server.").queue();
+                            event.getMessage().reply(event.getMember().getAsMention() + " this user is not in this server.").queue();
                             return;
                        }
                    } else {
@@ -262,7 +275,7 @@ public class Commands extends ListenerAdapter {
                    emb.setFooter(tagUser.getName(), tagUser.getEffectiveAvatarUrl());
                }
 
-               event.getMessage().reply(emb.build()).setActionRow(Button.link(event.getMember().getUser().getEffectiveAvatarUrl(), "Avatar")).queue(m -> {
+               event.getMessage().replyEmbeds(emb.build()).setActionRow(Button.link(event.getMember().getUser().getEffectiveAvatarUrl(), "Avatar")).queue(m -> {
                    if (Integer.valueOf(daysJoined) == 365 || Integer.valueOf(daysJoined) == 730 || Integer.valueOf(daysJoined) == 1095 || Integer.valueOf(daysJoined) == 1460 || Integer.valueOf(daysJoined) == 1825 || Integer.valueOf(daysJoined) == 2190) {
                        m.addReaction("\uD83C\uDF89").queue();
                    }
@@ -278,7 +291,7 @@ public class Commands extends ListenerAdapter {
 
             //COIN FLIP
            else if (args[0].equalsIgnoreCase(prefix + "coinflip") || args[0].equalsIgnoreCase(prefix + "flip") || args[0].equalsIgnoreCase(prefix + "coin") || args[0].equalsIgnoreCase(prefix + "flipcoin")) {
-                if (Main.mapDisable.containsKey(event.getGuild().getId())) {
+                if (Main.mapDisable.containsKey(event.getGuild().getId()) && !event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
                     return;
                 }
                 int random = (int) Math.round(Math.random());
@@ -297,7 +310,10 @@ public class Commands extends ListenerAdapter {
 
                 //WEBSITE
            else if (args[0].equalsIgnoreCase(prefix + "website") || args[0].equalsIgnoreCase(prefix + "site")) {
-                EmbedBuilder embed = new EmbedBuilder();
+            if (Main.mapDisable.containsKey(event.getGuild().getId()) && !event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
+                return;
+            }
+               EmbedBuilder embed = new EmbedBuilder();
                 embed.setColor(Color.ORANGE);
                 embed.setTitle("-StickyBot Website-");
                 embed.setDescription("[www.stickybot.info](https://www.stickybot.info/)");
@@ -307,6 +323,9 @@ public class Commands extends ListenerAdapter {
 
                 //SUPPORT
            else if (args[0].equalsIgnoreCase(prefix + "support") || args[0].equalsIgnoreCase(prefix + "supportserver")) {
+            if (Main.mapDisable.containsKey(event.getGuild().getId()) && !event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
+                return;
+            }
                EmbedBuilder embed = new EmbedBuilder();
                embed.setColor(Color.ORANGE);
                embed.setTitle("-Join the Official StickyBot Support Server-");
@@ -335,7 +354,7 @@ public class Commands extends ListenerAdapter {
 
             //EMBED
             } else if (args[0].equalsIgnoreCase(prefix + "embed")) {
-                if (Main.mapDisable.containsKey(event.getGuild().getId())) {
+                if (Main.mapDisable.containsKey(event.getGuild().getId()) && !event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
                     return;
                 }
                 if (event.getMessage().getContentRaw().length() > 1000) {
@@ -347,27 +366,29 @@ public class Commands extends ListenerAdapter {
                     emb.setDescription(event.getMessage().getContentRaw().replace(prefix + "embed", ""));
                     emb.setColor(event.getGuild().getMemberById(Main.botId).getColor());
                     emb.setFooter("Embed By: " + event.getMember().getUser().getName());
-                    event.getChannel().sendMessage(emb.build()).queue();
+                    event.getChannel().sendMessageEmbeds(emb.build()).queue();
                } catch (Exception e) {
                     event.getChannel().sendMessage("Please use the format `?embed <message>`.").queue();
                }
                 event.getMessage().delete().queue();
             }
 
-            //DOCS
+                //DOCS
                 else if (args[0].equalsIgnoreCase(prefix + "docs")) {
-                    if (Main.mapDisable.containsKey(event.getGuild().getId())) {
+                    if (Main.mapDisable.containsKey(event.getGuild().getId()) && !event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
                      return;
                   }
                     EmbedBuilder emb = new EmbedBuilder();
                     emb.setTitle("-StickyBot Docs-")
                             .setDescription("Here are the StickyBot Docs for the most in-depth and up to date information about StickyBot.\n[docs.stickybot.info](https://docs.stickybot.info/stickybot/).");
                     event.getMessage().replyEmbeds(emb.build()).setActionRow(Button.link("https://docs.stickybot.info/stickybot/", "Docs").withEmoji(Emoji.fromMarkdown("<:iBlue:860060995979706389>"))).queue();
-                }             
-                                         
+                }
+
             //PERM CHECK
             else if (args[0].equalsIgnoreCase(prefix + "permcheck")) {
-
+            if (Main.mapDisable.containsKey(event.getGuild().getId()) && !event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
+                return;
+            }
                 String mH;
                 String mM;
                 String eL;
@@ -399,7 +420,8 @@ public class Commands extends ListenerAdapter {
                 event.getChannel().sendMessage(result).queue();
             }
             //IF BOT IS MENTIONED
-            else if (!event.getMessage().getMentionedMembers().isEmpty() && event.getMessage().getMentionedMembers().get(0).getUser().getId().equals(Main.botId) && event.getMessage().getReferencedMessage() == null) {
+
+        else if (!event.getMessage().getMentionedMembers().isEmpty() && event.getMessage().getMentionedMembers().get(0).getUser().getId().equals(Main.botId) && event.getMessage().getReferencedMessage() == null) {
                 event.getMessage().reply("**Hey!**\uD83D\uDC4B\nMy prefix in this server is: `" + prefix + "`.\nUse the `" + prefix + "help` command to get a list of commands.").queue();
 
         }
