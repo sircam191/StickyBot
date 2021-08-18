@@ -2,6 +2,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -24,7 +25,7 @@ public class UrbanDict extends ListenerAdapter
             return;
         }
 
-        if (Main.mapDisable.containsKey(event.getGuild().getId())) {
+        if (Main.mapDisable.containsKey(event.getGuild().getId()) && !event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
             return;
         }
 
@@ -36,13 +37,13 @@ public class UrbanDict extends ListenerAdapter
 
 
             if (!event.getChannel().isNSFW()) {
-                event.getMessage().reply("Sorry! This command can only be used in NSFW channels.").queue();
+                event.getMessage().reply(event.getMember().getAsMention() + " Sorry! This command can only be used in NSFW channels.").queue();
                 return;
             }
 
             //if args not given let user know
             if (event.getMessage().getContentRaw().equalsIgnoreCase(prefix + "urban")){
-                event.getMessage().reply("You need to provide something to lookup!\nExample: `" + prefix + "urban Banana`").queue();
+                event.getMessage().reply(event.getMember().getAsMention() + "You need to provide something to lookup!\nExample: `" + prefix + "urban Banana`").queue();
                 return;
             }
 
@@ -54,7 +55,7 @@ public class UrbanDict extends ListenerAdapter
                 Request request = new Request.Builder()
                         .url("https://mashape-community-urban-dictionary.p.rapidapi.com/define?term=" + lookup)
                         .get()
-                        .addHeader("x-rapidapi-key", "**********************************")
+                        .addHeader("x-rapidapi-key", "xxxxxxxxxxxxxxxxxxxxxxxxx")
                         .addHeader("x-rapidapi-host", "mashape-community-urban-dictionary.p.rapidapi.com")
                         .build();
 
