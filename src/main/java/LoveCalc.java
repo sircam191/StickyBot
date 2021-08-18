@@ -2,6 +2,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import okhttp3.OkHttpClient;
@@ -10,7 +11,6 @@ import okhttp3.Response;
 import org.apache.commons.lang3.StringUtils;
 
 import java.awt.*;
-import java.io.IOException;
 
 public class LoveCalc extends ListenerAdapter
 {
@@ -23,7 +23,7 @@ public class LoveCalc extends ListenerAdapter
             return;
         }
 
-        if (Main.mapDisable.containsKey(event.getGuild().getId())) {
+        if (Main.mapDisable.containsKey(event.getGuild().getId()) && !event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
             return;
         }
 
@@ -39,19 +39,17 @@ public class LoveCalc extends ListenerAdapter
                 return;
             }
 
-
             String rawInput = event.getMessage().getContentRaw().replace(prefix + "love", "");
 
             String[] names = rawInput.split("\\s*,\\s*");
 
             OkHttpClient client = new OkHttpClient();
 
-
             try {
                 Request request = new Request.Builder()
                         .url("https://love-calculator.p.rapidapi.com/getPercentage?fname=" + names[0].trim() + "&sname=" + names[1])
                         .get()
-                        .addHeader("x-rapidapi-key", "******************************")
+                        .addHeader("x-rapidapi-key", "7ea6d5bfe9msh1c72829a802fbc3p1d81c6jsna40a16df07d2")
                         .addHeader("x-rapidapi-host", "love-calculator.p.rapidapi.com")
                         .build();
 
