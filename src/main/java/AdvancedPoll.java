@@ -1,4 +1,5 @@
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -16,7 +17,7 @@ public class AdvancedPoll extends ListenerAdapter
             prefix = Main.mapPrefix.get(event.getGuild().getId());
         }
 
-        if (Main.mapDisable.containsKey(event.getGuild().getId())) {
+        if (Main.mapDisable.containsKey(event.getGuild().getId()) && !event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
             return;
         }
 
