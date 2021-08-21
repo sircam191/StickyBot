@@ -49,7 +49,7 @@ public class HelpNew extends ListenerAdapter {
 
                         ActionRow.of(Button.link("https://www.stickybot.info", "Website").withEmoji(Emoji.fromMarkdown("<:StickyBotCircle:693004145065590856>")),
                                 Button.link("https://discord.com/invite/SvNQTtf", "Support Server").withEmoji(Emoji.fromMarkdown("<:discordEmote:853160010305765376>")),
-                        Button.link("https://www.stickybot.info/premium", "Premium").withEmoji(Emoji.fromMarkdown("\uD83E\uDDE1")),
+                                Button.link("https://www.stickybot.info/premium", "Premium").withEmoji(Emoji.fromMarkdown("\uD83E\uDDE1")),
                                 Button.link("https://docs.stickybot.info", "Docs").withEmoji(Emoji.fromMarkdown("<:iBlue:860060995979706389>")))
                 ).queue(null, (error) -> event.getChannel().sendMessage("I need the `Embed Links` Permission!").queue());
             } catch (Exception e) {
@@ -125,13 +125,14 @@ public class HelpNew extends ListenerAdapter {
             embed.setFooter("Click a button to see other commands!", Main.jda.getShards().get(0).getSelfUser().getAvatarUrl());
             embed.setDescription("[www.stickybot.info](https://www.stickybot.info/)\n(Do not include `<>` when using commands)");
             embed.addField("\uD83D\uDE04 Fun Commands:",
-                    "``" + prefix + "roll`` - Roll two dice.\n" +
                             "``" + prefix + "weather <location>`` - Get the current weather in a city.\n" +
                             "``" + prefix + "wiki <article>`` - Get the requested Wikipedia article.\n" +
                             "``" + prefix + "wiki random`` - Get a random Wikipedia article.\n" +
+                            "``" + prefix + "image <image link>`` - AI will return keywords from the image.\n" +
                             "``" + prefix + "wikihow`` - Get a random WikiHow article.\n" +
                             "``" + prefix + "urban <lookup>`` - Look something up on the Urban Dictionary.\n" +
                             "``" + prefix + "love <name1, name2>`` - Get the compatibility % on two names *(real names, not discord tags)*.\n" +
+                            "``" + prefix + "roll`` - Roll two dice.\n" +
                             "``" + prefix + "coinflip`` - Flips a coin."
                     , false);
 
