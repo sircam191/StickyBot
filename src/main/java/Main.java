@@ -40,6 +40,8 @@ public class Main {
     public static String kSoftApiToken = "*************************";
     public static KSoftAPI kSoftApi;
 
+    public static String rapidAPIToken = "********************************************";
+    
     public static Wiki wiki;
 
     public static Map<String, String> mapMessage = new HashMap<>();
@@ -242,7 +244,8 @@ public class Main {
                          new DisconnectEventMessages(),
                          new LoveCalc(),
                          new UrbanDict(),
-                         new HelpNew()
+                         new HelpNew(),
+                         new ImageRecon()
                  )
                  .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.EMOTE, CacheFlag.CLIENT_STATUS)
                 .build();
