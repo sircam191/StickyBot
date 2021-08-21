@@ -76,23 +76,23 @@ public class ImageRecon extends ListenerAdapter
                     em.addField(jsonObject.get("keywords").getAsJsonArray().get(0).getAsJsonObject().get("keyword").getAsString().toUpperCase(),
                             "Confidence: " + Math.round(((jsonObject.get("keywords").getAsJsonArray().get(0).getAsJsonObject().get("score").getAsDouble() * 100) * 100.0)) /100.0 + "%", false);
                     em.addField(jsonObject.get("keywords").getAsJsonArray().get(1).getAsJsonObject().get("keyword").getAsString().toUpperCase(),
-                            "Confidence: " + Math.round(((jsonObject.get("keywords").getAsJsonArray().get(0).getAsJsonObject().get("score").getAsDouble() * 100) * 100.0)) /100.0 + "%", false);
+                            "Confidence: " + Math.round(((jsonObject.get("keywords").getAsJsonArray().get(1).getAsJsonObject().get("score").getAsDouble() * 100) * 100.0)) /100.0 + "%", false);
                     em.addField(jsonObject.get("keywords").getAsJsonArray().get(2).getAsJsonObject().get("keyword").getAsString().toUpperCase(),
-                            "Confidence: " + Math.round(((jsonObject.get("keywords").getAsJsonArray().get(0).getAsJsonObject().get("score").getAsDouble() * 100) * 100.0)) /100.0 + "%", false);
+                            "Confidence: " + Math.round(((jsonObject.get("keywords").getAsJsonArray().get(2).getAsJsonObject().get("score").getAsDouble() * 100) * 100.0)) /100.0 + "%", false);
                     em.addField(jsonObject.get("keywords").getAsJsonArray().get(3).getAsJsonObject().get("keyword").getAsString().toUpperCase(),
-                            "Confidence: " + Math.round(((jsonObject.get("keywords").getAsJsonArray().get(0).getAsJsonObject().get("score").getAsDouble() * 100) * 100.0)) /100.0 + "%", false);
+                            "Confidence: " + Math.round(((jsonObject.get("keywords").getAsJsonArray().get(3).getAsJsonObject().get("score").getAsDouble() * 100) * 100.0)) /100.0 + "%", false);
                 } else if (resultCount == 3) {
                     em.addField(jsonObject.get("keywords").getAsJsonArray().get(0).getAsJsonObject().get("keyword").getAsString().toUpperCase(),
                             "Confidence: " + Math.round(((jsonObject.get("keywords").getAsJsonArray().get(0).getAsJsonObject().get("score").getAsDouble() * 100) * 100.0)) /100.0 + "%", false);
                     em.addField(jsonObject.get("keywords").getAsJsonArray().get(1).getAsJsonObject().get("keyword").getAsString().toUpperCase(),
-                            "Confidence: " + Math.round(((jsonObject.get("keywords").getAsJsonArray().get(0).getAsJsonObject().get("score").getAsDouble() * 100) * 100.0)) /100.0 + "%", false);
+                            "Confidence: " + Math.round(((jsonObject.get("keywords").getAsJsonArray().get(1).getAsJsonObject().get("score").getAsDouble() * 100) * 100.0)) /100.0 + "%", false);
                     em.addField(jsonObject.get("keywords").getAsJsonArray().get(2).getAsJsonObject().get("keyword").getAsString().toUpperCase(),
-                            "Confidence: " + Math.round(((jsonObject.get("keywords").getAsJsonArray().get(0).getAsJsonObject().get("score").getAsDouble() * 100) * 100.0)) /100.0 + "%", false);
+                            "Confidence: " + Math.round(((jsonObject.get("keywords").getAsJsonArray().get(2).getAsJsonObject().get("score").getAsDouble() * 100) * 100.0)) /100.0 + "%", false);
                 } else if (resultCount == 2) {
                     em.addField(jsonObject.get("keywords").getAsJsonArray().get(0).getAsJsonObject().get("keyword").getAsString().toUpperCase(),
                             "Confidence: " + Math.round(((jsonObject.get("keywords").getAsJsonArray().get(0).getAsJsonObject().get("score").getAsDouble() * 100) * 100.0)) /100.0 + "%", false);
                     em.addField(jsonObject.get("keywords").getAsJsonArray().get(1).getAsJsonObject().get("keyword").getAsString().toUpperCase(),
-                            "Confidence: " + Math.round(((jsonObject.get("keywords").getAsJsonArray().get(0).getAsJsonObject().get("score").getAsDouble() * 100) * 100.0)) /100.0 + "%", false);
+                            "Confidence: " + Math.round(((jsonObject.get("keywords").getAsJsonArray().get(1).getAsJsonObject().get("score").getAsDouble() * 100) * 100.0)) /100.0 + "%", false);
                 }else if (resultCount == 1) {
                     em.addField(jsonObject.get("keywords").getAsJsonArray().get(0).getAsJsonObject().get("keyword").getAsString().toUpperCase(),
                             "Confidence: " + Math.round(((jsonObject.get("keywords").getAsJsonArray().get(0).getAsJsonObject().get("score").getAsDouble() * 100) * 100.0)) /100.0 + "%", false);
