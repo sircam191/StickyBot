@@ -110,12 +110,19 @@ public class WebHookSticky extends ListenerAdapter {
             builder.setWait(true);
             WebhookClient client = builder.build();
 
-            WebhookEmbed embed = new WebhookEmbedBuilder()
+            WebhookEmbedBuilder embed = new WebhookEmbedBuilder()
                     .setColor(event.getGuild().getMemberById(Main.botId).getColorRaw())
-                    .setDescription(message)
-                    .build();
+                    .setDescription(Main.webhookMessage.get(event.getChannel().getId()));
 
-            client.send(embed);
+
+            if (Main.mapImageLinkEmbed.containsKey(event.getChannel().getId())) {
+                embed.setThumbnailUrl(Main.mapImageLinkEmbed.get(event.getChannel().getId()));
+            }
+            if (Main.mapBigImageLinkEmbed.containsKey(event.getChannel().getId())) {
+                embed.setImageUrl(Main.mapBigImageLinkEmbed.get(event.getChannel().getId()));
+            }
+
+            client.send(embed.build());
             client.close();
 
             event.getMessage().addReaction("\u2705").queue();
@@ -165,7 +172,7 @@ public class WebHookSticky extends ListenerAdapter {
                                 m.delete().queue(null, (error) -> {});
                                 //send new sticky
                                 // Using the builder
-                                WebhookClientBuilder builder = new WebhookClientBuilder("https://discord.com/api/webhooks/882747743355932742/DthGJWAvImwzHVmASUcfH8WdLo5CUuxDEI02xWaSD8Cn166MoGibk50pnuLJWgyvfpub"); // or id, token
+                                WebhookClientBuilder builder = new WebhookClientBuilder(Main.webhookURL.get(channelId)); // or id, token
                                 builder.setThreadFactory((job) -> {
                                     Thread thread = new Thread(job);
                                     thread.setName("webhookThread");
@@ -205,7 +212,7 @@ public class WebHookSticky extends ListenerAdapter {
 
                         //send new sticky
                         // Using the builder
-                        WebhookClientBuilder builder = new WebhookClientBuilder(Main.webhookURL.get(event.getChannel().getId()); // or id, token
+                        WebhookClientBuilder builder = new WebhookClientBuilder(Main.webhookURL.get(channelId)); // or id, token
                         builder.setThreadFactory((job) -> {
                             Thread thread = new Thread(job);
                             thread.setName("webhookThread");
