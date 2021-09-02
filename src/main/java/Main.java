@@ -216,6 +216,38 @@ public class Main {
         } catch ( SQLException e) {
             e.printStackTrace();
         }
+        
+          //Get sticky webhook URL from DB
+        try {
+            Connection dbConn = DriverManager.getConnection(dbUrl,dbUser,dbPassword);
+            Statement myStmt = dbConn.createStatement();
+            String sql = "select * from webhookURL";
+            ResultSet rs = myStmt.executeQuery(sql);
+
+            while (rs.next()) {
+                webhookURL.put(rs.getString("channelId"), rs.getString("url"));
+                //System.out.println(rs.getString("channelId") + " -> " + rs.getString("message"));
+            }
+
+        } catch ( SQLException e) {
+            e.printStackTrace();
+        }
+
+        //Get sticky webhook messages from DB
+        try {
+            Connection dbConn = DriverManager.getConnection(dbUrl,dbUser,dbPassword);
+            Statement myStmt = dbConn.createStatement();
+            String sql = "select * from webhookMessage";
+            ResultSet rs = myStmt.executeQuery(sql);
+
+            while (rs.next()) {
+                webhookMessage.put(rs.getString("channelId"), rs.getString("message"));
+                //System.out.println(rs.getString("channelId") + " -> " + rs.getString("message"));
+            }
+
+        } catch ( SQLException e) {
+            e.printStackTrace();
+        }
 
 
         jda = DefaultShardManagerBuilder.create(token,
