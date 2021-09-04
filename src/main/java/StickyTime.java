@@ -33,9 +33,17 @@ public class StickyTime extends ListenerAdapter {
         if (args[0].equalsIgnoreCase(prefix + "stick") && (permCheck(event.getMember())) && !event.getAuthor().isBot()) {
             if (guildHasSticky(event.getGuild().getId()) && !Main.premiumGuilds.containsValue(event.getGuild().getId())) {
                EmbedBuilder em = new EmbedBuilder();
-                       em.setTitle("**There is already an active sticky message in this server!** ")
-                               .setDescription("Stop the sticky in " + event.getGuild().getTextChannelById(getActiveStickyChannelId(event.getGuild().getId())).getAsMention() + " using `" + prefix + "stickstop` first.")
-                               .addField("__StickyBot Premium__ allows for stickies in as many channels as you like plus other awesome features!", "Learn more: [www.stickybot.com](https://www.stickybot.info)", false);
+
+               String channelNames = "";
+               if (getActiveStickyChannelId(event.getGuild().getId()).size() == 1) {
+                   channelNames = event.getGuild().getTextChannelById(getActiveStickyChannelId(event.getGuild().getId()).get(0)).getAsMention();
+               } else {
+                   channelNames = event.getGuild().getTextChannelById(getActiveStickyChannelId(event.getGuild().getId()).get(0)).getAsMention() + " or " + event.getGuild().getTextChannelById(getActiveStickyChannelId(event.getGuild().getId()).get(1)).getAsMention();;
+               }
+
+               em.setTitle("**There is already 2 active sticky messages in this server!** ")
+                               .setDescription("Stop a sticky in " + channelNames + " using `" + prefix + "stickstop` first.")
+                               .addField("__StickyBot Premium__ lets you create sticky embeds with a custom bot profile picture and name! Plus stickies in as many channels as you like with awesome customization!", "Learn more: [www.stickybot.com](https://www.stickybot.info)", false);
                 event.getMessage().replyEmbeds(em.setColor(Color.ORANGE).build()).queue();
 
             } else {
@@ -60,7 +68,7 @@ public class StickyTime extends ListenerAdapter {
                                 event.getChannel().deleteMessageById(Main.mapDeleteId2.get(channelId)).queue(null, (error) -> {});
                             }
                         }
-                        
+
                         try {
                             //remove last sticky message if there is one (user used sticky command while already having one)
                             if(Main.mapDeleteId.get(channelId) != null) {
@@ -126,7 +134,6 @@ public class StickyTime extends ListenerAdapter {
                     }
                 });
             }
-
         } else if (args[0].equalsIgnoreCase(prefix + "stick") && (!permCheck(event.getMember() ))) {
             //Adds X emote
             event.getMessage().addReaction("\u274C").queue();
@@ -194,26 +201,20 @@ public class StickyTime extends ListenerAdapter {
                         removeDB(channelId);
                         System.out.println("StickStop Override due to missing write permission");
                     }
-
                 }
-
                 //Added to make sure it does not bug and send two stickies (next 5 lines)
-
                 List<Message> indexes = new ArrayList<>();
-
                 for (Message mes : history) {
                     if (mes.getContentRaw().equals(Main.mapMessage.get(channelId))) {
                         indexes.add(mes);
                     }
                 }
-
                 if (!indexes.isEmpty() && indexes.size() > 1) {
                     indexes.remove(0);
                     for (Message mess : indexes) {
                         mess.delete().queue(null, (error) -> {});
                     }
                 }
-
             });
         }
     }
@@ -241,7 +242,6 @@ public class StickyTime extends ListenerAdapter {
         }
     }
 
-
     public void removeDB(String channelId) {
         try {
             Connection dbConn = DriverManager.getConnection(Main.dbUrl,Main.dbUser,Main.dbPassword);
@@ -257,23 +257,30 @@ public class StickyTime extends ListenerAdapter {
     //returns true if no active sticky is in channel, otherwise returns false.
     public boolean guildHasSticky(String guildId) {
         List<String> channelIds = Main.jda.getGuildById(guildId).getTextChannels().stream().map(textChannel -> textChannel.getId()).collect(Collectors.toList());
+        int numStickies = 0;
 
         for (String id : channelIds) {
             if (Main.mapMessage.containsKey(id)) {
-                return true;
+                numStickies += 1;
             }
         }
-        return false;
+        if (numStickies >= 2) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    public String getActiveStickyChannelId(String guildId) {
+    public List<String> getActiveStickyChannelId(String guildId) {
         List<String> channelIds = Main.jda.getGuildById(guildId).getTextChannels().stream().map(textChannel -> textChannel.getId()).collect(Collectors.toList());
+        List<String> stickyChannelIDs = new ArrayList<>();
 
         for (String id : channelIds) {
             if (Main.mapMessage.containsKey(id)) {
-                return id;
+                stickyChannelIDs.add(id);
             }
         }
-        return "null";
+
+        return stickyChannelIDs;
     }
 }
