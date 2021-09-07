@@ -185,7 +185,7 @@ public class Commands extends ListenerAdapter {
 
            }
 
-           //USERINFO
+              //USERINFO
            else if (args[0].equalsIgnoreCase(prefix + "userinfo")) {
                 if (Main.mapDisable.containsKey(event.getGuild().getId()) && !event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
                     return;
@@ -264,8 +264,11 @@ public class Commands extends ListenerAdapter {
                                    "<:roles:865690170229391420> **Number of Roles:** " + taggedMember.getRoles().size()
                            , false);
 
-                   emb.addField("<:roles:865690170229391420> **Roles: **", getRoles(taggedMember), false );
-
+                   if (getRoles(taggedMember).length() > 1000) {
+                       emb.addField("<:roles:865690170229391420> **Roles: **", "Reached Max Embed Length. *(Too many roles to display)*", false );
+                   } else {
+                       emb.addField("<:roles:865690170229391420> **Roles: **", getRoles(taggedMember), false );
+                   }
 
                    emb.setColor(taggedMember.getColor());
 
@@ -275,7 +278,7 @@ public class Commands extends ListenerAdapter {
                    emb.setFooter(tagUser.getName(), tagUser.getEffectiveAvatarUrl());
                }
 
-               event.getMessage().replyEmbeds(emb.build()).setActionRow(Button.link(event.getMember().getUser().getEffectiveAvatarUrl(), "Avatar")).queue(m -> {
+               event.getMessage().replyEmbeds(emb.build()).setActionRow(Button.link(tagUser.getEffectiveAvatarUrl(), "Avatar")).queue(m -> {
                    if (Integer.valueOf(daysJoined) == 365 || Integer.valueOf(daysJoined) == 730 || Integer.valueOf(daysJoined) == 1095 || Integer.valueOf(daysJoined) == 1460 || Integer.valueOf(daysJoined) == 1825 || Integer.valueOf(daysJoined) == 2190) {
                        m.addReaction("\uD83C\uDF89").queue();
                    }
@@ -287,7 +290,6 @@ public class Commands extends ListenerAdapter {
                   }
 
            }
-
 
             //COIN FLIP
            else if (args[0].equalsIgnoreCase(prefix + "coinflip") || args[0].equalsIgnoreCase(prefix + "flip") || args[0].equalsIgnoreCase(prefix + "coin") || args[0].equalsIgnoreCase(prefix + "flipcoin")) {
