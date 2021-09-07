@@ -56,7 +56,7 @@ public class SlowSticky extends ListenerAdapter {
                         for (Emote emote : event.getMessage().getEmotes()) {
                             event.getGuild().retrieveEmoteById(emote.getId()).queue(success -> {}, failure -> {
                                 event.getMessage().reply(event.getMember().getAsMention() + " Error: Please only use emotes that are from this server.").queue();
-                                Main.mapMessage.remove(event.getChannel().getId());
+                                Main.mapMessageSlow.remove(event.getChannel().getId());
                                 removeDB(channelId);
                             });
                         }
