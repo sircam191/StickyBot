@@ -56,6 +56,11 @@ public class WebHookSticky extends ListenerAdapter {
             Main.webhookURL.put(event.getChannel().getId(), url);
             addDBurl(event.getChannel().getId(), url);
             event.getMessage().delete().queue();
+            try {
+                event.getMessage().delete().queue();
+            } catch (Exception e) {
+                event.getMessage().reply("*(I am missing `Manage Messages` permission, so just make sure to keep your WebHook URL a secret from server members)*").queue();
+            }
             event.getChannel().sendMessage(event.getMember().getAsMention() + " DONE! WebHook URL has been set for this channel.\n*(If the WebHook gets deleted you will need to make a new one and set the WebHook URL again).*").queue();
 
         }
