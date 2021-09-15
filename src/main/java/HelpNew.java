@@ -50,7 +50,8 @@ public class HelpNew extends ListenerAdapter {
                         ActionRow.of(Button.link("https://www.stickybot.info", "Website").withEmoji(Emoji.fromMarkdown("<:StickyBotCircle:693004145065590856>")),
                                 Button.link("https://discord.com/invite/SvNQTtf", "Support Server").withEmoji(Emoji.fromMarkdown("<:discordEmote:853160010305765376>")),
                                 Button.link("https://www.stickybot.info/premium", "Premium").withEmoji(Emoji.fromMarkdown("\uD83E\uDDE1")),
-                                Button.link("https://docs.stickybot.info", "Docs").withEmoji(Emoji.fromMarkdown("<:iBlue:860060995979706389>")))
+                                Button.link("https://docs.stickybot.info", "Docs").withEmoji(Emoji.fromMarkdown("<:iBlue:860060995979706389>")),
+                                Button.link("https://top.gg/bot/767640740703502336", "Our Other Bot!").withEmoji(Emoji.fromMarkdown("<:DrinkingGameBot:887470145918873632>")))
                 ).queue(null, (error) -> event.getChannel().sendMessage("I need the `Embed Links` Permission!").queue());
             } catch (Exception e) {
                 event.getMessage().reply("I need the `Embed Links` Permission!").queue();
@@ -88,7 +89,8 @@ public class HelpNew extends ListenerAdapter {
                     ActionRow.of(Button.link("https://www.stickybot.info", "Website").withEmoji(Emoji.fromMarkdown("<:StickyBotCircle:693004145065590856>")),
                             Button.link("https://discord.com/invite/SvNQTtf", "Support Server").withEmoji(Emoji.fromMarkdown("<:discordEmote:853160010305765376>")),
                             Button.link("https://www.stickybot.info/premium", "Premium").withEmoji(Emoji.fromMarkdown("\uD83E\uDDE1")),
-                            Button.link("https://docs.stickybot.info", "Docs").withEmoji(Emoji.fromMarkdown("<:iBlue:860060995979706389>")))).queue();
+                            Button.link("https://docs.stickybot.info", "Docs").withEmoji(Emoji.fromMarkdown("<:iBlue:860060995979706389>")),
+                            Button.link("https://top.gg/bot/767640740703502336", "Our Other Bot!").withEmoji(Emoji.fromMarkdown("<:DrinkingGameBot:887470145918873632>")))).queue();
 
         } else if (event.getButton().getId().equals("utility")) {
             EmbedBuilder embed = new EmbedBuilder();
@@ -115,7 +117,8 @@ public class HelpNew extends ListenerAdapter {
                     ActionRow.of(Button.link("https://www.stickybot.info", "Website").withEmoji(Emoji.fromMarkdown("<:StickyBotCircle:693004145065590856>")),
                             Button.link("https://discord.com/invite/SvNQTtf", "Support Server").withEmoji(Emoji.fromMarkdown("<:discordEmote:853160010305765376>")),
                             Button.link("https://www.stickybot.info/premium", "Premium").withEmoji(Emoji.fromMarkdown("\uD83E\uDDE1")),
-                            Button.link("https://docs.stickybot.info", "Docs").withEmoji(Emoji.fromMarkdown("<:iBlue:860060995979706389>")))).queue();
+                            Button.link("https://docs.stickybot.info", "Docs").withEmoji(Emoji.fromMarkdown("<:iBlue:860060995979706389>")),
+                    Button.link("https://top.gg/bot/767640740703502336", "Our Other Bot!").withEmoji(Emoji.fromMarkdown("<:DrinkingGameBot:887470145918873632>")))).queue();
 
         } else if (event.getButton().getId().equals("fun")) {
 
@@ -147,7 +150,8 @@ public class HelpNew extends ListenerAdapter {
                     ActionRow.of(Button.link("https://www.stickybot.info", "Website").withEmoji(Emoji.fromMarkdown("<:StickyBotCircle:693004145065590856>")),
                             Button.link("https://discord.com/invite/SvNQTtf", "Support Server").withEmoji(Emoji.fromMarkdown("<:discordEmote:853160010305765376>")),
                             Button.link("https://www.stickybot.info/premium", "Premium").withEmoji(Emoji.fromMarkdown("\uD83E\uDDE1")),
-                            Button.link("https://docs.stickybot.info", "Docs").withEmoji(Emoji.fromMarkdown("<:iBlue:860060995979706389>")))).queue();
+                            Button.link("https://docs.stickybot.info", "Docs").withEmoji(Emoji.fromMarkdown("<:iBlue:860060995979706389>")),
+                            Button.link("https://top.gg/bot/767640740703502336", "Our Other Bot!").withEmoji(Emoji.fromMarkdown("<:DrinkingGameBot:887470145918873632>")))).queue();
 
 
         } else if (event.getButton().getId().equals("other")) {
@@ -179,7 +183,8 @@ public class HelpNew extends ListenerAdapter {
                     ActionRow.of(Button.link("https://www.stickybot.info", "Website").withEmoji(Emoji.fromMarkdown("<:StickyBotCircle:693004145065590856>")),
                             Button.link("https://discord.com/invite/SvNQTtf", "Support Server").withEmoji(Emoji.fromMarkdown("<:discordEmote:853160010305765376>")),
                             Button.link("https://www.stickybot.info/premium", "Premium").withEmoji(Emoji.fromMarkdown("\uD83E\uDDE1")),
-                            Button.link("https://docs.stickybot.info", "Docs").withEmoji(Emoji.fromMarkdown("<:iBlue:860060995979706389>")))).queue();
+                            Button.link("https://docs.stickybot.info", "Docs").withEmoji(Emoji.fromMarkdown("<:iBlue:860060995979706389>")),
+                            Button.link("https://top.gg/bot/767640740703502336", "Our Other Bot!").withEmoji(Emoji.fromMarkdown("<:DrinkingGameBot:887470145918873632>")))).queue();
 
         } else if (event.getButton().getId().equals("premium")) {
             EmbedBuilder embed = new EmbedBuilder();
@@ -190,6 +195,9 @@ public class HelpNew extends ListenerAdapter {
             embed.addField("\uD83E\uDDE1 Premium Commands:",
                     "``" + prefix + "stickembed <message>`` - Creates a sticky with a embed.\n" +
                             "``" + prefix + "stickslow <message>`` - Creates a sticky that sends slower than a normal sticky.\n" +
+                            "``" + prefix + "stickwebhook <message>`` - Create a sticky embed with a custom name and profile pic.\n" +
+                            "``" + prefix + "setwebhook <WebHook URL>`` - Set the WebHook for the `stickwebhook` command in the channel.\n" +
+                            "``" + prefix + "webhookstop`` - Stops the WebHook sticky.\n" +
                             "``" + prefix + "setimage <image link>`` - Sets image for sticky embed in the channel.\n" +
                             "``" + prefix + "removeimage`` - Removes image for sticky embed in the channel.\n" +
                             "``" + prefix + "setbigimage <image link>`` - Sets big image for sticky embed in the channel.\n" +
@@ -211,7 +219,8 @@ public class HelpNew extends ListenerAdapter {
                     ActionRow.of(Button.link("https://www.stickybot.info", "Website").withEmoji(Emoji.fromMarkdown("<:StickyBotCircle:693004145065590856>")),
                             Button.link("https://discord.com/invite/SvNQTtf", "Support Server").withEmoji(Emoji.fromMarkdown("<:discordEmote:853160010305765376>")),
                             Button.link("https://www.stickybot.info/premium", "Premium").withEmoji(Emoji.fromMarkdown("\uD83E\uDDE1")),
-                            Button.link("https://docs.stickybot.info", "Docs").withEmoji(Emoji.fromMarkdown("<:iBlue:860060995979706389>")))).queue();
+                            Button.link("https://docs.stickybot.info", "Docs").withEmoji(Emoji.fromMarkdown("<:iBlue:860060995979706389>")),
+                            Button.link("https://top.gg/bot/767640740703502336", "Our Other Bot!").withEmoji(Emoji.fromMarkdown("<:DrinkingGameBot:887470145918873632>")))).queue();
 
         }
     }
