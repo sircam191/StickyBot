@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.awt.*;
 import java.sql.*;
+import java.text.NumberFormat;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,10 +39,15 @@ public class StickyTime extends ListenerAdapter {
                if (getActiveStickyChannelId(event.getGuild().getId()).size() == 1) {
                    channelNames = event.getGuild().getTextChannelById(getActiveStickyChannelId(event.getGuild().getId()).get(0)).getAsMention();
                } else {
-                   channelNames = event.getGuild().getTextChannelById(getActiveStickyChannelId(event.getGuild().getId()).get(0)).getAsMention() + " or " + event.getGuild().getTextChannelById(getActiveStickyChannelId(event.getGuild().getId()).get(1)).getAsMention();;
+                   channelNames = "";
+
+                   for (String stickyChannelID : getActiveStickyChannelId(event.getGuild().getId())) {
+                       channelNames += "<#" + stickyChannelID + "> ";
+                   }
+
                }
 
-               em.setTitle("**There is already 2 active sticky messages in this server!** ")
+               em.setTitle("**There is already" + Main.maxFreeStickies + "active sticky messages in this server!** ")
                                .setDescription("Stop a sticky in " + channelNames + " using `" + prefix + "stickstop` first.")
                                .addField("__StickyBot Premium__ lets you create sticky embeds with a custom bot profile picture and name! Plus stickies in as many channels as you like with awesome customization!", "Learn more: [www.stickybot.com](https://www.stickybot.info)", false);
                 event.getMessage().replyEmbeds(em.setColor(Color.ORANGE).build()).queue();
@@ -93,6 +99,11 @@ public class StickyTime extends ListenerAdapter {
                                     return;
                                 }
 
+
+                                if (event.getMessage().getContentRaw().length() > 1024) {
+                                    event.getMessage().reply("Whoops! The sticky message must be less than 1024 characters long.").queue();
+                                    return;
+                                }
 
                                 String [] arr = input.split(" ", 2);
                                 Main.mapMessage.put(event.getChannel().getId(), arr[1].trim());
@@ -157,6 +168,9 @@ public class StickyTime extends ListenerAdapter {
 
         if (Main.mapMessage.get(channelId) != null) {
 
+            if (!event.getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_HISTORY)) {
+                return;
+            }
             event.getChannel().getHistory().retrievePast(8).queue(history -> {
 
                 try {
@@ -194,7 +208,7 @@ public class StickyTime extends ListenerAdapter {
                     }
 
                     //If message send fails, stickstop
-                    if (event.getChannel().canTalk()) {
+                    if (event.getChannel().canTalk() && !Main.mapMessage.get(channelId).isEmpty()) {
                         event.getChannel().sendMessage(Main.mapMessage.get(channelId)).queue();
                     } else {
                         Main.mapMessage.remove(channelId);
@@ -264,7 +278,7 @@ public class StickyTime extends ListenerAdapter {
                 numStickies += 1;
             }
         }
-        if (numStickies >= 2) {
+        if (numStickies >= Main.maxFreeStickies) {
             return true;
         } else {
             return false;
