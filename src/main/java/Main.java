@@ -23,6 +23,7 @@ import static net.dv8tion.jda.api.entities.Activity.playing;
 public class Main {
     public static ShardManager jda;
     public static String prefix = "?";
+    public static int maxFreeStickies = 3;
 
     public static String botId = "628400349979344919";
     public static String token = "************************";
