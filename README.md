@@ -19,6 +19,10 @@ StickBot is a Discord bot that uses Discords REST API, Gradle, and JDA4. The bot
 
 -Sticking a embed message to a discord channel. [here](https://github.com/sircam191/StickyBot/blob/master/src/main/java/StickyEmbed.java).
 
+-Sticking a embed with a webhook. [here](https://github.com/sircam191/StickyBot/blob/master/src/main/java/WebHookSticky.java).
+
+-Using a image recgonition API. [here](https://github.com/sircam191/StickyBot/blob/master/src/main/java/ImageRecon.java).
+
 -Creating Simple and multiple choice polls in a discord channel. [here](https://github.com/sircam191/StickyBot/blob/master/src/main/java/AdvancedPoll.java) & [here](https://github.com/sircam191/StickyBot/blob/master/src/main/java/Commands.java).
 
 -Getting information on a discord user. [here](https://github.com/sircam191/StickyBot/blob/master/src/main/java/Commands.java).
