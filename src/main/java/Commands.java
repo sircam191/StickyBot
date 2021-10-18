@@ -256,7 +256,7 @@ public class Commands extends ListenerAdapter {
                                    "<:add:865689196492750848> **Nickname:** " + taggedMember.getEffectiveName() + "\n" +
                                    "<:rules:865689196332056607> **Join Date:** <t:" + taggedMember.getTimeJoined().toEpochSecond() + ":R>, *" +  NumberFormat.getInstance().format(Integer.parseInt(daysJoined)) + "* days\n" +
                                    //"**Join Position:** " + joinSpot + "\n" +
-                                   "<:rules:865689196332056607> **Creation Date:** <t:" + tagUser.getTimeCreated().toEpochSecond() + ":R>, *" + NumberFormat.getInstance().format(Integer.parseInt(numberOfDaysJoined(taggedMember))) + "* days\n" +
+                                   "<:rules:865689196332056607> **Creation Date:** <t:" + tagUser.getTimeCreated().toEpochSecond() + ":R>, *" + NumberFormat.getInstance().format(Integer.parseInt(numberOfDaysCreated(taggedMember))) + "* days\n" +
                                    //"**Status:** " + taggedMember.getOnlineStatus().getKey() + "\n" +
                                    "<:info:865689196521193482> **Badges: **" + badgesEmotes + "\n" +
                                    "<:__:865689196446089256> **Tag: ** " + taggedMember.getAsMention() + "\n" +
