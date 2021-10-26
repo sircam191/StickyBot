@@ -32,7 +32,8 @@ public class HelpNew extends ListenerAdapter {
             embed.setColor(Color.ORANGE);
             embed.setDescription("[www.stickybot.info](https://www.stickybot.info/)\n(Do not include `<>` when using commands)");
             embed.addField("\uD83D\uDCCC Sticky Commands:", "``" + prefix + "stick <message>`` - Sticks message to the channel.\n" +
-                    "``" + prefix + "stickstop`` - Cancels stickied message.\n (*Member must have Manage Messages permissions to use sticky commands.*).", false);
+                    "``" + prefix + "stickstop`` - Cancels stickied message.\n (*Member must have Manage Messages permissions to use sticky commands.*).\n" +
+                    "``" + prefix + "getstickies`` - Get all active stickies in the server.", false);
             embed.setFooter("Click a button to see other commands!", Main.jda.getShards().get(0).getSelfUser().getAvatarUrl());
             embed.addField("Prefix:", "This guilds prefix: `" + prefix + "`", true);
             embed.addField("Premium Status:", PremiumStatus(event.getGuild().getId()), true);
@@ -75,7 +76,8 @@ public class HelpNew extends ListenerAdapter {
             embed.setFooter("Click a button to see other commands!", Main.jda.getShards().get(0).getSelfUser().getAvatarUrl());
             embed.setDescription("[www.stickybot.info](https://www.stickybot.info/)\n(Do not include `<>` when using commands)");
             embed.addField("\uD83D\uDCCC Sticky Commands:", "``" + prefix + "stick <message>`` - Sticks message to the channel.\n" +
-                    "``" + prefix + "stickstop`` - Cancels stickied message.\n (*Member must have Manage Messages permissions to use sticky commands.*).", false);
+                    "``" + prefix + "stickstop`` - Cancels stickied message.\n (*Member must have Manage Messages permissions to use sticky commands.*).\n" +
+                    "``" + prefix + "getstickies`` - Get all active stickies in the server.", false);
             embed.addField("Prefix:", "This guilds prefix: `" + prefix + "`", true);
             embed.addField("Premium Status:", PremiumStatus(event.getGuild().getId()), true);
             event.editMessageEmbeds(embed.build()).setActionRows(
