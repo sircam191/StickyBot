@@ -278,7 +278,8 @@ public class Main {
                          new LoveCalc(),
                          new UrbanDict(),
                          new HelpNew(),
-                         new ImageRecon()
+                         new ImageRecon(),
+                         new GetStickCommand()
                  )
                  .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.EMOTE, CacheFlag.CLIENT_STATUS)
                 .build();
