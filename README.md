@@ -2,6 +2,8 @@
 
 [www.stickybot.info](https://www.stickybot.info/)
 
+This repository is no longer being updated as of 11/4/2021.
+
 [![Discord Bots](https://top.gg/api/widget/status/628400349979344919.svg)](https://top.gg/bot/628400349979344919)
 [![Discord Bots](https://top.gg/api/widget/servers/628400349979344919.svg)](https://top.gg/bot/628400349979344919)
 [![Discord Bots](https://top.gg/api/widget/owner/628400349979344919.svg)](https://top.gg/bot/628400349979344919)
