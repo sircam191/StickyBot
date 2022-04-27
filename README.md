@@ -2,7 +2,9 @@
 
 [www.stickybot.info](https://www.stickybot.info/)
 
-#StickyBot is now under new ownership. This GitHub repo will not contain any code and is longer updated.
+```diff
+! This GitHub repo will not contain any code and is longer updated.
+```
 
 [![Discord Bots](https://top.gg/api/widget/status/628400349979344919.svg)](https://top.gg/bot/628400349979344919)
 [![Discord Bots](https://top.gg/api/widget/servers/628400349979344919.svg)](https://top.gg/bot/628400349979344919)
