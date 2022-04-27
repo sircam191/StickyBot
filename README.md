@@ -3,7 +3,7 @@
 [www.stickybot.info](https://www.stickybot.info/)
 
 ```diff
-! This GitHub repo will not contain any code and is longer updated.
+! StickyBot ownership has changed, this GitHub repo will no longer contain any code or be updated.
 ```
 
 [![Discord Bots](https://top.gg/api/widget/status/628400349979344919.svg)](https://top.gg/bot/628400349979344919)
